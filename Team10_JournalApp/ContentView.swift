@@ -7,15 +7,42 @@
 
 import SwiftUI
 
+enum AppTab {
+    case Home; case Journal; case Friends; case Settings
+}
+
 struct ContentView: View {
+    @State var selectedTab: AppTab = .Home
+    
     var body: some View {
         VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+            TabView(selection: $selectedTab) {
+                Text("Home View")
+                    .tabItem {
+                        Image(systemName: "house")
+                        Text("Home")
+                    }.tag(AppTab.Home)
+                
+                Text("Journal View")
+                    .tabItem {
+                        Image(systemName: "book")
+                        Text("Journal")
+                    }.tag(AppTab.Journal)
+                
+                Text("Friends View")
+                    .tabItem {
+                        Image(systemName: "person.3")
+                        Text("Friends")
+                    }.tag(AppTab.Friends)
+                
+                Text("Settings View")
+                    .tabItem {
+                        Image(systemName: "gear")
+                        Text("Settings")
+                    }.tag(AppTab.Settings)
+            }
+            
         }
-        .padding()
     }
 }
 
