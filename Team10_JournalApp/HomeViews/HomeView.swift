@@ -8,10 +8,13 @@
 import SwiftUI
 
 struct HomeView: View {
+    @ObservedObject var viewModel: HomeViewModel
+    
     var body: some View {
         DefaultRectContainer(title: .init(text: "CatchUp", fontSize: 30.0),
                              subtitle: .init(text: "", fontSize: 20.0)) {
             
+            // MARK: - City Health Indicator
             HStack(spacing: 30.0) {
                 Text("City Health")
                     .font(.system(size: 18))
@@ -30,6 +33,7 @@ struct HomeView: View {
                   )
             }.padding([.top, .leading, .trailing])
             
+            // MARK: - Weather Indicator
             HStack {
                 Text("Weather")
                     .font(.system(size: 18))
@@ -38,15 +42,15 @@ struct HomeView: View {
                 Spacer()
                     .frame(width: 95.0)
                 
-                Text("Sunny")
+                Text(viewModel.getWeatherStatus().name)
                     .font(.system(size: 18))
                     .fontWeight(.heavy)
                 
-                Image(systemName: "sun.max.fill")
+                Image(systemName: viewModel.getWeatherStatus().icon)
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(width: 30)
-                    .foregroundStyle(Color.yellow)
+                    .foregroundStyle(viewModel.getWeatherStatus().iconColor)
                     .padding(.trailing, 40.0)
                 
             }.padding(.horizontal)
@@ -65,15 +69,17 @@ struct HomeView: View {
             .cornerRadius(18)
             .shadow(color: .black.opacity(0.25), radius: 2, x: 0, y: 4)
             
+            // MARK: - City/Journal Map
             ZStack {
                 Rectangle()
                     .fill(Color.gray)
                     .frame(maxWidth: .infinity)
                     .padding([.top, .leading, .trailing])
                 
-                Text("Insert Mapo Here")
+                Text("Insert Map Here")
             }
             
+            // MARK: - Bottom Navigation
             HStack {
                 Button(action: { print("TODO: Left") }, label: {
                     Image(systemName: "arrow.left.square")
@@ -89,7 +95,7 @@ struct HomeView: View {
                    Text("City Block:")
                        .font(.system(size: 18))
                    
-                   Text("1/3/2024-1/9/2024")
+                   Text(viewModel.getCurrCityBlock())
                        .font(.system(size: 18))
                        .foregroundStyle(Color(red: 66/255,
                                               green: 100/255,
@@ -99,7 +105,7 @@ struct HomeView: View {
                        Text("Connected to")
                            .font(.system(size: 18))
                        
-                       Text("5")
+                       Text("\(viewModel.getNumCityConnections())")
                            .font(.system(size: 18))
                            .foregroundStyle(Color(red: 66/255,
                                                   green: 100/255,
@@ -127,5 +133,5 @@ struct HomeView: View {
 }
 
 #Preview {
-    HomeView()
+    HomeView(viewModel: HomeViewModel())
 }

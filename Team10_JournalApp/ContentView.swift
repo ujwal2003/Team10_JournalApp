@@ -14,10 +14,12 @@ enum AppTab {
 struct ContentView: View {
     @State var selectedTab: AppTab = .Home
     
+    @StateObject private var homeViewModel = HomeViewModel()
+    
     var body: some View {
         VStack {
             TabView(selection: $selectedTab) {
-                HomeView()
+                HomeView(viewModel: homeViewModel)
                     .tabItem {
                         Image(systemName: "house")
                         Text("Home")
