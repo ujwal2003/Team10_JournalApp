@@ -76,7 +76,27 @@ struct HomeView: View {
                     .frame(maxWidth: .infinity)
                     .padding([.top, .leading, .trailing])
                 
-                Text("Insert Map Here")
+                GeometryReader { geometry in
+                    
+                    Button(action: { print("green building clicked!") }, label: {
+                        Image(systemName: "building.fill")
+                            .resizable()
+                            .frame(width: geometry.size.width * 0.1,
+                                   height: geometry.size.height * 0.15)
+                            .foregroundStyle(Color.green)
+                    })
+                    .position(x: geometry.size.width * 0.25, y: geometry.size.height * 0.25)
+                    
+                    Button(action: { print("cyan building clicked") }, label: {
+                        Image(systemName: "building.fill")
+                            .resizable()
+                            .frame(width: geometry.size.width * 0.1,
+                                   height: geometry.size.height * 0.15)
+                            .foregroundStyle(Color.cyan)
+                    })
+                    .position(x: geometry.size.width * 0.75, y: geometry.size.height * 0.75)
+                    
+                }
             }
             
             // MARK: - Bottom Navigation
