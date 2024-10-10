@@ -54,7 +54,7 @@ struct CapsuleProgressBar: View {
                     .frame(maxWidth: .infinity, alignment: .center)
             }
             
-        }
+        }.frame(height: height)
     }
     
     func calcPercent(availableWidth: CGFloat) -> CGFloat {
@@ -69,8 +69,6 @@ struct CapsuleProgressBar: View {
 
 #Preview {
     VStack {
-        Spacer()
-            .frame(height: 200.0)
         
         CapsuleProgressBar(percent: .constant(0.90),
                            percentFontSize: 18.0,

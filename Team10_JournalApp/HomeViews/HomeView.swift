@@ -15,23 +15,18 @@ struct HomeView: View {
                              subtitle: .init(text: "", fontSize: 20.0)) {
             
             // MARK: - City Health Indicator
-            HStack(spacing: 30.0) {
+            HStack(spacing: 0.0) {
                 Text("City Health")
                     .font(.system(size: 18))
                     .fontWeight(.medium)
                 
-                // fix this later
-//                Rectangle()
-//                  .foregroundColor(.clear)
-//                  .frame(maxWidth: 180, maxHeight: 22)
-//                  .background(Color(red: 0.79, green: 1, blue: 0.87))
-//                  .cornerRadius(20)
-//                  .overlay(
-//                    RoundedRectangle(cornerRadius: 20)
-//                      .inset(by: 0.5)
-//                      .stroke(Color(red: 0, green: 0.66, blue: 0.39).opacity(0.4), lineWidth: 1)
-//                  )
-                
+                CapsuleProgressBar(percent: $viewModel.cityHealthPercentage,
+                                   height: 25.0,
+                                   borderColor: Color(red: 0, green: 0.66, blue: 0.39).opacity(0.4),
+                                   borderWidth: 1.0,
+                                   barColor: Color(red: 0.79, green: 1, blue: 0.87))
+                .frame(width: 180)
+                .padding()
                 
             }.padding([.top, .leading, .trailing])
             

@@ -16,7 +16,7 @@ enum JournalWeather {
 }
 
 class HomeViewModel: ObservableObject {
-    // TODO: add variable for City Health
+    @Published var cityHealthPercentage: CGFloat
     @Published var weatherStatus: JournalWeather
     @Published var currWeek: String
     @Published var numFriends: Int
@@ -25,6 +25,7 @@ class HomeViewModel: ObservableObject {
         self.weatherStatus = .Sunny
         self.currWeek = "1/3/2024-1/9/2024"
         self.numFriends = 5
+        self.cityHealthPercentage = 1.0
     }
     
     func getWeatherStatus() -> (name: String, icon: String, iconColor: Color) {
