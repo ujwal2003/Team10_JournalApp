@@ -21,16 +21,18 @@ struct HomeView: View {
                     .fontWeight(.medium)
                 
                 // fix this later
-                Rectangle()
-                  .foregroundColor(.clear)
-                  .frame(maxWidth: 180, maxHeight: 22)
-                  .background(Color(red: 0.79, green: 1, blue: 0.87))
-                  .cornerRadius(20)
-                  .overlay(
-                    RoundedRectangle(cornerRadius: 20)
-                      .inset(by: 0.5)
-                      .stroke(Color(red: 0, green: 0.66, blue: 0.39).opacity(0.4), lineWidth: 1)
-                  )
+//                Rectangle()
+//                  .foregroundColor(.clear)
+//                  .frame(maxWidth: 180, maxHeight: 22)
+//                  .background(Color(red: 0.79, green: 1, blue: 0.87))
+//                  .cornerRadius(20)
+//                  .overlay(
+//                    RoundedRectangle(cornerRadius: 20)
+//                      .inset(by: 0.5)
+//                      .stroke(Color(red: 0, green: 0.66, blue: 0.39).opacity(0.4), lineWidth: 1)
+//                  )
+                
+                
             }.padding([.top, .leading, .trailing])
             
             // MARK: - Weather Indicator
@@ -85,9 +87,9 @@ struct HomeView: View {
                                    height: geometry.size.height * 0.15)
                             .foregroundStyle(Color.green)
                     })
-                    .position(x: geometry.size.width * 0.25, y: geometry.size.height * 0.25)
+                    .position(x: geometry.size.width * 0.88, y: geometry.size.height * 0.15)
                     
-                    Button(action: { print("cyan building clicked") }, label: {
+                    Button(action: { print("cyan building clicked!") }, label: {
                         Image(systemName: "building.fill")
                             .resizable()
                             .frame(width: geometry.size.width * 0.1,
