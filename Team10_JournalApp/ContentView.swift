@@ -14,12 +14,10 @@ enum AppTab {
 struct ContentView: View {
     @State var selectedTab: AppTab = .Home
     
-    @StateObject private var homeViewModel = HomeViewModel()
-    
     var body: some View {
         VStack {
             TabView(selection: $selectedTab) {
-                HomeView(viewModel: homeViewModel)
+                HomeView()
                     .tabItem {
                         Image(systemName: "house")
                         Text("Home")
@@ -48,6 +46,11 @@ struct ContentView: View {
     }
 }
 
-#Preview {
-    ContentView()
+struct ContentView_Previews: PreviewProvider {
+    static var previews: some View {
+        ContentView().previewDisplayName("Portrait")
+
+        ContentView().previewInterfaceOrientation(.landscapeLeft)
+            .previewDisplayName("Landscape Left")
+    }
 }

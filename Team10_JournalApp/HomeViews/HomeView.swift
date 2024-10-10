@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct HomeView: View {
-    @ObservedObject var viewModel: HomeViewModel
+    @StateObject private var viewModel = HomeViewModel()
     
     var body: some View {
         DefaultRectContainer(title: .init(text: "CatchUp", fontSize: 30.0),
@@ -150,5 +150,5 @@ struct HomeView: View {
 }
 
 #Preview {
-    HomeView(viewModel: HomeViewModel())
+    HomeView()
 }
