@@ -116,28 +116,28 @@ struct HomeView: View {
                 
                 Spacer()
                 
-                VStack {
+                VStack(spacing: 4.0) {
                    Text("City Block:")
-                       .font(.system(size: 18))
+                       .font(.system(size: 16))
                    
                    Text(viewModel.getCurrCityBlock())
-                       .font(.system(size: 18))
+                        .font(.system(size: 15.35))
                        .foregroundStyle(Color(red: 66/255,
                                               green: 100/255,
                                               blue: 125/255))
                    
                    HStack(spacing: 4.0) {
                        Text("Connected to")
-                           .font(.system(size: 18))
+                           .font(.system(size: 16))
                        
                        Text("\(viewModel.numFriends)")
-                           .font(.system(size: 18))
+                           .font(.system(size: 16))
                            .foregroundStyle(Color(red: 66/255,
                                                   green: 100/255,
                                                   blue: 125/255))
                        
                        Text("cities")
-                           .font(.system(size: 18))
+                           .font(.system(size: 16))
                    }
                 }
                 

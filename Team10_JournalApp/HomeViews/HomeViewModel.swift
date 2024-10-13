@@ -21,12 +21,10 @@ enum JournalWeather {
 class HomeViewModel: ObservableObject {
     @Published var cityHealthPercentage: CGFloat
     @Published var weatherStatus: JournalWeather
-    @Published var currWeek: String
     @Published var numFriends: Int
     
     init() {
         self.weatherStatus = .NoData
-        self.currWeek = "1/3/2024-1/9/2024"
         self.numFriends = 0
         self.cityHealthPercentage = 1.0
     }
@@ -97,6 +95,22 @@ class HomeViewModel: ObservableObject {
     }
     
     func getCurrCityBlock() -> String {
-        return currWeek
+        return getCurrentWeek()
+    }
+    
+    func getCurrentWeek() -> String {
+        let calendar = Calendar.current
+        let date = Date()
+        
+        let startOfWeek = calendar.dateInterval(of: .weekOfYear, for: date)?.start
+        let endOfWeek = calendar.dateInterval(of: .weekOfYear, for: date)?.end
+        
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        
+        let startStr = formatter.string(from: startOfWeek ?? Date())
+        let endStr = formatter.string(from: endOfWeek ?? Date())
+        
+        return "\(startStr)-\(endStr)"
     }
 }
