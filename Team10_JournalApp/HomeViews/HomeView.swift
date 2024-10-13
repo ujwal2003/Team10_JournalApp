@@ -14,51 +14,59 @@ struct HomeView: View {
         DefaultRectContainer(title: .init(text: "CatchUp", fontSize: 30.0),
                              subtitle: .init(text: "", fontSize: 20.0)) {
             
-            // MARK: - City Health Indicator
-            HStack(spacing: 0.0) {
-                Text("City Health")
-                    .font(.system(size: 18))
-                    .fontWeight(.medium)
+            // MARK: - City Weather & Health Indicator
+            Grid(horizontalSpacing: 10, verticalSpacing: 0) {
+                GridRow {
+                    let cityHealthBar = viewModel.getCityHealthColors()
+                    
+                    Text("City Health")
+                        .font(.system(size: 18.0))
+                        .fontWeight(.medium)
+                        .gridColumnAlignment(.leading)
+                    
+                    CapsuleProgressBar(percent: $viewModel.cityHealthPercentage,
+                                       height: 25.0,
+                                       borderColor: cityHealthBar.borderColor,
+                                       borderWidth: 1.0,
+                                       barColor: cityHealthBar.barColor)
+                    .frame(width: 200)
+                    .padding()
+                    .gridColumnAlignment(.center)
+                }
                 
-                CapsuleProgressBar(percent: $viewModel.cityHealthPercentage,
-                                   height: 25.0,
-                                   borderColor: Color(red: 0, green: 0.66, blue: 0.39).opacity(0.4),
-                                   borderWidth: 1.0,
-                                   barColor: Color(red: 0.79, green: 1, blue: 0.87))
-                .frame(width: 180)
-                .padding()
-                
-            }.padding([.top, .leading, .trailing])
+                GridRow {
+                    let todaysWeather = viewModel.getWeatherStatus()
+                    
+                    Text("Weather")
+                        .font(.system(size: 18))
+                        .fontWeight(.medium)
+                    
+                    HStack {
+                        Text(todaysWeather.name)
+                            .font(.system(size: 18))
+                            .fontWeight(.heavy)
+                        
+                        Image(systemName: todaysWeather.icon)
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: todaysWeather.iconWidth)
+                            .foregroundStyle(todaysWeather.iconColor)
+                    }
+                }
+            }
+            .padding()
+            .padding(.leading)
             
-            // MARK: - Weather Indicator
-            HStack {
-                Text("Weather")
-                    .font(.system(size: 18))
-                    .fontWeight(.medium)
-                
-                Spacer()
-                    .frame(width: 95.0)
-                
-                Text(viewModel.getWeatherStatus().name)
-                    .font(.system(size: 18))
-                    .fontWeight(.heavy)
-                
-                Image(systemName: viewModel.getWeatherStatus().icon)
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: 30)
-                    .foregroundStyle(viewModel.getWeatherStatus().iconColor)
-                    .padding(.trailing, 40.0)
-                
-            }.padding(.horizontal)
             
+            // MARK: - Actions Button
             Button(action: { print("TODO: Actions") }, label: {
                 Text("Reccomended  actions for today")
                     .font(.system(size: 16))
                     .fontWeight(.medium)
                     .multilineTextAlignment(.center)
                     .lineLimit(nil)
-                    .padding()
+                    .padding(.horizontal)
+                    .padding(.vertical, 8.0)
             })
             .frame(width: 190)
             .background(Color(red: 0.09, green: 0.28, blue: 0.39))
@@ -122,7 +130,7 @@ struct HomeView: View {
                        Text("Connected to")
                            .font(.system(size: 18))
                        
-                       Text("\(viewModel.getNumCityConnections())")
+                       Text("\(viewModel.numFriends)")
                            .font(.system(size: 18))
                            .foregroundStyle(Color(red: 66/255,
                                                   green: 100/255,

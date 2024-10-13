@@ -9,10 +9,13 @@ import Foundation
 import SwiftUI
 
 enum JournalWeather {
-    case NoData
     case Sunny
+    case Cloudy
+    case Drizzle
+    case Rain
+    case Stormy
+    case NoData
     case Error
-    //TODO: figure out all the weathers
 }
 
 class HomeViewModel: ObservableObject {
@@ -22,36 +25,78 @@ class HomeViewModel: ObservableObject {
     @Published var numFriends: Int
     
     init() {
-        self.weatherStatus = .Sunny
+        self.weatherStatus = .NoData
         self.currWeek = "1/3/2024-1/9/2024"
-        self.numFriends = 5
+        self.numFriends = 0
         self.cityHealthPercentage = 1.0
     }
     
-    func getWeatherStatus() -> (name: String, icon: String, iconColor: Color) {
+    func getWeatherStatus() -> (name: String, icon: String, iconWidth: CGFloat, iconColor: Color) {
         switch weatherStatus {
             case .NoData:
                 return (name: "No Data",
                         icon: "exclamationmark.arrow.trianglehead.2.clockwise.rotate.90",
+                        iconWidth: 32,
                         iconColor: Color.gray)
             
             case .Sunny:
                 return (name: "Sunny",
                         icon: "sun.max.fill",
+                        iconWidth: 30,
                         iconColor: Color.yellow)
+            
+            case .Cloudy:
+                return (name: "Cloudy",
+                        icon: "cloud.sun.fill",
+                        iconWidth: 35,
+                        iconColor: Color.orange)
+            
+            case .Drizzle:
+                return (name: "Drizzle",
+                        icon: "sun.rain.fill",
+                        iconWidth: 35,
+                        iconColor: Color.cyan)
+            
+            case .Rain:
+                return (name: "Rain",
+                        icon: "cloud.rain.fill",
+                        iconWidth: 28,
+                        iconColor: Color.blue)
+            
+            case .Stormy:
+                return (name: "Stormy",
+                        icon: "hurricane",
+                        iconWidth: 25,
+                        iconColor: Color.indigo)
+            
             
             default:
                 return (name: "Error",
                         icon: "person.crop.circle.badge.exclamationmark",
+                        iconWidth: 30,
                         iconColor: Color.red)
         }
     }
     
-    func getCurrCityBlock() -> String {
-        return currWeek
+    func getCityHealthColors() -> (borderColor: Color, barColor: Color) {
+        if cityHealthPercentage >= 0.75 {
+            return (borderColor: Color(red: 0, green: 0.66, blue: 0.39).opacity(0.4),
+                    barColor: Color(red: 0.79, green: 1, blue: 0.87))
+            
+        } else if cityHealthPercentage >= 0.50 {
+            return (borderColor: Color(red: 0.84, green: 0.86, blue: 0.01).opacity(0.53),
+                    barColor: Color(red: 0.98, green: 1, blue: 0.79))
+            
+        } else if cityHealthPercentage >= 0.25 {
+            return (borderColor: Color(red: 0.66, green: 0.46, blue: 0).opacity(0.4),
+                    barColor: Color(red: 1, green: 0.94, blue: 0.79))
+        }
+        
+        return (borderColor: Color(red: 0.66, green: 0.16, blue: 0).opacity(0.4),
+                barColor: Color(red: 1, green: 0.84, blue: 0.79))
     }
     
-    func getNumCityConnections() -> Int {
-        return numFriends
+    func getCurrCityBlock() -> String {
+        return currWeek
     }
 }
