@@ -76,12 +76,17 @@ struct HomeView: View {
             
             // MARK: - City/Journal Map
             ZStack {
-                Rectangle()
-                    .fill(Color.gray)
-                    .frame(maxWidth: .infinity)
-                    .padding([.top, .leading, .trailing])
+//                Rectangle()
+//                    .fill(Color.gray)
+//                    .frame(maxWidth: .infinity)
+//                    .padding([.top, .leading, .trailing])
+                
                 
                 GeometryReader { geometry in
+                    Image("Map_2")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: geometry.size.width)
                     
                     Button(action: { print("green building clicked!") }, label: {
                         Image(systemName: "building.fill")
@@ -153,6 +158,7 @@ struct HomeView: View {
                 
             }.padding([.leading, .bottom, .trailing])
             
+            Spacer()
         }
     }
 }
