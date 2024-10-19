@@ -75,39 +75,7 @@ struct HomeView: View {
             .shadow(color: .black.opacity(0.25), radius: 2, x: 0, y: 4)
             
             // MARK: - City/Journal Map
-            ZStack {
-//                Rectangle()
-//                    .fill(Color.gray)
-//                    .frame(maxWidth: .infinity)
-//                    .padding([.top, .leading, .trailing])
-                
-                
-                GeometryReader { geometry in
-                    Image("Map_2")
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: geometry.size.width)
-                    
-                    Button(action: { print("green building clicked!") }, label: {
-                        Image(systemName: "building.fill")
-                            .resizable()
-                            .frame(width: geometry.size.width * 0.1,
-                                   height: geometry.size.height * 0.15)
-                            .foregroundStyle(Color.green)
-                    })
-                    .position(x: geometry.size.width * 0.88, y: geometry.size.height * 0.15)
-                    
-                    Button(action: { print("cyan building clicked!") }, label: {
-                        Image(systemName: "building.fill")
-                            .resizable()
-                            .frame(width: geometry.size.width * 0.1,
-                                   height: geometry.size.height * 0.15)
-                            .foregroundStyle(Color.cyan)
-                    })
-                    .position(x: geometry.size.width * 0.75, y: geometry.size.height * 0.75)
-                    
-                }
-            }
+            CityJournalMapView()
             
             // MARK: - Bottom Navigation
             HStack {
