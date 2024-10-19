@@ -27,6 +27,11 @@ enum Building: String {
     case RedTower = "red_building"
 }
 
+struct BuildingConfig {
+    var style: Building
+    var onClick: () -> Void
+}
+
 struct BuildingView: View {
     var id = UUID()
     var geometry: GeometryProxy
@@ -63,7 +68,7 @@ struct BuildingView: View {
 
 struct CityJournalMapView: View {
     var map: Map
-    var buildings: [(style: Building, onClick: () -> Void)]
+    var buildings: [BuildingConfig]
     
     var body: some View {
         ZStack {
@@ -114,8 +119,7 @@ struct CityJournalMapView: View {
         }
     }
     
-    private func getMapBuildings(geometry: GeometryProxy, map: Map,
-                                 buildingsConfig: [(style: Building, onClick: () -> Void)]) -> [BuildingView] {
+    private func getMapBuildings(geometry: GeometryProxy, map: Map, buildingsConfig: [BuildingConfig]) -> [BuildingView] {
         
         let coords = getBuildingCoords(map: map)
         var buildingsList: [BuildingView] = []
