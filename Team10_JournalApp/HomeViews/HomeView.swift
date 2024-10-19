@@ -60,7 +60,7 @@ struct HomeView: View {
             
             // MARK: - Actions Button
             Button(action: { print("TODO: Actions") }, label: {
-                Text("Reccomended  actions for today")
+                Text("Recommended  actions for today")
                     .font(.system(size: 16))
                     .fontWeight(.medium)
                     .multilineTextAlignment(.center)
@@ -75,7 +75,15 @@ struct HomeView: View {
             .shadow(color: .black.opacity(0.25), radius: 2, x: 0, y: 4)
             
             // MARK: - City/Journal Map
-            CityJournalMapView()
+            CityJournalMapView(map: .Map1, buildings: [
+                (Building.BlueTower, { print("blue!!") }),
+                (Building.BrownTower, {}),
+                (Building.GreenTower, {}),
+                (Building.RedTower, {}),
+                (Building.LightBlueTower, {}),
+                (Building.LightBrownTower, {}),
+                (Building.LightGreenTower, {}),
+            ])
             
             // MARK: - Bottom Navigation
             HStack {
@@ -131,6 +139,6 @@ struct HomeView: View {
     }
 }
 
-#Preview {
-    HomeView()
-}
+//#Preview {
+//    HomeView()
+//}
