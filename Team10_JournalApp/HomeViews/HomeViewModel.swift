@@ -18,15 +18,26 @@ enum JournalWeather {
     case Error
 }
 
+struct CityMap {
+    var map: Map
+    var buildings: [BuildingConfig]
+}
+
 class HomeViewModel: ObservableObject {
     @Published var cityHealthPercentage: CGFloat
     @Published var weatherStatus: JournalWeather
     @Published var numFriends: Int
     
-    init() {
-        self.weatherStatus = .NoData
-        self.numFriends = 0
-        self.cityHealthPercentage = 1.0
+    @Published var dummyWeek: Int //FIXME: replace with db data
+    
+    @Published var isNavigateLoading: Bool = false
+    
+    
+    init(cityHealthPercentage: CGFloat, weatherStatus: JournalWeather, numFriends: Int, dummyWeek: Int) {
+        self.cityHealthPercentage = cityHealthPercentage
+        self.weatherStatus = weatherStatus
+        self.numFriends = numFriends
+        self.dummyWeek = dummyWeek
     }
     
     func getWeatherStatus() -> (name: String, icon: String, iconWidth: CGFloat, iconColor: Color) {
@@ -112,5 +123,82 @@ class HomeViewModel: ObservableObject {
         let endStr = formatter.string(from: endOfWeek ?? Date())
         
         return "\(startStr)-\(endStr)"
+    }
+    
+    //FIXME: dummy data & implementation for now
+    func getCityMap(week: Int) -> CityMap {
+        let dummyData: [CityMap] = [
+            .init(map: .Map2, buildings: [
+                .init(style: .BlueTower, onClick: {}),
+                .init(style: .BrownTower, onClick: {}),
+                .init(style: .GreenTower, onClick: {}),
+                .init(style: .LightBlueTower, onClick: {}),
+                .init(style: .LightBrownTower, onClick: {}),
+                .init(style: .LightGreenTower, onClick: {}),
+                .init(style: .RedTower, onClick: {})
+            ]),
+            
+            .init(map: .Map4, buildings: [
+                .init(style: .BrownTower, onClick: {}),
+                .init(style: .BlueTower, onClick: {}),
+                .init(style: .GreenTower, onClick: {}),
+                .init(style: .LightBrownTower, onClick: {}),
+                .init(style: .LightGreenTower, onClick: {}),
+                .init(style: .LightBlueTower, onClick: {}),
+                .init(style: .RedTower, onClick: {})
+            ]),
+            
+            .init(map: .Map1, buildings: [
+                .init(style: .GreenTower, onClick: {}),
+                .init(style: .BrownTower, onClick: {}),
+                .init(style: .BlueTower, onClick: {}),
+                .init(style: .LightBrownTower, onClick: {}),
+                .init(style: .LightBlueTower, onClick: {}),
+                .init(style: .LightGreenTower, onClick: {}),
+                .init(style: .RedTower, onClick: {})
+            ]),
+            
+            .init(map: .Map3, buildings: [
+                .init(style: .BrownTower, onClick: {}),
+                .init(style: .GreenTower, onClick: {}),
+                .init(style: .LightBrownTower, onClick: {}),
+                .init(style: .LightBlueTower, onClick: {}),
+                .init(style: .BlueTower, onClick: {}),
+                .init(style: .LightGreenTower, onClick: {}),
+                .init(style: .RedTower, onClick: {})
+            ]),
+            
+            .init(map: .Map2, buildings: [
+                .init(style: .BrownTower, onClick: {}),
+                .init(style: .LightBlueTower, onClick: {}),
+                .init(style: .GreenTower, onClick: {}),
+                .init(style: .LightBrownTower, onClick: {}),
+                .init(style: .LightGreenTower, onClick: {}),
+                .init(style: .BlueTower, onClick: {}),
+                .init(style: .RedTower, onClick: {})
+            ])
+        ]
+        
+        return dummyData[week]
+    }
+    
+    //FIXME: dummy implementation for now
+    func getNextWeekMap() {
+        isNavigateLoading = true
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+            self.isNavigateLoading = false
+            self.dummyWeek = self.dummyWeek == 4 ? 0 : self.dummyWeek + 1
+        }
+    }
+    
+    //FIXME: dummy implementation for now
+    func getPrevWeekMap() {
+        isNavigateLoading = true
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
+            self.isNavigateLoading = false
+            self.dummyWeek = self.dummyWeek == 0 ? 0 : self.dummyWeek - 1
+        }
     }
 }
