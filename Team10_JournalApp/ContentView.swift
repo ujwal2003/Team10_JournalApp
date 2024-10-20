@@ -41,8 +41,8 @@ struct ContentView: View {
                         Text("Settings")
                     }.tag(AppTab.Settings)
             }
-            
         }
+        .navigationBarBackButtonHidden(true)
     }
 }
 

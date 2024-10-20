@@ -11,7 +11,7 @@ import SwiftUI
 struct Team10_JournalAppApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            SplashScreenView()
         }
     }
 }
