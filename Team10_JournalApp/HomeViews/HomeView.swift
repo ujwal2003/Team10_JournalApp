@@ -17,6 +17,7 @@ struct HomeView: View {
             DefaultRectContainer(title: .init(text: "CatchUp", fontSize: 30.0),
                                  subtitle: .init(text: "", fontSize: 20.0)) {
                 
+
                 CityHealthWeatherView(cityHealthPercentage: .constant(viewModel.calcCityHealthPercentage()),
                                       cityHealthBar: viewModel.getCityHealthColors(),
                                       todaysWeather: viewModel.getWeatherStatus())
