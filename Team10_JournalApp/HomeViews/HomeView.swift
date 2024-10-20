@@ -30,13 +30,23 @@ struct HomeView: View {
                 
                 CityJournalMapView(map: currCityMap.map, buildings: currCityMap.buildings)
                     .sheet(isPresented: $viewModel.isGrowthReportShowing) {
-//                        CityGrowthView(headlineTitle: "\(viewModel.days[dayIndex])'s City Growth",
-//                                       growthReport: currCityMap.reports[dayIndex])
+                        let reportIdx = viewModel.selectedBuildingIndex
+                        
+                        CityGrowthView(headlineTitle: "\(viewModel.days[reportIdx])'s City Growth",
+                                       growthReport: currCityMap.reports[reportIdx])
                     }
                 
                 BottomNavigationView(isDisabled: viewModel.isNavigateLoading,
-                                     onLeftArrowClick: { },
-                                     onRightArrowClick: { },
+                                     onLeftArrowClick: {
+                                         Task {
+                                             await viewModel.getPastCity()
+                                         }
+                                     },
+                                     onRightArrowClick: {
+                                         Task {
+                                            await viewModel.getFutureCity()
+                                         }
+                                     },
                                      currWeek: viewModel.currCityBlock,
                                      numFriends: viewModel.numFriends)
                 
