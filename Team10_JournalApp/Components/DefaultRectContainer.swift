@@ -58,8 +58,8 @@ struct DefaultRectContainer<Content: View>: View {
                         
                         Text(subtitle.text)
                             .frame(maxWidth: .infinity, alignment: .leading)
-                            .font(.system(size: 20).weight(.medium))
-                            .padding(.horizontal, subtitle.fontSize)
+                            .font(.system(size: subtitle.fontSize).weight(.medium))
+                            .padding(.horizontal)
                     }
                     .padding()
                     .padding(.top, headTopAlign == .topCentralAlign ? 40.0 : 0.0)
