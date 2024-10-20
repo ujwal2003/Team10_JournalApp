@@ -58,8 +58,6 @@ struct HomeView: View {
                         }
                     }
                 }
-                .padding()
-                .padding(.leading)
                 
                 
                 // MARK: - Actions Button

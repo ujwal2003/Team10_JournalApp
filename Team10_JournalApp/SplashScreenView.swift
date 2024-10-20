@@ -14,14 +14,14 @@ struct SplashScreenView: View {
     
     var body: some View {
         if isActive {
-            ContentView()
+            SignInView()
         } else {
             VStack {
                 Image("CatchUpLogo")
             }
             .padding()
             .onAppear() {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) { // CHANGE to 2.0
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
                     withAnimation {
                         self.isActive = true
                     }
