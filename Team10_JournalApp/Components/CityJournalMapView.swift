@@ -15,6 +15,7 @@ enum Map: String {
     case Map2 = "Map_2"
     case Map3 = "Map_3"
     case Map4 = "Map_4"
+    case LoadingMap = "LoadingMap"
 }
 
 enum Building: String {
@@ -93,6 +94,8 @@ struct CityJournalMapView: View {
     
     private func getBuildingCoords(map: Map) -> [(x: CGFloat, y: CGFloat)] {
         switch map {
+            case .LoadingMap: return []
+            
             case .Map1:
                 return [
                     (0.12, 0.08), (0.40, 0.18), (0.88, 0.12), (0.12, 0.65),
@@ -123,6 +126,10 @@ struct CityJournalMapView: View {
         
         let coords = getBuildingCoords(map: map)
         var buildingsList: [BuildingView] = []
+        
+        if coords.isEmpty {
+            return buildingsList
+        }
         
         for i in 0..<7 {
             buildingsList.append(

@@ -8,17 +8,16 @@
 import SwiftUI
 
 struct HomeView: View {
-    @StateObject private var viewModel = HomeViewModel(cityHealthPercentage: 1.0,
-                                                       weatherStatus: .Cloudy,
-                                                       numFriends: 5,
-                                                       dummyWeek: 0)
+    //FIXME: - pass in weather status from journal entry sentiment calculation
+    //FIXME: - pass in num friends from initial user data fetch
+    @StateObject private var viewModel = HomeViewModel(weatherStatus: .NoData, numFriends: 5)
     
     var body: some View {
         ZStack {
             DefaultRectContainer(title: .init(text: "CatchUp", fontSize: 30.0),
                                  subtitle: .init(text: "", fontSize: 20.0)) {
                 
-                CityHealthWeatherView(cityHealthPercentage: $viewModel.cityHealthPercentage,
+                CityHealthWeatherView(cityHealthPercentage: .constant(viewModel.calcCityHealthPercentage()),
                                       cityHealthBar: viewModel.getCityHealthColors(),
                                       todaysWeather: viewModel.getWeatherStatus())
                 
@@ -27,20 +26,18 @@ struct HomeView: View {
                                  onClick: { print("TODO: Actions") })
                 
                 
-                let currCityMap = viewModel.getCityMap(week: viewModel.dummyWeek)
+                let currCityMap = viewModel.currCityJournal
                 
                 CityJournalMapView(map: currCityMap.map, buildings: currCityMap.buildings)
                     .sheet(isPresented: $viewModel.isGrowthReportShowing) {
-                        let dayIndex = viewModel.selectedGrowthReportIndex
-                        
-                        CityGrowthView(headlineTitle: "\(viewModel.days[dayIndex])'s City Growth",
-                                       growthReport: currCityMap.reports[dayIndex])
+//                        CityGrowthView(headlineTitle: "\(viewModel.days[dayIndex])'s City Growth",
+//                                       growthReport: currCityMap.reports[dayIndex])
                     }
                 
                 BottomNavigationView(isDisabled: viewModel.isNavigateLoading,
                                      onLeftArrowClick: { },
                                      onRightArrowClick: { },
-                                     currWeek: viewModel.getCurrCityBlock(),
+                                     currWeek: viewModel.currCityBlock,
                                      numFriends: viewModel.numFriends)
                 
                 
@@ -61,7 +58,3 @@ struct HomeView: View {
         
     }
 }
-
-//#Preview {
-//    HomeView()
-//}
