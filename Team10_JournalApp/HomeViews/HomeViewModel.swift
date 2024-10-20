@@ -18,9 +18,49 @@ enum JournalWeather {
     case Error
 }
 
+enum Sentiment {
+    case Positive
+    case Neutral
+    case Negative
+    
+    var textView: Text {
+        switch self {
+            case .Positive:
+                return Text("Positive")
+                            .font(.system(size: 16))
+                            .fontWeight(.medium)
+                            .foregroundStyle(Color.hex("#5EB881"))
+            
+            case .Neutral:
+                return Text("Neutral")
+                            .font(.system(size: 16))
+                            .fontWeight(.medium)
+                            .foregroundStyle(Color.hex("#8A8A8A"))
+            
+            case .Negative:
+                return Text("Negative")
+                            .font(.system(size: 16))
+                            .fontWeight(.medium)
+                            .foregroundStyle(Color.hex("#DE5353"))
+        }
+    }
+}
+
+struct GrowthReport {
+    var gratitudeSentiment: Sentiment
+    var gratitudeReport: String
+    
+    var learningSentiment: Sentiment
+    var learningReport: String
+    
+    var thoughtSentiment: Sentiment
+    var thoughtReport: String
+}
+
 struct CityMap {
     var map: Map
     var buildings: [BuildingConfig]
+    var reports: [GrowthReport]
 }
 
 class HomeViewModel: ObservableObject {
@@ -31,6 +71,9 @@ class HomeViewModel: ObservableObject {
     @Published var dummyWeek: Int //FIXME: replace with db data
     
     @Published var isNavigateLoading: Bool = false
+    @Published var isGrowthReportShowing: Bool = false
+    @Published var selectedGrowthReportIndex: Int = 0
+    @Published var days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
     
     
     init(cityHealthPercentage: CGFloat, weatherStatus: JournalWeather, numFriends: Int, dummyWeek: Int) {
@@ -127,56 +170,86 @@ class HomeViewModel: ObservableObject {
     
     //FIXME: dummy data & implementation for now
     func getCityMap(week: Int) -> CityMap {
+        let dummyText = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+        
         let dummyData: [CityMap] = [
-            .init(map: .Map2, buildings: [
-                .init(style: .BlueTower, onClick: {}),
-                .init(style: .BrownTower, onClick: {}),
-                .init(style: .GreenTower, onClick: {}),
-                .init(style: .LightBlueTower, onClick: {}),
-                .init(style: .LightBrownTower, onClick: {}),
-                .init(style: .LightGreenTower, onClick: {}),
-                .init(style: .RedTower, onClick: {})
-            ]),
+            .init(map: .Map2,
+                  buildings: [
+                    .init(style: .BlueTower, onClick: {
+                        self.selectedGrowthReportIndex = 0
+                        self.isGrowthReportShowing.toggle()
+                    }),
+                    .init(style: .BrownTower, onClick: {
+                        self.selectedGrowthReportIndex = 1
+                        self.isGrowthReportShowing.toggle()
+                    }),
+                    .init(style: .GreenTower, onClick: {
+                        self.selectedGrowthReportIndex = 2
+                        self.isGrowthReportShowing.toggle()
+                    }),
+                    .init(style: .LightBlueTower, onClick: {
+                        self.selectedGrowthReportIndex = 3
+                        self.isGrowthReportShowing.toggle()
+                    }),
+                    .init(style: .LightBrownTower, onClick: {
+                        self.selectedGrowthReportIndex = 4
+                        self.isGrowthReportShowing.toggle()
+                    }),
+                    .init(style: .LightGreenTower, onClick: {
+                        self.selectedGrowthReportIndex = 5
+                        self.isGrowthReportShowing.toggle()
+                    }),
+                    .init(style: .RedTower, onClick: {
+                        self.selectedGrowthReportIndex = 6
+                        self.isGrowthReportShowing.toggle()
+                    })
+                  ],
+                  reports: Array(repeating: .init(gratitudeSentiment: .Positive,
+                                                  gratitudeReport: dummyText,
+                                                  learningSentiment: .Neutral,
+                                                  learningReport: dummyText,
+                                                  thoughtSentiment: .Negative,
+                                                  thoughtReport: dummyText),
+                                 count: 7)),
             
-            .init(map: .Map4, buildings: [
-                .init(style: .BrownTower, onClick: {}),
-                .init(style: .BlueTower, onClick: {}),
-                .init(style: .GreenTower, onClick: {}),
-                .init(style: .LightBrownTower, onClick: {}),
-                .init(style: .LightGreenTower, onClick: {}),
-                .init(style: .LightBlueTower, onClick: {}),
-                .init(style: .RedTower, onClick: {})
-            ]),
-            
-            .init(map: .Map1, buildings: [
-                .init(style: .GreenTower, onClick: {}),
-                .init(style: .BrownTower, onClick: {}),
-                .init(style: .BlueTower, onClick: {}),
-                .init(style: .LightBrownTower, onClick: {}),
-                .init(style: .LightBlueTower, onClick: {}),
-                .init(style: .LightGreenTower, onClick: {}),
-                .init(style: .RedTower, onClick: {})
-            ]),
-            
-            .init(map: .Map3, buildings: [
-                .init(style: .BrownTower, onClick: {}),
-                .init(style: .GreenTower, onClick: {}),
-                .init(style: .LightBrownTower, onClick: {}),
-                .init(style: .LightBlueTower, onClick: {}),
-                .init(style: .BlueTower, onClick: {}),
-                .init(style: .LightGreenTower, onClick: {}),
-                .init(style: .RedTower, onClick: {})
-            ]),
-            
-            .init(map: .Map2, buildings: [
-                .init(style: .BrownTower, onClick: {}),
-                .init(style: .LightBlueTower, onClick: {}),
-                .init(style: .GreenTower, onClick: {}),
-                .init(style: .LightBrownTower, onClick: {}),
-                .init(style: .LightGreenTower, onClick: {}),
-                .init(style: .BlueTower, onClick: {}),
-                .init(style: .RedTower, onClick: {})
-            ])
+                .init(map: .Map3,
+                      buildings: [
+                        .init(style: .BlueTower, onClick: {
+                            self.selectedGrowthReportIndex = 0
+                            self.isGrowthReportShowing.toggle()
+                        }),
+                        .init(style: .BrownTower, onClick: {
+                            self.selectedGrowthReportIndex = 1
+                            self.isGrowthReportShowing.toggle()
+                        }),
+                        .init(style: .GreenTower, onClick: {
+                            self.selectedGrowthReportIndex = 2
+                            self.isGrowthReportShowing.toggle()
+                        }),
+                        .init(style: .LightBlueTower, onClick: {
+                            self.selectedGrowthReportIndex = 3
+                            self.isGrowthReportShowing.toggle()
+                        }),
+                        .init(style: .LightBrownTower, onClick: {
+                            self.selectedGrowthReportIndex = 4
+                            self.isGrowthReportShowing.toggle()
+                        }),
+                        .init(style: .LightGreenTower, onClick: {
+                            self.selectedGrowthReportIndex = 5
+                            self.isGrowthReportShowing.toggle()
+                        }),
+                        .init(style: .RedTower, onClick: {
+                            self.selectedGrowthReportIndex = 6
+                            self.isGrowthReportShowing.toggle()
+                        })
+                      ],
+                      reports: Array(repeating: .init(gratitudeSentiment: .Positive,
+                                                      gratitudeReport: dummyText,
+                                                      learningSentiment: .Neutral,
+                                                      learningReport: dummyText,
+                                                      thoughtSentiment: .Negative,
+                                                      thoughtReport: dummyText),
+                                     count: 7))
         ]
         
         return dummyData[week]
@@ -188,7 +261,7 @@ class HomeViewModel: ObservableObject {
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
             self.isNavigateLoading = false
-            self.dummyWeek = self.dummyWeek == 4 ? 0 : self.dummyWeek + 1
+            self.dummyWeek = self.dummyWeek == 1 ? 0 : self.dummyWeek + 1
         }
     }
     

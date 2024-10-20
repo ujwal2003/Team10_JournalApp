@@ -83,6 +83,12 @@ struct HomeView: View {
                 // MARK: - City/Journal Map
                 let currCityMap = viewModel.getCityMap(week: viewModel.dummyWeek)
                 CityJournalMapView(map: currCityMap.map, buildings: currCityMap.buildings)
+                    .sheet(isPresented: $viewModel.isGrowthReportShowing) {
+                        let dayIndex = viewModel.selectedGrowthReportIndex
+                        
+                        CityGrowthView(headlineTitle: "\(viewModel.days[dayIndex])'s City Growth",
+                                       growthReport: currCityMap.reports[dayIndex])
+                    }
                 
                 // MARK: - Bottom Navigation
                 HStack {
