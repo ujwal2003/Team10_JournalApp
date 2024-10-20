@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftUI
+import MapKit
 
 enum JournalWeather {
     case Sunny
@@ -255,6 +256,7 @@ class HomeViewModel: ObservableObject {
         await loadCityMap(week: self.currWeek)
     }
     
+    //FIXME: fetch from actual db
     func getPastCity() async {
         self.currCityJournal = CityMap(map: .LoadingMap, buildings: [], reports: [])
         self.currCityBlock = "Loading..."
@@ -267,4 +269,5 @@ class HomeViewModel: ObservableObject {
         
         await loadCityMap(week: self.currWeek)
     }
+    
 }

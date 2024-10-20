@@ -27,6 +27,7 @@ struct HomeView: View {
                                  onClick: { print("TODO: Actions") })
                 
                 
+                
                 let currCityMap = viewModel.currCityJournal
                 
                 CityJournalMapView(map: currCityMap.map, buildings: currCityMap.buildings)
@@ -36,6 +37,7 @@ struct HomeView: View {
                         CityGrowthView(headlineTitle: "\(viewModel.days[reportIdx])'s City Growth",
                                        growthReport: currCityMap.reports[reportIdx])
                     }
+                
                 
                 BottomNavigationView(isDisabled: viewModel.isNavigateLoading,
                                      onLeftArrowClick: {
