@@ -18,76 +18,85 @@ enum JournalWeather {
     case Error
 }
 
+enum Sentiment {
+    case Positive
+    case Neutral
+    case Negative
+    
+    var textView: Text {
+        switch self {
+            case .Positive:
+                return Text("Positive")
+                            .font(.system(size: 16))
+                            .fontWeight(.medium)
+                            .foregroundStyle(Color.hex("#5EB881"))
+            
+            case .Neutral:
+                return Text("Neutral")
+                            .font(.system(size: 16))
+                            .fontWeight(.medium)
+                            .foregroundStyle(Color.hex("#8A8A8A"))
+            
+            case .Negative:
+                return Text("Negative")
+                            .font(.system(size: 16))
+                            .fontWeight(.medium)
+                            .foregroundStyle(Color.hex("#DE5353"))
+        }
+    }
+}
+
+struct GrowthReport {
+    var gratitudeSentiment: Sentiment
+    var gratitudeReport: String
+    
+    var learningSentiment: Sentiment
+    var learningReport: String
+    
+    var thoughtSentiment: Sentiment
+    var thoughtReport: String
+}
+
 struct CityMap {
     var map: Map
     var buildings: [BuildingConfig]
+    var reports: [GrowthReport]
 }
 
 class HomeViewModel: ObservableObject {
-    @Published var cityHealthPercentage: CGFloat
+    //FIXME: - these two will be set by the load / async function
+    @Published var currCityJournal: CityMap = CityMap(map: .LoadingMap, buildings: [], reports: [])
+    @Published var currCityBlock: String = "Loading.."
+    
     @Published var weatherStatus: JournalWeather
     @Published var numFriends: Int
     
-    @Published var dummyWeek: Int //FIXME: replace with db data
-    
     @Published var isNavigateLoading: Bool = false
+    @Published var isGrowthReportShowing: Bool = false
+    @Published var selectedBuildingIndex: Int = 0
     
     
-    init(cityHealthPercentage: CGFloat, weatherStatus: JournalWeather, numFriends: Int, dummyWeek: Int) {
-        self.cityHealthPercentage = cityHealthPercentage
+    @Published var days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+    
+    private var currWeek: String = "0"
+    
+    init(weatherStatus: JournalWeather, numFriends: Int) {
         self.weatherStatus = weatherStatus
         self.numFriends = numFriends
-        self.dummyWeek = dummyWeek
-    }
-    
-    func getWeatherStatus() -> (name: String, icon: String, iconWidth: CGFloat, iconColor: Color) {
-        switch weatherStatus {
-            case .NoData:
-                return (name: "No Data",
-                        icon: "exclamationmark.arrow.trianglehead.2.clockwise.rotate.90",
-                        iconWidth: 32,
-                        iconColor: Color.gray)
-            
-            case .Sunny:
-                return (name: "Sunny",
-                        icon: "sun.max.fill",
-                        iconWidth: 30,
-                        iconColor: Color.yellow)
-            
-            case .Cloudy:
-                return (name: "Cloudy",
-                        icon: "cloud.sun.fill",
-                        iconWidth: 35,
-                        iconColor: Color.orange)
-            
-            case .Drizzle:
-                return (name: "Drizzle",
-                        icon: "sun.rain.fill",
-                        iconWidth: 35,
-                        iconColor: Color.cyan)
-            
-            case .Rain:
-                return (name: "Rain",
-                        icon: "cloud.rain.fill",
-                        iconWidth: 28,
-                        iconColor: Color.blue)
-            
-            case .Stormy:
-                return (name: "Stormy",
-                        icon: "hurricane",
-                        iconWidth: 25,
-                        iconColor: Color.indigo)
-            
-            
-            default:
-                return (name: "Error",
-                        icon: "person.crop.circle.badge.exclamationmark",
-                        iconWidth: 30,
-                        iconColor: Color.red)
+        
+        Task {
+            await loadCityMap(week: currWeek)
         }
     }
     
+    //FIXME: use db data instead to calculate from date
+    func calcCityHealthPercentage() -> CGFloat {
+        return 1.0
+    }
+    
     func getCityHealthColors() -> (borderColor: Color, barColor: Color) {
+        let cityHealthPercentage = self.calcCityHealthPercentage()
+        
         if cityHealthPercentage >= 0.75 {
             return (borderColor: Color(red: 0, green: 0.66, blue: 0.39).opacity(0.4),
                     barColor: Color(red: 0.79, green: 1, blue: 0.87))
@@ -105,100 +114,157 @@ class HomeViewModel: ObservableObject {
                 barColor: Color(red: 1, green: 0.84, blue: 0.79))
     }
     
-    func getCurrCityBlock() -> String {
-        return getCurrentWeek()
-    }
-    
-    func getCurrentWeek() -> String {
-        let calendar = Calendar.current
-        let date = Date()
-        
-        let startOfWeek = calendar.dateInterval(of: .weekOfYear, for: date)?.start
-        let endOfWeek = calendar.dateInterval(of: .weekOfYear, for: date)?.end
-        
-        let formatter = DateFormatter()
-        formatter.dateStyle = .medium
-        
-        let startStr = formatter.string(from: startOfWeek ?? Date())
-        let endStr = formatter.string(from: endOfWeek ?? Date())
-        
-        return "\(startStr)-\(endStr)"
-    }
-    
-    //FIXME: dummy data & implementation for now
-    func getCityMap(week: Int) -> CityMap {
-        let dummyData: [CityMap] = [
-            .init(map: .Map2, buildings: [
-                .init(style: .BlueTower, onClick: {}),
-                .init(style: .BrownTower, onClick: {}),
-                .init(style: .GreenTower, onClick: {}),
-                .init(style: .LightBlueTower, onClick: {}),
-                .init(style: .LightBrownTower, onClick: {}),
-                .init(style: .LightGreenTower, onClick: {}),
-                .init(style: .RedTower, onClick: {})
-            ]),
-            
-            .init(map: .Map4, buildings: [
-                .init(style: .BrownTower, onClick: {}),
-                .init(style: .BlueTower, onClick: {}),
-                .init(style: .GreenTower, onClick: {}),
-                .init(style: .LightBrownTower, onClick: {}),
-                .init(style: .LightGreenTower, onClick: {}),
-                .init(style: .LightBlueTower, onClick: {}),
-                .init(style: .RedTower, onClick: {})
-            ]),
-            
-            .init(map: .Map1, buildings: [
-                .init(style: .GreenTower, onClick: {}),
-                .init(style: .BrownTower, onClick: {}),
-                .init(style: .BlueTower, onClick: {}),
-                .init(style: .LightBrownTower, onClick: {}),
-                .init(style: .LightBlueTower, onClick: {}),
-                .init(style: .LightGreenTower, onClick: {}),
-                .init(style: .RedTower, onClick: {})
-            ]),
-            
-            .init(map: .Map3, buildings: [
-                .init(style: .BrownTower, onClick: {}),
-                .init(style: .GreenTower, onClick: {}),
-                .init(style: .LightBrownTower, onClick: {}),
-                .init(style: .LightBlueTower, onClick: {}),
-                .init(style: .BlueTower, onClick: {}),
-                .init(style: .LightGreenTower, onClick: {}),
-                .init(style: .RedTower, onClick: {})
-            ]),
-            
-            .init(map: .Map2, buildings: [
-                .init(style: .BrownTower, onClick: {}),
-                .init(style: .LightBlueTower, onClick: {}),
-                .init(style: .GreenTower, onClick: {}),
-                .init(style: .LightBrownTower, onClick: {}),
-                .init(style: .LightGreenTower, onClick: {}),
-                .init(style: .BlueTower, onClick: {}),
-                .init(style: .RedTower, onClick: {})
-            ])
-        ]
-        
-        return dummyData[week]
-    }
-    
-    //FIXME: dummy implementation for now
-    func getNextWeekMap() {
-        isNavigateLoading = true
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-            self.isNavigateLoading = false
-            self.dummyWeek = self.dummyWeek == 4 ? 0 : self.dummyWeek + 1
+    func getWeatherStatus() -> (name: String, icon: String, iconWidth: CGFloat, iconColor: Color) {
+        switch weatherStatus {
+            case .NoData:
+                return (name: "No Data",
+                        icon: "exclamationmark.arrow.trianglehead.2.clockwise.rotate.90",
+                        iconWidth: 32,
+                        iconColor: Color.gray)
+                
+            case .Sunny:
+                return (name: "Sunny",
+                        icon: "sun.max.fill",
+                        iconWidth: 30,
+                        iconColor: Color.yellow)
+                
+            case .Cloudy:
+                return (name: "Cloudy",
+                        icon: "cloud.sun.fill",
+                        iconWidth: 35,
+                        iconColor: Color.orange)
+                
+            case .Drizzle:
+                return (name: "Drizzle",
+                        icon: "sun.rain.fill",
+                        iconWidth: 35,
+                        iconColor: Color.cyan)
+                
+            case .Rain:
+                return (name: "Rain",
+                        icon: "cloud.rain.fill",
+                        iconWidth: 28,
+                        iconColor: Color.blue)
+                
+            case .Stormy:
+                return (name: "Stormy",
+                        icon: "hurricane",
+                        iconWidth: 25,
+                        iconColor: Color.indigo)
+                
+                
+            default:
+                return (name: "Error",
+                        icon: "person.crop.circle.badge.exclamationmark",
+                        iconWidth: 30,
+                        iconColor: Color.red)
         }
     }
     
-    //FIXME: dummy implementation for now
-    func getPrevWeekMap() {
-        isNavigateLoading = true
+    //FIXME: fetch from actual db
+    func loadCityMap(week: String) async {
+        self.isNavigateLoading = true
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) {
             self.isNavigateLoading = false
-            self.dummyWeek = self.dummyWeek == 0 ? 0 : self.dummyWeek - 1
+            
+            let dummyText = "Lorem ipsum dolor sit amet, consectetur adipiscing elit"
+            
+            let viewReport = { (idx: Int) -> Void in
+                self.selectedBuildingIndex = idx
+                self.isGrowthReportShowing.toggle()
+            }
+            
+            if week == "0" {
+                self.currCityBlock = "Oct 20, 2024-Oct 26, 2024"
+                self.currCityJournal = .init(map: .Map3,
+                                             buildings: [
+                                                .init(style: .BlueTower, onClick: { viewReport(0) }),
+                                                .init(style: .RedTower, onClick: { viewReport(1) }),
+                                                .init(style: .BrownTower, onClick: { viewReport(2) }),
+                                                .init(style: .GreenTower, onClick: { viewReport(3) }),
+                                                .init(style: .LightBlueTower, onClick: { viewReport(4) }),
+                                                .init(style: .LightGreenTower, onClick: { viewReport(5) }),
+                                                .init(style: .LightBrownTower, onClick: { viewReport(6) }),
+                                             ],
+                                             reports: Array(repeating: .init(gratitudeSentiment: .Positive,
+                                                                             gratitudeReport: dummyText,
+                                                                             learningSentiment: .Neutral,
+                                                                             learningReport: dummyText,
+                                                                             thoughtSentiment: .Negative,
+                                                                             thoughtReport: dummyText),
+                                                            count: 7))
+            } else if week == "-1" {
+                self.currCityBlock = "Oct 13, 2024-Oct 20, 2024"
+                self.currCityJournal = .init(map: .Map1,
+                                             buildings: [
+                                                .init(style: .BlueTower, onClick: { viewReport(0) }),
+                                                .init(style: .GreenTower, onClick: { viewReport(1) }),
+                                                .init(style: .BrownTower, onClick: { viewReport(2) }),
+                                                .init(style: .RedTower, onClick: { viewReport(3) }),
+                                                .init(style: .LightBlueTower, onClick: { viewReport(4) }),
+                                                .init(style: .LightGreenTower, onClick: { viewReport(5) }),
+                                                .init(style: .LightBrownTower, onClick: { viewReport(6) }),
+                                             ],
+                                             reports: Array(repeating: .init(gratitudeSentiment: .Neutral,
+                                                                             gratitudeReport: dummyText,
+                                                                             learningSentiment: .Neutral,
+                                                                             learningReport: dummyText,
+                                                                             thoughtSentiment: .Negative,
+                                                                             thoughtReport: dummyText),
+                                                            count: 7))
+            } else if week == "1" {
+                self.currCityBlock = "Oct 27, 2024-Nov 2, 2024"
+                self.currCityJournal = .init(map: .Map4,
+                                             buildings: [
+                                                .init(style: .BlueTower, onClick: { viewReport(0) }),
+                                                .init(style: .GreenTower, onClick: { viewReport(1) }),
+                                                .init(style: .BrownTower, onClick: { viewReport(2) }),
+                                                .init(style: .RedTower, onClick: { viewReport(3) }),
+                                                .init(style: .LightBlueTower, onClick: { viewReport(4) }),
+                                                .init(style: .LightGreenTower, onClick: { viewReport(5) }),
+                                                .init(style: .LightBrownTower, onClick: { viewReport(6) }),
+                                             ],
+                                             reports: Array(repeating: .init(gratitudeSentiment: .Neutral,
+                                                                             gratitudeReport: dummyText,
+                                                                             learningSentiment: .Neutral,
+                                                                             learningReport: dummyText,
+                                                                             thoughtSentiment: .Negative,
+                                                                             thoughtReport: dummyText),
+                                                            count: 7))
+            } else {
+                self.currCityBlock = "*** **, ****-*** **, ****"
+                self.currCityJournal = .init(map: .NotFoundMap,
+                                             buildings: [],
+                                             reports: [])
+            }
         }
+    }
+    
+    //FIXME: fetch from actual db
+    func getFutureCity() async {
+        self.currCityJournal = CityMap(map: .LoadingMap, buildings: [], reports: [])
+        self.currCityBlock = "Loading..."
+        
+        if let num = Int(self.currWeek) {
+            self.currWeek = String(num + 1)
+        } else {
+            currWeek = "0"
+        }
+        
+        await loadCityMap(week: self.currWeek)
+    }
+    
+    func getPastCity() async {
+        self.currCityJournal = CityMap(map: .LoadingMap, buildings: [], reports: [])
+        self.currCityBlock = "Loading..."
+        
+        if let num = Int(self.currWeek) {
+            self.currWeek = String(num - 1)
+        } else {
+            currWeek = "0"
+        }
+        
+        await loadCityMap(week: self.currWeek)
     }
 }
