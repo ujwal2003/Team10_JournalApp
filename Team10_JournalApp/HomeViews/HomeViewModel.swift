@@ -45,17 +45,30 @@ enum Sentiment {
                             .foregroundStyle(Color.hex("#DE5353"))
         }
     }
+    
+    var report: String {
+        switch self {
+            case .Positive:
+                return "You have infused the city with positivity, causing this building to shine brightly. Citizens feel more connected and at peace. This uplifting energy has led to increased city growth and well-being."
+            
+            case .Neutral:
+                return "This reflects a balanced mindset today, neither overly joyful nor overly troubled. Progress is steady, and the city remains stable."
+                
+            case .Negative:
+                return "Negative feelings have weighed down this building, causing its lights to dim. The city is struggling to maintain its usual vibrancy, and citizens feel a bit disconnected. Consider journaling tomorrow to rebuild your city’s strength."
+        }
+    }
 }
 
 struct GrowthReport {
     var gratitudeSentiment: Sentiment
-    var gratitudeReport: String
+    var gratitudeEntry: String
     
     var learningSentiment: Sentiment
-    var learningReport: String
+    var learningEntry: String
     
     var thoughtSentiment: Sentiment
-    var thoughtReport: String
+    var thoughtEntry: String
 }
 
 struct CityMap {
@@ -192,11 +205,11 @@ class HomeViewModel: ObservableObject {
                                                 .init(style: .LightBrownTower, onClick: { viewReport(6) }),
                                              ],
                                              reports: Array(repeating: .init(gratitudeSentiment: .Positive,
-                                                                             gratitudeReport: dummyText,
+                                                                             gratitudeEntry: dummyText,
                                                                              learningSentiment: .Neutral,
-                                                                             learningReport: dummyText,
+                                                                             learningEntry: dummyText,
                                                                              thoughtSentiment: .Negative,
-                                                                             thoughtReport: dummyText),
+                                                                             thoughtEntry: dummyText),
                                                             count: 7))
             } else if week == "-1" {
                 self.currCityBlock = "Oct 13, 2024-Oct 20, 2024"
@@ -211,11 +224,11 @@ class HomeViewModel: ObservableObject {
                                                 .init(style: .LightBrownTower, onClick: { viewReport(6) }),
                                              ],
                                              reports: Array(repeating: .init(gratitudeSentiment: .Neutral,
-                                                                             gratitudeReport: dummyText,
+                                                                             gratitudeEntry: dummyText,
                                                                              learningSentiment: .Neutral,
-                                                                             learningReport: dummyText,
+                                                                             learningEntry: dummyText,
                                                                              thoughtSentiment: .Negative,
-                                                                             thoughtReport: dummyText),
+                                                                             thoughtEntry: dummyText),
                                                             count: 7))
             } else if week == "1" {
                 self.currCityBlock = "Oct 27, 2024-Nov 2, 2024"
@@ -230,11 +243,11 @@ class HomeViewModel: ObservableObject {
                                                 .init(style: .LightBrownTower, onClick: { viewReport(6) }),
                                              ],
                                              reports: Array(repeating: .init(gratitudeSentiment: .Neutral,
-                                                                             gratitudeReport: dummyText,
+                                                                             gratitudeEntry: dummyText,
                                                                              learningSentiment: .Neutral,
-                                                                             learningReport: dummyText,
+                                                                             learningEntry: dummyText,
                                                                              thoughtSentiment: .Negative,
-                                                                             thoughtReport: dummyText),
+                                                                             thoughtEntry: dummyText),
                                                             count: 7))
             } else {
                 self.currCityBlock = "*** **, ****-*** **, ****"

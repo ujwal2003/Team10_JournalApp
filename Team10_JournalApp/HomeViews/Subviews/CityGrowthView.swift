@@ -7,6 +7,11 @@
 
 import SwiftUI
 
+enum ViewSelection {
+    case Sentiment
+    case Journal
+}
+
 struct GrowthReportView: View {
     var geometry: GeometryProxy
     
@@ -53,6 +58,7 @@ struct CityGrowthView: View {
     @State var growthReport: GrowthReport
     
     @Environment(\.dismiss) var dismiss
+    @State private var selectedMenuView: ViewSelection = .Sentiment
     
     var body: some View {
         GeometryReader { geometry in
@@ -66,26 +72,40 @@ struct CityGrowthView: View {
                         .fontWeight(.medium)
                         .padding([.top, .leading, .trailing])
                     }
+                    .padding(.trailing)
                     
                     Text(headlineTitle)
                         .font(.system(size: 30))
                         .fontWeight(.heavy)
                         .padding()
                     
+                    Picker("Selection", selection: $selectedMenuView) {
+                        Text("Sentiment").tag(ViewSelection.Sentiment)
+                        Text("Journal").tag(ViewSelection.Journal)
+                    }
+                    .pickerStyle(.segmented)
+                    .padding()
+                    
+                    let isJournalMode: Bool = selectedMenuView == .Journal
+                    
+                    let gratitudeText = isJournalMode ? growthReport.gratitudeEntry : growthReport.gratitudeSentiment.report
+                    let learningText = isJournalMode ? growthReport.learningEntry : growthReport.learningSentiment.report
+                    let thoughtText = isJournalMode ? growthReport.thoughtEntry : growthReport.thoughtSentiment.report
+                    
                     GrowthReportView(geometry: geometry,
                                      title: "Gratitude Building",
-                                     text: growthReport.gratitudeReport,
+                                     text: gratitudeText,
                                      sentiment: growthReport.gratitudeSentiment)
                     
                     GrowthReportView(geometry: geometry,
                                      title: "Learning Building",
-                                     text: growthReport.learningReport,
+                                     text: learningText,
                                      sentiment: growthReport.learningSentiment)
                     .padding(.top)
                     
                     GrowthReportView(geometry: geometry,
                                      title: "Thought Building",
-                                     text: growthReport.thoughtReport,
+                                     text: thoughtText,
                                      sentiment: growthReport.thoughtSentiment)
                     .padding(.top)
                 }
@@ -99,9 +119,9 @@ struct CityGrowthView: View {
     
     CityGrowthView(headlineTitle: "Today's City Growth",
                    growthReport: GrowthReport(gratitudeSentiment: .Positive,
-                                              gratitudeReport: preivewText,
+                                              gratitudeEntry: preivewText,
                                               learningSentiment: .Neutral,
-                                              learningReport: preivewText,
+                                              learningEntry: preivewText,
                                               thoughtSentiment: .Negative,
-                                              thoughtReport: preivewText))
+                                              thoughtEntry: preivewText))
 }
