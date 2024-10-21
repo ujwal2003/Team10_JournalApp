@@ -23,7 +23,7 @@ struct ContentView: View {
                         Text("Home")
                     }.tag(AppTab.Home)
                 
-                Text("Journal View")
+                JournalEntryView()
                     .tabItem {
                         Image(systemName: "book")
                         Text("Journal")
