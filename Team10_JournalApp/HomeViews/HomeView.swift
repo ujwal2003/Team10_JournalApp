@@ -9,8 +9,19 @@ import SwiftUI
 
 struct HomeView: View {
     //FIXME: - pass in weather status from journal entry sentiment calculation
+    //FIXME: - pass in reccomended actions from journal entry sentiment calculation
     //FIXME: - pass in num friends from initial user data fetch
-    @StateObject private var viewModel = HomeViewModel(weatherStatus: .NoData, numFriends: 5)
+    @StateObject private var viewModel = HomeViewModel(weatherStatus: .NoData,
+                                                       recommendedActions: [
+                                                        .init(searchQuery: "parks",
+                                                              title: "Park",
+                                                              description: "Going to the park is a great way to improve your physical and mental health."),
+                                                        
+                                                            .init(searchQuery: "coffee shops",
+                                                                  title: "Chill & Chat",
+                                                                  description: "Reach out to a friend or loved one for a chat at a coffee shop")
+                                                       ],
+                                                       numFriends: 5)
     
     var body: some View {
         ZStack {
@@ -24,7 +35,10 @@ struct HomeView: View {
                 
                 
                 ActionButtonView(isDisabled: viewModel.isNavigateLoading,
-                                 onClick: { print("TODO: Actions") })
+                                 onClick: { viewModel.isRecommendedActionsShowing.toggle() })
+                    .sheet(isPresented: $viewModel.isRecommendedActionsShowing) {
+                        ReccomendedActionsView(actions: viewModel.recommendedActions)
+                    }
                 
                 
                 

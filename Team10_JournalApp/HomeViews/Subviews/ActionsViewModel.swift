@@ -54,4 +54,9 @@ class ActionsViewModel: ObservableObject {
         }
         
     }
+    
+    func openAllInMaps(annotations: [Annotation]) {
+        let mapItems = annotations.map { $0.mapItem }
+        MKMapItem.openMaps(with: mapItems, launchOptions: nil)
+    }
 }

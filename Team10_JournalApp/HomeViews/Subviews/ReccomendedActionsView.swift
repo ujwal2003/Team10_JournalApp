@@ -8,16 +8,32 @@
 import SwiftUI
 import MapKit
 
+struct RecommendedAction {
+    let searchQuery: String
+    let title: String
+    let description: String
+}
+
 struct ActionsMapView: View {
-//    var data: MapData
+    var actionTitle: String
+    var data: MapData
     var description: String
+    var openMapFunction: () -> Void
     
     var body: some View {
         VStack(spacing: 5.0) {
-            Text("Action 1")
-                .font(.system(size: 24.0))
-                .fontWeight(.heavy)
-                .frame(maxWidth: .infinity, alignment: .leading)
+            HStack {
+                Text(actionTitle)
+                    .font(.system(size: 24.0))
+                    .fontWeight(.heavy)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                
+                Button(action: { openMapFunction() }) {
+                    Text("Open in maps")
+                        .font(.system(size: 16.0))
+                        .padding(.horizontal)
+                }
+            }
             
             VStack {
                 ScrollView {
@@ -26,10 +42,10 @@ struct ActionsMapView: View {
                         .frame(maxWidth: .infinity, alignment: .leading)
                 }
                 .frame(height: 40)
-                .padding()
+                .padding([.top, .leading, .trailing])
+                .padding(.bottom, 5.0)
                 
-                Rectangle()
-                    .foregroundStyle(Color.gray)
+                MapView(region: .constant(data.region), annotations: .constant(data.annotations))
                     .frame(height: 200)
             }
             .background(Color(red: 0.87, green: 0.95, blue: 0.99))
@@ -40,14 +56,13 @@ struct ActionsMapView: View {
                     .stroke(Color(red: 0.26, green: 0.49, blue: 0.62).opacity(0.8), lineWidth: 1)
             )
             .frame(height: 300)
-            
-//            MapView(region: .constant(data.region), annotations: .constant(data.annotations))
-//                .frame(height: 200)
         }
     }
 }
 
 struct ReccomendedActionsView: View {
+    @State var actions: [RecommendedAction]
+    
     @Environment(\.dismiss) var dismiss
     @StateObject var viewModel = ActionsViewModel()
     
@@ -61,6 +76,7 @@ struct ReccomendedActionsView: View {
                         Button("Done") {
                             dismiss()
                         }
+                        .font(.system(size: 16))
                         .fontWeight(.semibold)
                         .padding([.top, .leading, .trailing])
                     }
@@ -80,25 +96,40 @@ struct ReccomendedActionsView: View {
                     .fontWeight(.medium)
                     .lineSpacing(6)
                     .padding()
+                    .padding(.horizontal, 5.0)
                     
                     VStack {
-                        ActionsMapView(description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.")
-//                        ForEach(viewModel.mapsData) { data in
-//                            
-//                        }
+                        ForEach(Array(viewModel.mapsData.enumerated()), id: \.offset) { index, data in
+                            ActionsMapView(actionTitle: "Action \(index+1)",
+                                           data: data,
+                                           description: actions[index].description,
+                                           openMapFunction: {
+                                                viewModel.openAllInMaps(annotations: data.annotations)
+                                          })
+                        }
                     }
-                    .padding()
+                    .padding(25)
                     
                 }
             }
         }
         .onAppear {
-//            viewModel.searchNearbyLocations(query: "ice cream", title: "Ice Cream")
+            for action in actions {
+                viewModel.searchNearbyLocations(query: action.searchQuery, title: action.title)
+            }
         }
     }
     
 }
 
 #Preview {
-    ReccomendedActionsView()
+    ReccomendedActionsView(actions: [
+        .init(searchQuery: "parks",
+              title: "Park",
+              description: "Going to the park is a great way to improve your physical and mental health."),
+        
+        .init(searchQuery: "coffee shops",
+              title: "Chill & Chat",
+              description: "Reach out to a friend or loved one for a chat at a coffee shop")
+    ])
 }

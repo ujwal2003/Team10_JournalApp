@@ -21,6 +21,13 @@ struct Annotation: Identifiable {
         point.coordinate = coordinate
         return point
     }
+    
+    var mapItem: MKMapItem {
+        let placemark = MKPlacemark(coordinate: coordinate)
+        let item = MKMapItem(placemark: placemark)
+        item.name = title
+        return item
+    }
 }
 
 struct MapView: UIViewRepresentable {

@@ -70,10 +70,12 @@ class HomeViewModel: ObservableObject {
     @Published var currCityBlock: String = "Loading.."
     
     @Published var weatherStatus: JournalWeather
+    @Published var recommendedActions: [RecommendedAction]
     @Published var numFriends: Int
     
     @Published var isNavigateLoading: Bool = false
     @Published var isGrowthReportShowing: Bool = false
+    @Published var isRecommendedActionsShowing: Bool = false
     @Published var selectedBuildingIndex: Int = 0
     
     
@@ -81,8 +83,9 @@ class HomeViewModel: ObservableObject {
     
     private var currWeek: String = "0"
     
-    init(weatherStatus: JournalWeather, numFriends: Int) {
+    init(weatherStatus: JournalWeather, recommendedActions: [RecommendedAction], numFriends: Int) {
         self.weatherStatus = weatherStatus
+        self.recommendedActions = recommendedActions
         self.numFriends = numFriends
         
         Task {
