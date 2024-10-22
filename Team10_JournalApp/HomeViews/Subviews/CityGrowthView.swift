@@ -89,26 +89,53 @@ struct CityGrowthView: View {
                     
                     let isJournalMode: Bool = selectedMenuView == .Journal
                     
-                    let gratitudeText = isJournalMode ? growthReport.gratitudeEntry : growthReport.gratitudeSentiment.report
-                    let learningText = isJournalMode ? growthReport.learningEntry : growthReport.learningSentiment.report
-                    let thoughtText = isJournalMode ? growthReport.thoughtEntry : growthReport.thoughtSentiment.report
+                    if buildingType != .Building {
+                        let indicatorIcon = (buildingType == .Construction) ? "hugeicons_question" : "subway_error"
+                        let iconSize: CGFloat = (buildingType == .Construction) ? 300 : 245
+                        
+                        var indicatorText: String {
+                            if buildingType == .Ruin {
+                                return "Not available\nbecause you skipped\nthis journal entry"
+                            } else {
+                                return isJournalMode ? "Your journal is\nempty" : "Write your journal\nfor today to see the\nsentiment report"
+                            }
+                        }
+                        
+                        Image(indicatorIcon)
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: iconSize)
+                            .padding()
+                        
+                        Text(indicatorText)
+                            .font(.system(size: 32))
+                            .fontWeight(.light)
+                            .multilineTextAlignment(.center)
+                        
+                    } else {
+                        
+                        let gratitudeText = isJournalMode ? growthReport.gratitudeEntry : growthReport.gratitudeSentiment.report
+                        let learningText = isJournalMode ? growthReport.learningEntry : growthReport.learningSentiment.report
+                        let thoughtText = isJournalMode ? growthReport.thoughtEntry : growthReport.thoughtSentiment.report
+                        
+                        GrowthReportView(geometry: geometry,
+                                         title: "Gratitude Building",
+                                         text: gratitudeText,
+                                         sentiment: growthReport.gratitudeSentiment)
+                        
+                        GrowthReportView(geometry: geometry,
+                                         title: "Learning Building",
+                                         text: learningText,
+                                         sentiment: growthReport.learningSentiment)
+                        .padding(.top)
+                        
+                        GrowthReportView(geometry: geometry,
+                                         title: "Thought Building",
+                                         text: thoughtText,
+                                         sentiment: growthReport.thoughtSentiment)
+                        .padding(.top)
+                    }
                     
-                    GrowthReportView(geometry: geometry,
-                                     title: "Gratitude Building",
-                                     text: gratitudeText,
-                                     sentiment: growthReport.gratitudeSentiment)
-                    
-                    GrowthReportView(geometry: geometry,
-                                     title: "Learning Building",
-                                     text: learningText,
-                                     sentiment: growthReport.learningSentiment)
-                    .padding(.top)
-                    
-                    GrowthReportView(geometry: geometry,
-                                     title: "Thought Building",
-                                     text: thoughtText,
-                                     sentiment: growthReport.thoughtSentiment)
-                    .padding(.top)
                 }
             }
         }
@@ -119,7 +146,7 @@ struct CityGrowthView: View {
     @Previewable @State var preivewText = "Lorem ipsum dolor sit amet, consectetur adipiscing elit"
     
     CityGrowthView(headlineTitle: "Today's City Growth",
-                   buildingType: .Construction,
+                   buildingType: .Building,
                    growthReport: GrowthReport(gratitudeSentiment: .Positive,
                                               gratitudeEntry: preivewText,
                                               learningSentiment: .Neutral,
