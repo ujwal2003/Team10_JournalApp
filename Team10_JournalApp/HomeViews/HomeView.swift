@@ -13,13 +13,13 @@ struct HomeView: View {
     //FIXME: - pass in num friends from initial user data fetch
     @StateObject private var viewModel = HomeViewModel(weatherStatus: .NoData,
                                                        recommendedActions: [
-                                                        .init(searchQuery: "parks",
-                                                              title: "Park",
-                                                              description: "Going to the park is a great way to improve your physical and mental health."),
-                                                        
-                                                            .init(searchQuery: "coffee shops",
-                                                                  title: "Chill & Chat",
-                                                                  description: "Reach out to a friend or loved one for a chat at a coffee shop")
+//                                                        .init(searchQuery: "parks",
+//                                                              title: "Park",
+//                                                              description: "Going to the park is a great way to improve your physical and mental health."),
+//                                                        
+//                                                            .init(searchQuery: "coffee shops",
+//                                                                  title: "Chill & Chat",
+//                                                                  description: "Reach out to a friend or loved one for a chat at a coffee shop")
                                                        ],
                                                        numFriends: 5)
     
