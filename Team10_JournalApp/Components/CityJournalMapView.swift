@@ -19,6 +19,12 @@ enum Map: String {
     case NotFoundMap = "NotFoundMap"
 }
 
+enum BuildingCategory {
+    case Building
+    case Construction
+    case Ruin
+}
+
 enum Building: String {
     case BlueTower = "blue_building"
     case BrownTower = "brown_building"
@@ -27,6 +33,38 @@ enum Building: String {
     case LightBrownTower = "light_brown_building"
     case LightGreenTower = "light_green_building"
     case RedTower = "red_building"
+    
+    case BlueConstruction = "BlueConstruction"
+    case BrownConstruction = "BrownConstruction"
+    case DarkRedConstruction = "DarkRedConstruction"
+    case GreenConstruction = "GreenConstruction"
+    case PurpleConstruction = "PurpleConstruction"
+    case RedConstruction = "RedConstruction"
+    case YellowConstruction = "YellowConstruction"
+    
+    case BlueRuin = "BlueRuin"
+    case BrownRuin = "BrownRuin"
+    case DarkRedRuin = "DarkRedRuin"
+    case GreenRuin = "GreenRuin"
+    case PurpleRuin = "PurpleRuin"
+    case RedRuin = "RedRuin"
+    case YellowRuin = "YellowRuin"
+    
+    var category: BuildingCategory {
+        switch self {
+            case .BlueTower, .BrownTower, .GreenTower, .LightBlueTower,
+                    .LightBrownTower, .LightGreenTower, .RedTower:
+                return .Building
+            
+            case .BlueConstruction, .BrownConstruction, .DarkRedConstruction, .GreenConstruction,
+                    .PurpleConstruction, .RedConstruction, .YellowConstruction:
+                return .Construction
+            
+            case .BlueRuin, .BrownRuin, .DarkRedRuin, .GreenRuin,
+                    .PurpleRuin, .RedRuin, .YellowRuin:
+                return .Ruin
+        }
+    }
 }
 
 struct BuildingConfig {

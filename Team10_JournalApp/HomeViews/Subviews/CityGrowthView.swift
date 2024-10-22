@@ -55,6 +55,7 @@ struct GrowthReportView: View {
 
 struct CityGrowthView: View {
     @State var headlineTitle: String
+    @State var buildingType: BuildingCategory
     @State var growthReport: GrowthReport
     
     @Environment(\.dismiss) var dismiss
@@ -118,6 +119,7 @@ struct CityGrowthView: View {
     @Previewable @State var preivewText = "Lorem ipsum dolor sit amet, consectetur adipiscing elit"
     
     CityGrowthView(headlineTitle: "Today's City Growth",
+                   buildingType: .Construction,
                    growthReport: GrowthReport(gratitudeSentiment: .Positive,
                                               gratitudeEntry: preivewText,
                                               learningSentiment: .Neutral,

@@ -90,6 +90,7 @@ class HomeViewModel: ObservableObject {
     @Published var isGrowthReportShowing: Bool = false
     @Published var isRecommendedActionsShowing: Bool = false
     @Published var selectedBuildingIndex: Int = 0
+    @Published var selectedBuilding: Building = .PurpleConstruction
     
     
     @Published var days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
@@ -187,8 +188,9 @@ class HomeViewModel: ObservableObject {
             
             let dummyText = "Lorem ipsum dolor sit amet, consectetur adipiscing elit"
             
-            let viewReport = { (idx: Int) -> Void in
+            let viewReport = { (idx: Int, building: Building) -> Void in
                 self.selectedBuildingIndex = idx
+                self.selectedBuilding = building
                 self.isGrowthReportShowing.toggle()
             }
             
@@ -196,13 +198,13 @@ class HomeViewModel: ObservableObject {
                 self.currCityBlock = "Oct 20, 2024-Oct 26, 2024"
                 self.currCityJournal = .init(map: .Map3,
                                              buildings: [
-                                                .init(style: .BlueTower, onClick: { viewReport(0) }),
-                                                .init(style: .RedTower, onClick: { viewReport(1) }),
-                                                .init(style: .BrownTower, onClick: { viewReport(2) }),
-                                                .init(style: .GreenTower, onClick: { viewReport(3) }),
-                                                .init(style: .LightBlueTower, onClick: { viewReport(4) }),
-                                                .init(style: .LightGreenTower, onClick: { viewReport(5) }),
-                                                .init(style: .LightBrownTower, onClick: { viewReport(6) }),
+                                                .init(style: .BlueTower, onClick: { viewReport(0, .BlueTower) }),
+                                                .init(style: .RedTower, onClick: { viewReport(1, .RedTower) }),
+                                                .init(style: .BrownTower, onClick: { viewReport(2, .BrownTower) }),
+                                                .init(style: .GreenTower, onClick: { viewReport(3, .GreenTower) }),
+                                                .init(style: .LightBlueTower, onClick: { viewReport(4, .LightBlueTower) }),
+                                                .init(style: .LightGreenTower, onClick: { viewReport(5, .LightGreenTower) }),
+                                                .init(style: .LightBrownTower, onClick: { viewReport(6, .LightBrownTower) }),
                                              ],
                                              reports: Array(repeating: .init(gratitudeSentiment: .Positive,
                                                                              gratitudeEntry: dummyText,
@@ -215,13 +217,13 @@ class HomeViewModel: ObservableObject {
                 self.currCityBlock = "Oct 13, 2024-Oct 20, 2024"
                 self.currCityJournal = .init(map: .Map1,
                                              buildings: [
-                                                .init(style: .BlueTower, onClick: { viewReport(0) }),
-                                                .init(style: .GreenTower, onClick: { viewReport(1) }),
-                                                .init(style: .BrownTower, onClick: { viewReport(2) }),
-                                                .init(style: .RedTower, onClick: { viewReport(3) }),
-                                                .init(style: .LightBlueTower, onClick: { viewReport(4) }),
-                                                .init(style: .LightGreenTower, onClick: { viewReport(5) }),
-                                                .init(style: .LightBrownTower, onClick: { viewReport(6) }),
+                                                .init(style: .BlueTower, onClick: { viewReport(0, .BlueTower) }),
+                                                .init(style: .GreenTower, onClick: { viewReport(1, .GreenTower) }),
+                                                .init(style: .BrownTower, onClick: { viewReport(2, .BrownTower) }),
+                                                .init(style: .RedTower, onClick: { viewReport(3, .RedTower) }),
+                                                .init(style: .LightBlueTower, onClick: { viewReport(4, .LightBlueTower) }),
+                                                .init(style: .LightGreenTower, onClick: { viewReport(5, .LightGreenTower) }),
+                                                .init(style: .LightBrownTower, onClick: { viewReport(6, .LightBrownTower) }),
                                              ],
                                              reports: Array(repeating: .init(gratitudeSentiment: .Neutral,
                                                                              gratitudeEntry: dummyText,
@@ -234,13 +236,13 @@ class HomeViewModel: ObservableObject {
                 self.currCityBlock = "Oct 27, 2024-Nov 2, 2024"
                 self.currCityJournal = .init(map: .Map4,
                                              buildings: [
-                                                .init(style: .BlueTower, onClick: { viewReport(0) }),
-                                                .init(style: .GreenTower, onClick: { viewReport(1) }),
-                                                .init(style: .BrownTower, onClick: { viewReport(2) }),
-                                                .init(style: .RedTower, onClick: { viewReport(3) }),
-                                                .init(style: .LightBlueTower, onClick: { viewReport(4) }),
-                                                .init(style: .LightGreenTower, onClick: { viewReport(5) }),
-                                                .init(style: .LightBrownTower, onClick: { viewReport(6) }),
+                                                .init(style: .BlueTower, onClick: { viewReport(0, .BlueTower) }),
+                                                .init(style: .GreenTower, onClick: { viewReport(1, .GreenTower) }),
+                                                .init(style: .BrownTower, onClick: { viewReport(2, .BrownTower) }),
+                                                .init(style: .RedTower, onClick: { viewReport(3, .RedTower) }),
+                                                .init(style: .LightBlueTower, onClick: { viewReport(4, .LightBlueTower) }),
+                                                .init(style: .LightGreenTower, onClick: { viewReport(5, .LightGreenTower) }),
+                                                .init(style: .LightBrownTower, onClick: { viewReport(6, .LightBrownTower) }),
                                              ],
                                              reports: Array(repeating: .init(gratitudeSentiment: .Neutral,
                                                                              gratitudeEntry: dummyText,

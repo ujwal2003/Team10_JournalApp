@@ -49,6 +49,7 @@ struct HomeView: View {
                         let reportIdx = viewModel.selectedBuildingIndex
                         
                         CityGrowthView(headlineTitle: "\(viewModel.days[reportIdx])'s City Growth",
+                                       buildingType: viewModel.selectedBuilding.category,
                                        growthReport: currCityMap.reports[reportIdx])
                     }
                 
