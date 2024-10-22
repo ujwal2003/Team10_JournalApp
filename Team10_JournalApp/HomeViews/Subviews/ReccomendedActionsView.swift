@@ -87,28 +87,41 @@ struct ReccomendedActionsView: View {
                         .lineSpacing(10)
                         .padding()
                     
-                    Group {
-                        Text("Your overall sentiment is ")
-                        + Text("Negative").foregroundStyle(Color.hex("#DE5353"))
-                        + Text(", consider taking the following actions:")
-                    }
-                    .font(.system(size: 18.0))
-                    .fontWeight(.medium)
-                    .lineSpacing(6)
-                    .padding()
-                    .padding(.horizontal, 5.0)
-                    
-                    VStack {
-                        ForEach(Array(viewModel.mapsData.enumerated()), id: \.offset) { index, data in
-                            ActionsMapView(actionTitle: "Action \(index+1)",
-                                           data: data,
-                                           description: actions[index].description,
-                                           openMapFunction: {
-                                                viewModel.openAllInMaps(annotations: data.annotations)
-                                          })
+                    if actions.isEmpty {
+                        Image("tabler_map-question")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 290)
+                        
+                        Text("Write your journal\nfor today to see\nrecommended actions")
+                            .font(.system(size: 32))
+                            .fontWeight(.light)
+                            .multilineTextAlignment(.center)
+                        
+                    } else {
+                        Group {
+                            Text("Your overall sentiment is ")
+                            + Text("Negative").foregroundStyle(Color.hex("#DE5353"))
+                            + Text(", consider taking the following actions:")
                         }
+                        .font(.system(size: 18.0))
+                        .fontWeight(.medium)
+                        .lineSpacing(6)
+                        .padding()
+                        .padding(.horizontal, 5.0)
+                        
+                        VStack {
+                            ForEach(Array(viewModel.mapsData.enumerated()), id: \.offset) { index, data in
+                                ActionsMapView(actionTitle: "Action \(index+1)",
+                                               data: data,
+                                               description: actions[index].description,
+                                               openMapFunction: {
+                                    viewModel.openAllInMaps(annotations: data.annotations)
+                                })
+                            }
+                        }
+                        .padding(25)
                     }
-                    .padding(25)
                     
                 }
             }
@@ -123,13 +136,21 @@ struct ReccomendedActionsView: View {
 }
 
 #Preview {
-    ReccomendedActionsView(actions: [
-        .init(searchQuery: "parks",
-              title: "Park",
-              description: "Going to the park is a great way to improve your physical and mental health."),
+    @Previewable @State var viewEmptyStatePreview = false
+    
+    if viewEmptyStatePreview {
+        ReccomendedActionsView(actions: [])
         
-        .init(searchQuery: "coffee shops",
-              title: "Chill & Chat",
-              description: "Reach out to a friend or loved one for a chat at a coffee shop")
-    ])
+    } else {
+        ReccomendedActionsView(actions: [
+            .init(searchQuery: "parks",
+                  title: "Park",
+                  description: "Going to the park is a great way to improve your physical and mental health."),
+            
+                .init(searchQuery: "coffee shops",
+                      title: "Chill & Chat",
+                      description: "Reach out to a friend or loved one for a chat at a coffee shop")
+        ])
+    }
+    
 }
