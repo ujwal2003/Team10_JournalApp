@@ -30,6 +30,7 @@ class FriendsViewModel: ObservableObject {
     @Published var friendInvites: [String] = []
     
     @Published var isAddFriendSheetVisible: Bool = false
+    @Published var cityInviteFailed: Bool = false
     
     init(selectedContent: FriendSelectionContent = .Friends, searchQuery: String = "") {
         self.selectedContent = selectedContent
@@ -57,6 +58,20 @@ class FriendsViewModel: ObservableObject {
     func removeFriend(friend: String) async {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
             self.friends.removeAll{ $0 == friend }
+        }
+    }
+    
+    //FIXME: - acutally send request to server
+    func sendCityInvite(username: String) async {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            let willFail = Bool.random()
+            
+            if !willFail {
+                self.friendInvites.append(username)
+            } else {
+                self.cityInviteFailed = true
+            }
+            
         }
     }
 }

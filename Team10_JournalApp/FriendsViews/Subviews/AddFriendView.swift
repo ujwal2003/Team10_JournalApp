@@ -8,10 +8,14 @@
 import SwiftUI
 
 struct AddFriendView: View {
-    @Environment(\.dismiss) var dismiss
     @State var searchUserName: String = ""
+    @ObservedObject var friendsViewModel: FriendsViewModel
     
-    var onSendClick: () -> Void
+    @Environment(\.dismiss) var dismiss
+    @State private var showAlert = false
+    private var sendButtonDisabled: Bool {
+        searchUserName.isEmpty
+    }
     
     var body: some View {
         VStack {
@@ -44,21 +48,37 @@ struct AddFriendView: View {
                         .stroke(Color(red: 0.61, green: 0.75, blue: 0.78).opacity(0.4), lineWidth: 1)
                 )
                 .padding()
+                .autocorrectionDisabled()
             
             Button(action: {
-                onSendClick()
-                dismiss()
+                Task {
+                    await friendsViewModel.sendCityInvite(username: searchUserName)
+                }
+                
+                if friendsViewModel.cityInviteFailed {
+                    showAlert.toggle()
+                } else {
+                    dismiss()
+                }
+                
             }) {
-                Text("Send Request")
+                Text("Send Invite")
                     .font(.system(size: 18))
                     .fontWeight(.medium)
-                  .foregroundStyle(Color.white)
+                    .foregroundStyle(Color.white)
+                    .opacity(sendButtonDisabled ? 0.4 : 1)
             }
             .frame(maxWidth: .infinity, maxHeight: 52)
             .background(Color(red: 0.61, green: 0.75, blue: 0.78))
             .clipShape(RoundedCorner(radius: 100))
             .shadow(color: .black.opacity(0.25), radius: 2, x: 0, y: 4)
             .padding(.horizontal)
+            .disabled(sendButtonDisabled)
+            .alert(isPresented: $showAlert) {
+                Alert(title: Text("Invite Failed"),
+                      message: Text("Could not find username \(searchUserName) or there was a connection error"),
+                      dismissButton: .default(Text("OK"), action: { friendsViewModel.cityInviteFailed = false }))
+            }
             
             Spacer()
         }
