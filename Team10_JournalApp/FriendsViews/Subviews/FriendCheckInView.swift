@@ -36,12 +36,33 @@ struct FriendCheckInView: View {
                                    buildingType: friendsViewModel.selectedBuilding.category,
                                    growthReport: friendCityMap.reports[reportIdx])
                 }
-                .padding(25)
+                .padding(isIphone16ProMaxPortrait ? 8 : 25)
             
-            Spacer().frame(height: 160)
+            VStack {
+                Text("\(friendName)’s City weather is: ")
+                    .font(.system(size: 18))
+                    .fontWeight(.medium)
+                
+                let friendWeather = friendsViewModel.getWeatherStatus()
+                
+                HStack {
+                    Text(friendWeather.name)
+                        .font(.system(size: 18))
+                        .fontWeight(.heavy)
+                    
+                    Image(systemName: friendWeather.icon)
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: friendWeather.iconWidth)
+                        .foregroundStyle(friendWeather.iconColor)
+                }
+            }
+            
+            Spacer().frame(height: isIphone16ProMaxPortrait ? 140 : 90)
         }
         .task {
             await friendsViewModel.getFriendCurrWeekMap(friend: friendName)
+            friendsViewModel.calculateFriendWeather()
         }
         
     }

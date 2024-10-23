@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftUI
 
 enum FriendSelectionContent {
     case Friends
@@ -31,6 +32,7 @@ class FriendsViewModel: ObservableObject {
     
     @Published var selectedFriendMap: CityMap = CityMap(map: .LoadingMap, buildings: [], reports: [])
     @Published var selectedFriendCityBlock: String = "Loading..."
+    @Published var selectedFriendWeather: JournalWeather = .NoData
     @Published var selectedFriendBuildingIndex: Int = 0
     @Published var selectedBuilding: Building = .BlueConstruction
     @Published var isSelectedFriendGrowthReportShowing: Bool = false
@@ -73,6 +75,53 @@ class FriendsViewModel: ObservableObject {
         
         return friendInvites.filter { invite in
             return invite.lowercased().contains(searchQuery.lowercased())
+        }
+    }
+    
+    func getWeatherStatus() -> (name: String, icon: String, iconWidth: CGFloat, iconColor: Color) {
+        switch selectedFriendWeather {
+            case .NoData:
+                return (name: "No Data",
+                        icon: "exclamationmark.arrow.trianglehead.2.clockwise.rotate.90",
+                        iconWidth: 32,
+                        iconColor: Color.gray)
+                
+            case .Sunny:
+                return (name: "Sunny",
+                        icon: "sun.max.fill",
+                        iconWidth: 30,
+                        iconColor: Color.yellow)
+                
+            case .Cloudy:
+                return (name: "Cloudy",
+                        icon: "cloud.sun.fill",
+                        iconWidth: 35,
+                        iconColor: Color.orange)
+                
+            case .Drizzle:
+                return (name: "Drizzle",
+                        icon: "sun.rain.fill",
+                        iconWidth: 35,
+                        iconColor: Color.cyan)
+                
+            case .Rain:
+                return (name: "Rain",
+                        icon: "cloud.rain.fill",
+                        iconWidth: 28,
+                        iconColor: Color.blue)
+                
+            case .Stormy:
+                return (name: "Stormy",
+                        icon: "hurricane",
+                        iconWidth: 25,
+                        iconColor: Color.indigo)
+                
+                
+            default:
+                return (name: "Error",
+                        icon: "person.crop.circle.badge.exclamationmark",
+                        iconWidth: 30,
+                        iconColor: Color.red)
         }
     }
     
@@ -162,5 +211,10 @@ class FriendsViewModel: ObservableObject {
                                                                            thoughtEntry: dummyText),
                                                           count: 7))
         }
+    }
+    
+    //FIXME: - use actual weather calculation'
+    func calculateFriendWeather() {
+        self.selectedFriendWeather = .Sunny
     }
 }
