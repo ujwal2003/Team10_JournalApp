@@ -59,7 +59,7 @@ struct FriendsView: View {
                     Picker("", selection: $viewModel.selectedContent) {
                         Text("Friends").tag(FriendSelectionContent.Friends)
                         Text("Requests").tag(FriendSelectionContent.Requests)
-                        Text("Invites").tag(FriendSelectionContent.Invitations)
+                        Text("Invitations").tag(FriendSelectionContent.Invitations)
                     }
                     .pickerStyle(.segmented)
                     .padding()
@@ -81,7 +81,7 @@ struct FriendsView: View {
                 ScrollView {
                     VStack(spacing: 15.0) {
                         if viewModel.selectedContent == .Friends {
-                            ForEach(viewModel.friends, id: \.self) { friend in
+                            ForEach(viewModel.getFilteredFriends(), id: \.self) { friend in
                                 if isEditing {
                                     HStack {
                                         Button(action: {
@@ -107,16 +107,29 @@ struct FriendsView: View {
                             }
                             
                         } else if viewModel.selectedContent == .Requests {
-                            ForEach(viewModel.friendRequests, id: \.self) { request in
+                            ForEach(viewModel.getFilteredRequests(), id: \.self) { request in
                                 FriendRequestRow(name: request,
-                                                 onAcceptClick: { print("TODO: accept friend request") },
-                                                 onRejectClick: { print("TODO: reject friend request") })
+                                                 onAcceptClick: {
+                                                     Task {
+                                                        await viewModel.acceptFriendRequest(username: request)
+                                                     }
+                                                   },
+                                                 onRejectClick: {
+                                                     Task {
+                                                        await viewModel.rejectFriendRequest(username: request)
+                                                     }
+                                                   }
+                                                )
                             }
                             
                         } else {
-                            ForEach(viewModel.friendInvites, id: \.self) { invite in
+                            ForEach(viewModel.getFilteredInvitations(), id: \.self) { invite in
                                 FriendInviteRow(name: invite,
-                                                onDismissClick: { print("TODO dismiss invitation") })
+                                                onDismissClick: {
+                                                    Task {
+                                                        await viewModel.revokeFriendInvite(username: invite)
+                                                    }
+                                                })
                             }
                         }
                         

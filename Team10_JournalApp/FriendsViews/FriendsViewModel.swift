@@ -15,7 +15,7 @@ enum FriendSelectionContent {
     var contentTitle: String {
         switch self {
             case .Friends: return "Your Friends"
-            case .Requests: return "Your Friend Requests"
+            case .Requests: return "Friend Requests"
             case .Invitations: return "City Invitations"
         }
     }
@@ -45,6 +45,30 @@ class FriendsViewModel: ObservableObject {
         return self.selectedContent == .Friends
     }
     
+    func getFilteredFriends() -> [String] {
+        guard !searchQuery.isEmpty else { return friends }
+        
+        return friends.filter { friend in
+            return friend.lowercased().contains(searchQuery.lowercased())
+        }
+    }
+    
+    func getFilteredRequests() -> [String] {
+        guard !searchQuery.isEmpty else { return friendRequests }
+        
+        return friendRequests.filter { request in
+            return request.lowercased().contains(searchQuery.lowercased())
+        }
+    }
+    
+    func getFilteredInvitations() -> [String] {
+        guard !searchQuery.isEmpty else { return friendInvites }
+        
+        return friendInvites.filter { invite in
+            return invite.lowercased().contains(searchQuery.lowercased())
+        }
+    }
+    
     //FIXME: - use data from actual db
     func downloadFriendsData() async {
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) {
@@ -72,6 +96,28 @@ class FriendsViewModel: ObservableObject {
                 self.cityInviteFailed = true
             }
             
+        }
+    }
+    
+    //FIXME: - acctually update friends & requests list in db
+    func acceptFriendRequest(username: String) async {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            self.friends.append(username)
+            self.friendRequests.removeAll{ $0 == username }
+        }
+    }
+    
+    //FIXME: - actually update requests list in db
+    func rejectFriendRequest(username: String) async {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            self.friendRequests.removeAll{ $0 == username }
+        }
+    }
+    
+    //FIXME: - actually update invites list in db
+    func revokeFriendInvite(username: String) async {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            self.friendInvites.removeAll{ $0 == username }
         }
     }
 }
