@@ -11,6 +11,8 @@ struct FriendCheckInView: View {
     @State var friendName: String
     @ObservedObject var friendsViewModel: FriendsViewModel
     
+    var days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+    
     var body: some View {
         VStack {
             VStack(spacing: 15.0) {
@@ -32,9 +34,11 @@ struct FriendCheckInView: View {
                 .sheet(isPresented: $friendsViewModel.isSelectedFriendGrowthReportShowing) {
                     let reportIdx = friendsViewModel.selectedFriendBuildingIndex
                     
-                    CityGrowthView(headlineTitle: "",
+                    CityGrowthView(headlineTitle: "\(friendName): \(days[reportIdx]) Growth",
                                    buildingType: friendsViewModel.selectedBuilding.category,
-                                   growthReport: friendCityMap.reports[reportIdx])
+                                   growthReport: friendCityMap.reports[reportIdx],
+                                   overrideName: friendName,
+                                   selectedMenuView: .Journal)
                 }
                 .padding(isIphone16ProMaxPortrait ? 8 : 25)
             
@@ -58,11 +62,11 @@ struct FriendCheckInView: View {
                 }
             }
             
-            Spacer().frame(height: isIphone16ProMaxPortrait ? 140 : 90)
+            Spacer().frame(height: isIphone16ProMaxPortrait ? 180 : 140)
         }
         .task {
             await friendsViewModel.getFriendCurrWeekMap(friend: friendName)
-            friendsViewModel.calculateFriendWeather()
+            await friendsViewModel.calculateFriendWeather()
         }
         
     }

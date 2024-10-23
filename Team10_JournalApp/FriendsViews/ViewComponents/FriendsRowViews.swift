@@ -7,6 +7,8 @@
 
 import SwiftUI
 
+let FRIENDS_ROW_WIDTH: CGFloat = isIphone16ProMaxPortrait ? 380 : 320
+
 struct FriendCheckInRow: View {
     var friendName: String
     var isCheckInVisible: Bool = true
@@ -27,7 +29,7 @@ struct FriendCheckInRow: View {
                     .fontWeight(.medium)
             }
         }
-        .frame(width: 320, height: 35)
+        .frame(width: FRIENDS_ROW_WIDTH, height: 35)
         .padding()
         .background(Color.rgb(221, 237, 240))
         .clipShape(RoundedCorner(radius: 15))
@@ -71,7 +73,7 @@ struct FriendRequestRow: View {
                     .foregroundStyle(Color.hex("#164863"))
             }
         }
-        .frame(width: 320, height: 35)
+        .frame(width: FRIENDS_ROW_WIDTH, height: 35)
         .padding()
         .background(Color.rgb(221, 237, 240))
         .clipShape(RoundedCorner(radius: 15))
@@ -105,7 +107,7 @@ struct FriendInviteRow: View {
                     .foregroundStyle(Color.hex("#164863"))
             }
         }
-        .frame(width: 320, height: 35)
+        .frame(width: FRIENDS_ROW_WIDTH, height: 35)
         .padding()
         .background(Color.rgb(221, 237, 240))
         .clipShape(RoundedCorner(radius: 15))

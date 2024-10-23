@@ -12,7 +12,7 @@ enum AppTab {
 }
 
 struct ContentView: View {
-    @State var selectedTab: AppTab = .Friends
+    @State var selectedTab: AppTab = .Home
     
     var body: some View {
         VStack {

@@ -100,9 +100,9 @@ struct FriendsView: View {
                                         FriendCheckInRow(friendName: friend, isCheckInVisible: false)
                                     }
                                 } else {
-                                    NavigationLink(value: friend, label: {
+                                    NavigationLink(destination: FriendCheckInView(friendName: friend, friendsViewModel: viewModel)) {
                                         FriendCheckInRow(friendName: friend)
-                                    })
+                                    }
                                 }
                             }
                             
@@ -135,11 +135,9 @@ struct FriendsView: View {
                         
                     }
                 }
-                .navigationDestination(for: String.self) { friend in
-                    ZStack {
-                        FriendCheckInView(friendName: friend, friendsViewModel: viewModel)
-                    }
-                }
+//                .navigationDestination(for: String.self) { friend in
+//                    FriendCheckInView(friendName: friend, friendsViewModel: viewModel)
+//                }
                 
             }
         }

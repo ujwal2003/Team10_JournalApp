@@ -86,7 +86,7 @@ class HomeViewModel: ObservableObject {
     @Published var recommendedActions: [RecommendedAction]
     @Published var numFriends: Int
     
-    @Published var isNavigateLoading: Bool = false
+    @Published var isNavigateLoading: Bool = true
     @Published var isGrowthReportShowing: Bool = false
     @Published var isRecommendedActionsShowing: Bool = false
     @Published var selectedBuildingIndex: Int = 0
@@ -181,7 +181,7 @@ class HomeViewModel: ObservableObject {
     
     //FIXME: fetch from actual db
     func loadCityMap(week: String) async {
-        self.isNavigateLoading = true
+//        self.isNavigateLoading = true
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) {
             self.isNavigateLoading = false
