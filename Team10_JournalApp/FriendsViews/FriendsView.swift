@@ -72,8 +72,12 @@ struct FriendsView: View {
                                    isEditVisible: viewModel.isEditButtonVisible(),
                                    isEditing: isEditing,
                                    onEditClick: { isEditing.toggle() },
-                                   onAddIconClick: { print("TODO: Add Friend") })
+                                   onAddIconClick: { viewModel.isAddFriendSheetVisible.toggle() })
+                .sheet(isPresented: $viewModel.isAddFriendSheetVisible) {
+                    AddFriendView(onSendClick: {})
+                }
                 
+                //MARK: - Friends List
                 ScrollView {
                     VStack(spacing: 15.0) {
                         if viewModel.selectedContent == .Friends {

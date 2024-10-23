@@ -29,6 +29,8 @@ class FriendsViewModel: ObservableObject {
     @Published var friendRequests: [String] = []
     @Published var friendInvites: [String] = []
     
+    @Published var isAddFriendSheetVisible: Bool = false
+    
     init(selectedContent: FriendSelectionContent = .Friends, searchQuery: String = "") {
         self.selectedContent = selectedContent
         self.searchQuery = searchQuery
@@ -50,7 +52,6 @@ class FriendsViewModel: ObservableObject {
             self.friendInvites = ["Person 1", "Person 2"]
         }
     }
-    
     
     //FIXME: - actually delete from db
     func removeFriend(friend: String) async {
