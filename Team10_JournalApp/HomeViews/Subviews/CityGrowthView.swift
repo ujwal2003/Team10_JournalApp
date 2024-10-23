@@ -58,8 +58,10 @@ struct CityGrowthView: View {
     @State var buildingType: BuildingCategory
     @State var growthReport: GrowthReport
     
+    @State var overrideName: String = ""
+    
     @Environment(\.dismiss) var dismiss
-    @State private var selectedMenuView: ViewSelection = .Sentiment
+    @State var selectedMenuView: ViewSelection = .Sentiment
     
     var body: some View {
         GeometryReader { geometry in
@@ -93,11 +95,13 @@ struct CityGrowthView: View {
                         let indicatorIcon = (buildingType == .Construction) ? "hugeicons_question" : "subway_error"
                         let iconSize: CGFloat = (buildingType == .Construction) ? 300 : 245
                         
+                        let nameExists = !overrideName.isEmpty
+                        
                         var indicatorText: String {
                             if buildingType == .Ruin {
-                                return "Not available\nbecause you skipped\nthis journal entry"
+                                return "Not available\nbecause \(nameExists ? overrideName : "you") skipped\nthis journal entry"
                             } else {
-                                return isJournalMode ? "Your journal is\nempty" : "Write your journal\nfor today to see the\nsentiment report"
+                                return isJournalMode ? "\(nameExists ? overrideName+"'s" : "Your") journal is\nempty" : "\(nameExists ? overrideName+" needs to write their " : "Write your") journal\nfor today to see the\nsentiment report"
                             }
                         }
                         
