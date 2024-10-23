@@ -137,7 +137,7 @@ struct FriendsView: View {
                 }
                 .navigationDestination(for: String.self) { friend in
                     ZStack {
-                        Text(friend)
+                        FriendCheckInView(friendName: friend, friendsViewModel: viewModel)
                     }
                 }
                 

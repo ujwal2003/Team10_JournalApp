@@ -29,8 +29,15 @@ class FriendsViewModel: ObservableObject {
     @Published var friendRequests: [String] = []
     @Published var friendInvites: [String] = []
     
+    @Published var selectedFriendMap: CityMap = CityMap(map: .LoadingMap, buildings: [], reports: [])
+    @Published var selectedFriendCityBlock: String = "Loading..."
+    @Published var selectedFriendBuildingIndex: Int = 0
+    @Published var selectedBuilding: Building = .BlueConstruction
+    @Published var isSelectedFriendGrowthReportShowing: Bool = false
+    
     @Published var isAddFriendSheetVisible: Bool = false
     @Published var cityInviteFailed: Bool = false
+    @Published var isMapLoading: Bool = false
     
     init(selectedContent: FriendSelectionContent = .Friends, searchQuery: String = "") {
         self.selectedContent = selectedContent
@@ -118,6 +125,42 @@ class FriendsViewModel: ObservableObject {
     func revokeFriendInvite(username: String) async {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
             self.friendInvites.removeAll{ $0 == username }
+        }
+    }
+    
+    //FIXME: - actually load from db
+    func getFriendCurrWeekMap(friend: String) async {
+        self.isMapLoading = true
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            self.isMapLoading =  false
+            
+            let dummyText = "Lorem ipsum dolor sit amet, consectetur adipiscing elit"
+            
+            let viewReport = { (idx: Int, building: Building) -> Void in
+                self.selectedFriendBuildingIndex = idx
+                self.selectedBuilding = building
+                self.isSelectedFriendGrowthReportShowing.toggle()
+            }
+            
+            self.selectedFriendCityBlock = "Oct 20, 2024-Oct 26, 2024"
+            self.selectedFriendMap = .init(map: .Map1,
+                                           buildings: [
+                                            .init(style: .BlueTower, onClick: { viewReport(0, .BlueTower) }),
+                                            .init(style: .PurpleRuin, onClick: { viewReport(1, .PurpleRuin) }),
+                                            .init(style: .GreenTower, onClick: { viewReport(2, .GreenTower) }),
+                                            .init(style: .LightBrownTower, onClick: { viewReport(3, .LightBrownTower) }),
+                                            .init(style: .RedTower, onClick: { viewReport(4, .RedTower) }),
+                                            .init(style: .LightGreenTower, onClick: { viewReport(5, .LightGreenTower) }),
+                                            .init(style: .YellowConstruction, onClick: { viewReport(6, .YellowConstruction) })
+                                           ],
+                                           reports: Array(repeating: .init(gratitudeSentiment: .Positive,
+                                                                           gratitudeEntry: dummyText,
+                                                                           learningSentiment: .Neutral,
+                                                                           learningEntry: dummyText,
+                                                                           thoughtSentiment: .Negative,
+                                                                           thoughtEntry: dummyText),
+                                                          count: 7))
         }
     }
 }
