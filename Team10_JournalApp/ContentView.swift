@@ -35,7 +35,7 @@ struct ContentView: View {
                         Text("Friends")
                     }.tag(AppTab.Friends)
                 
-                Text("Settings View")
+                SettingView()
                     .tabItem {
                         Image(systemName: "gear")
                         Text("Settings")
