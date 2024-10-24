@@ -99,6 +99,7 @@ struct SettingView: View {
                                     }
                                 }
                             }
+                            .padding(.trailing, 30)
                             .listStyle(PlainListStyle())
                             .background(Color.clear)
                         }
