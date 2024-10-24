@@ -14,6 +14,7 @@ struct SettingView: View {
     @State private var isShowingSignOutAlert: Bool = false
     @State private var isSignedOut: Bool = false
     @State private var isLocationShared: Bool = false
+    @State private var isNavigating = false
     @Environment(\.dismiss) var dismiss
     
     var body: some View {
@@ -31,7 +32,7 @@ struct SettingView: View {
                             List {
                                 Section(header:
                                             Text("Account")
-                                    .font(.headline)
+                                    .font(.system(size: 20, weight: .medium))
                                     .foregroundColor(.black)
                                     .textCase(nil)
                                     .padding(.leading, 10)
@@ -39,10 +40,8 @@ struct SettingView: View {
                                     Button(action: {
                                         isShowingResetAlert = true
                                     }) {
-                                        Text("Reset Journal")
-                                            .font(Font.custom("Qanelas Soft DEMO", size: 20).weight(.medium))
-                                            .foregroundColor(.black)
-                                            .padding(.leading, 10)
+                                        SettingButtonView(buttonText: "Reset Journal", isCheckInVisible: true)
+                                    .padding(.leading, 10)
                                     }
                                     .alert("Reset Journal?", isPresented: $isShowingResetAlert) {
                                         Button("No") { }
@@ -50,21 +49,21 @@ struct SettingView: View {
                                     } message: {
                                         Text("Are you sure you want to clear all entries and restart? This action cannot be undone!")
                                     }
-                                    
-                                    NavigationLink(destination: ChangeCredentialsView()) {
-                                        Text("Change Account Credentials")
-                                            .font(Font.custom("Qanelas Soft DEMO", size: 20).weight(.medium))
-                                            .foregroundColor(.black)
+                                    ZStack {
+                                        NavigationLink(destination: ChangeCredentialsView()) {
+                                                                    EmptyView()
+                                                                }
+                                                                .opacity(0)
+                                        SettingButtonView(buttonText: "Change Account Credentials", isCheckInVisible: true)
                                             .padding(.leading, 10)
                                     }
+                                    .navigationBarBackButtonHidden(true)
                                     
                                     Button(action: {
                                         isShowingSignOutAlert = true
                                     }) {
-                                        Text("Sign Out")
-                                            .font(Font.custom("Qanelas Soft DEMO", size: 20).weight(.medium))
-                                            .foregroundColor(.black)
-                                            .padding(.leading, 10)
+                                        SettingButtonView(buttonText: "Sign Out", isCheckInVisible: true)
+                                    .padding(.leading, 10)
                                     }
                                     .alert("Sign Out?", isPresented: $isShowingSignOutAlert) {
                                         Button("No") { }
@@ -75,32 +74,40 @@ struct SettingView: View {
                                         Text("Are you sure you want to sign out?")
                                     }
                                 }
+                                .listRowSeparator(.hidden)
                                 
                                 Section(header:
                                             Text("Location")
-                                    .font(.system(size: 18, weight: .medium))
+                                    .font(.system(size: 20, weight: .medium))
                                     .foregroundColor(.black)
                                     .textCase(nil)
                                     .padding(.leading, 10)
                                 ) {
-                                    Toggle(isOn: $isLocationShared) {
-                                                                    Text("Share Location")
-                                                                        .font(Font.custom("Qanelas Soft DEMO", size: 20).weight(.medium))
-                                                                        .foregroundColor(.black)
-                                                                        .padding(.leading, 10)
-                                                                }
-                                                                .toggleStyle(SwitchToggleStyle(tint: Color(red: 0.09, green: 0.28, blue: 0.39)))
+                                    ZStack {
+                                        Toggle(isOn: $isLocationShared) {
+                                            SettingButtonView(buttonText: "Share Location", isCheckInVisible: true)
+                                        }
+                                        .toggleStyle(SwitchToggleStyle(tint: Color(red: 0.09, green: 0.28, blue: 0.39)))
+                                        .padding(.trailing, 10)
+                                    }
+                                    .padding(.leading, 10)
                                     
-                                    NavigationLink(destination: ToggleCustomLocationView()) {
-                                        Text("Toggle Custom Location")
-                                            .font(Font.custom("Qanelas Soft DEMO", size: 20).weight(.medium))
-                                            .foregroundColor(.black)
+                                    ZStack {
+                                        NavigationLink(destination: ToggleCustomLocationView()) {
+                                                                    EmptyView()
+                                                                }
+                                                                .opacity(0)
+                                        SettingButtonView(buttonText: "Toggle Custom Location", isCheckInVisible: true)
                                             .padding(.leading, 10)
                                     }
+                                    
                                 }
+                                .listRowSeparator(.hidden)
                             }
                             .listStyle(PlainListStyle())
                             .background(Color.clear)
+                            
+                            
                         }
                         .fullScreenCover(isPresented: $isSignedOut) {
                             SignInView()
