@@ -17,35 +17,40 @@ struct ContentView: View {
     var body: some View {
         VStack {
             TabView(selection: $selectedTab) {
-                Text("Home View")
+                HomeView()
                     .tabItem {
                         Image(systemName: "house")
                         Text("Home")
                     }.tag(AppTab.Home)
                 
-                Text("Journal View")
+                JournalEntryView()
                     .tabItem {
                         Image(systemName: "book")
                         Text("Journal")
                     }.tag(AppTab.Journal)
                 
-                Text("Friends View")
+                FriendsView()
                     .tabItem {
                         Image(systemName: "person.3")
                         Text("Friends")
                     }.tag(AppTab.Friends)
                 
-                Text("Settings View")
+                SettingView()
                     .tabItem {
                         Image(systemName: "gear")
                         Text("Settings")
                     }.tag(AppTab.Settings)
             }
-            
         }
+        .navigationBarBackButtonHidden(true)
     }
 }
 
-#Preview {
-    ContentView()
+struct ContentView_Previews: PreviewProvider {
+    static var previews: some View {
+        ContentView().previewDisplayName("Portrait")
+
+        ContentView().previewInterfaceOrientation(.landscapeLeft)
+            .previewDisplayName("Landscape Left")
+    }
 }
