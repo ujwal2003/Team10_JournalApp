@@ -104,7 +104,6 @@ struct SettingView: View {
                                 }
                                 .listRowSeparator(.hidden)
                             }
-                            .padding(.trailing, 30)
                             .listStyle(PlainListStyle())
                             .background(Color.clear)
                             
