@@ -29,7 +29,7 @@ struct ContentView: View {
                         Text("Journal")
                     }.tag(AppTab.Journal)
                 
-                Text("Friends View")
+                FriendsView()
                     .tabItem {
                         Image(systemName: "person.3")
                         Text("Friends")
