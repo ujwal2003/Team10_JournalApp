@@ -71,7 +71,7 @@ struct SignInView: View {
 
                     // MARK: Sign in and sign up buttons
                     VStack(spacing: 91) {
-                        NavigationLink(destination: ContentView()) {
+                        NavigationLink(destination: ContentView().preferredColorScheme(.light)) {
                             ZStack {
                                 Rectangle()
                                     .foregroundColor(.clear)
@@ -87,7 +87,7 @@ struct SignInView: View {
                         }
                         
 
-                        NavigationLink(destination: SignUpView()) {
+                        NavigationLink(destination: SignUpView().preferredColorScheme(.light)) {
                             ZStack {
                                 Text("Don’t have an account? ")
                                     .font(.system(size: 18, weight: .medium))
