@@ -8,16 +8,22 @@
 import SwiftUI
 
 struct AppLayoutContainer<TitleContent: View, ContainerContent: View>: View {
-    var height: CGFloat
+    var heightOffset: CGFloat
+    var cornerRadius: CGFloat
+    var corners: UIRectCorner
     
     let titleContent: TitleContent
     let containerContent: ContainerContent
     
     init(height: CGFloat,
+         cornerRadius: CGFloat = 25.0,
+         corners: UIRectCorner = [.topLeft, .topRight],
          @ViewBuilder titleContent: () -> TitleContent,
          @ViewBuilder containerContent: () -> ContainerContent) {
         
-        self.height = height
+        self.heightOffset = height
+        self.cornerRadius = cornerRadius
+        self.corners = corners
         self.titleContent = titleContent()
         self.containerContent = containerContent()
     }
@@ -38,15 +44,15 @@ struct AppLayoutContainer<TitleContent: View, ContainerContent: View>: View {
                     }
                     
                     Spacer()
-                        .frame(height: height)
+                        .frame(height: heightOffset)
                     
                     ZStack {
                         Rectangle()
                             .foregroundStyle(Color.clear)
                             .background(Color.white)
                             .frame(maxHeight: .infinity)
-                            .clipShape(RoundedCorner(radius: 25.0,
-                                                     corners: [.topLeft, .topRight]))
+                            .clipShape(RoundedCorner(radius: cornerRadius,
+                                                     corners: corners))
                             .ignoresSafeArea()
                         
                         containerContent
@@ -57,13 +63,30 @@ struct AppLayoutContainer<TitleContent: View, ContainerContent: View>: View {
 }
 
 #Preview {
-    AppLayoutContainer(height: 40.0) {
-        VStack(alignment: .leading) {
-            Text("title")
+    AppLayoutContainer(height: 10.0) {
+        VStack(alignment: .leading, spacing: 10) {
+            Text("Title")
+                .font(.system(size: 40.0).weight(.heavy))
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.horizontal, 40.0)
+                .foregroundStyle(Color.black)
+            
+            Text("Subtitle")
+                .font(.system(size: 20).weight(.medium))
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.horizontal, 40.0)
+                .foregroundStyle(Color.black)
         }
+        .padding(.vertical)
         
     } containerContent: {
-        Text("hewwo")
+        VStack {
+            Text("Hello World")
+                .font(.title)
+                .padding(50)
+            
+            Spacer()
+        }
     }
 
 }
