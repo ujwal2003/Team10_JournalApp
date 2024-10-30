@@ -47,7 +47,7 @@ struct FriendCheckInView: View {
                     .font(.system(size: 18))
                     .fontWeight(.medium)
                 
-                let friendWeather = friendsViewModel.getWeatherStatus()
+                let friendWeather = friendsViewModel.selectedFriendWeather.weatherStatusStyle
                 
                 HStack {
                     Text(friendWeather.name)

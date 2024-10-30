@@ -63,11 +63,13 @@ struct DefaultRectContainer<Content: View>: View {
                             .font(.system(size: title.fontSize).weight(.heavy))
                             .frame(maxWidth: .infinity, alignment: alignment(for: headLeftAlign))
                             .padding(.horizontal, headLeftAlign == .signInAlign ? 40 : 16)
+                            .foregroundStyle(Color.black)
 
                         Text(subtitle.text)
                             .font(.system(size: subtitle.fontSize).weight(.medium))
                             .frame(maxWidth: .infinity, alignment: alignment(for: headLeftAlign))
                             .padding(.horizontal, headLeftAlign == .signInAlign ? 40 : 16)
+                            .foregroundStyle(Color.black)
                     }
 
                     .padding()

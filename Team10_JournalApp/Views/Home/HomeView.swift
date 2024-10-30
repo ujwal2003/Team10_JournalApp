@@ -31,7 +31,7 @@ struct HomeView: View {
 
                 CityHealthWeatherView(cityHealthPercentage: .constant(viewModel.calcCityHealthPercentage()),
                                       cityHealthBar: viewModel.getCityHealthColors(),
-                                      todaysWeather: viewModel.getWeatherStatus())
+                                      todaysWeather: viewModel.weatherStatus.weatherStatusStyle)
                 
                 
                 ActionButtonView(isDisabled: viewModel.isNavigateLoading,
