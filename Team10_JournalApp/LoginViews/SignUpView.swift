@@ -8,9 +8,15 @@
 import SwiftUI
 
 struct SignUpView: View {
+    
     @State private var username: String = ""
     @State private var password: String = ""
     @State private var retypePassword: String = ""
+    
+    @FocusState private var focusedField: SignUpField?
+    enum SignUpField {
+        case username; case password; case password_confirm
+    }
     
     var body: some View {
         
@@ -43,8 +49,10 @@ struct SignUpView: View {
                                     .padding(.horizontal, 5)
                                     .frame(width: 295, height: 52)
                                     .foregroundColor(.black)
+                                    .focused($focusedField, equals: .username)
                             }
                         }
+                        
                         GridRow {
                             ZStack {
                                 Rectangle()
@@ -62,8 +70,10 @@ struct SignUpView: View {
                                     .padding(.horizontal, 5)
                                     .frame(width: 295, height: 52)
                                     .foregroundColor(.black)
+                                    .focused($focusedField, equals: .password)
                             }
                         }
+                        
                         GridRow {
                             ZStack {
                                 Rectangle()
@@ -81,8 +91,10 @@ struct SignUpView: View {
                                     .padding(.horizontal, 5)
                                     .frame(width: 295, height: 52)
                                     .foregroundColor(.black)
+                                    .focused($focusedField, equals: .password_confirm)
                             }
                         }
+                        
                     }
                     .padding([.bottom], 40)
 
@@ -119,6 +131,10 @@ struct SignUpView: View {
                     .padding([.bottom], 80)
                 }
             }
+            .onTapGesture {
+                focusedField = nil
+            }
+            
         }
     }
 }

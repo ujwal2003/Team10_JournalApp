@@ -21,6 +21,11 @@ struct JournalEntryView: View {
         return dateFormatter.string(from: Date())
     }
     
+    @FocusState private var focusedField: JournalEntryField?
+    enum JournalEntryField {
+        case gratitude; case learning; case thoughts
+    }
+    
     var body: some View {
         
         NavigationStack {
@@ -56,6 +61,7 @@ struct JournalEntryView: View {
                                             .inset(by: 0.5)
                                             .stroke(Color(red: 0.26, green: 0.49, blue: 0.62).opacity(0.4), lineWidth: 1)
                                     )
+                                    .focused($focusedField, equals: .gratitude)
                             }
                             
                             GridRow {
@@ -78,6 +84,7 @@ struct JournalEntryView: View {
                                             .inset(by: 0.5)
                                             .stroke(Color(red: 0.26, green: 0.49, blue: 0.62).opacity(0.4), lineWidth: 1)
                                     )
+                                    .focused($focusedField, equals: .learning)
                             }
                             
                             GridRow {
@@ -101,6 +108,7 @@ struct JournalEntryView: View {
                                             .inset(by: 0.5)
                                             .stroke(Color(red: 0.26, green: 0.49, blue: 0.62).opacity(0.4), lineWidth: 1)
                                     )
+                                    .focused($focusedField, equals: .thoughts)
                             }
                         }
                         .padding([.bottom], 40)
@@ -135,6 +143,10 @@ struct JournalEntryView: View {
                     .padding([.bottom], 80)
                 }
             }
+            .onTapGesture {
+                focusedField = nil
+            }
+            
         }
         
         
