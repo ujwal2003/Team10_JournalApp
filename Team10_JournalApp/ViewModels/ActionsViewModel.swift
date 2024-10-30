@@ -8,14 +8,6 @@
 import Foundation
 import MapKit
 
-struct MapData: Identifiable {
-    var id = UUID()
-    var title: String
-    var query: String
-    var region: MKCoordinateRegion
-    var annotations: [Annotation]
-}
-
 class ActionsViewModel: ObservableObject {
     @Published var mapsData: [MapData] = []
     
