@@ -1,20 +1,26 @@
-    //
-    //  SignInView.swift
-    //  Team10_JournalApp
-    //
-    //  Created by Alvaro on 10/8/24.
-    //
+//
+//  SignInView.swift
+//  Team10_JournalApp
+//
+//  Created by Alvaro on 10/8/24.
+//
 
-    import SwiftUI
+import SwiftUI
 
-    struct Constants {
-      static let LabelsPrimary: Color = .black
-      static let MiscellaneousTextFieldBG: Color = .white
-    }
+struct Constants {
+    static let LabelsPrimary: Color = .black
+    static let MiscellaneousTextFieldBG: Color = .white
+}
+
 
 struct SignInView: View {
     @State private var username: String = ""
     @State private var password: String = ""
+    
+    @FocusState private var focusedField: SignInField?
+    enum SignInField {
+        case username; case password
+    }
     
     var body: some View {
         NavigationStack {
@@ -45,8 +51,10 @@ struct SignInView: View {
                                     .padding(.horizontal, 5)
                                     .frame(width: 295, height: 52)
                                     .foregroundColor(.black)
+                                    .focused($focusedField, equals: .username)
                             }
                         }
+                        
                         GridRow {
                             ZStack {
                                 Rectangle()
@@ -64,6 +72,7 @@ struct SignInView: View {
                                     .padding(.horizontal, 5)
                                     .frame(width: 295, height: 52)
                                     .foregroundColor(.black)
+                                    .focused($focusedField, equals: .password)
                             }
                         }
                     }
@@ -71,7 +80,7 @@ struct SignInView: View {
 
                     // MARK: Sign in and sign up buttons
                     VStack(spacing: 91) {
-                        NavigationLink(destination: ContentView()) {
+                        NavigationLink(destination: ContentView().preferredColorScheme(.light)) {
                             ZStack {
                                 Rectangle()
                                     .foregroundColor(.clear)
@@ -87,7 +96,7 @@ struct SignInView: View {
                         }
                         
 
-                        NavigationLink(destination: SignUpView()) {
+                        NavigationLink(destination: SignUpView().preferredColorScheme(.light)) {
                             ZStack {
                                 Text("Don’t have an account? ")
                                     .font(.system(size: 18, weight: .medium))
@@ -102,7 +111,13 @@ struct SignInView: View {
                     }
                     .padding([.bottom], 80)
                 }
+                
             }
+            .onTapGesture {
+                focusedField = nil
+            }
+            
+            
         }
     }
 }
