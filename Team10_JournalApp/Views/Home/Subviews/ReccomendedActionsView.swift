@@ -8,12 +8,6 @@
 import SwiftUI
 import MapKit
 
-struct RecommendedAction {
-    let searchQuery: String
-    let title: String
-    let description: String
-}
-
 struct ActionsMapView: View {
     var actionTitle: String
     var data: MapData
