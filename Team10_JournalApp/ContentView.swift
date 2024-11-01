@@ -9,6 +9,7 @@ import SwiftUI
 
 enum AppTab {
     case Home; case Journal; case Friends; case Settings
+    case Exepriments //! FOR TESTING
 }
 
 struct ContentView: View {
@@ -40,6 +41,13 @@ struct ContentView: View {
                         Image(systemName: "gear")
                         Text("Settings")
                     }.tag(AppTab.Settings)
+                
+                //! FOR TESTING
+                ExperimentsTestView()
+                    .tabItem {
+                        Image(systemName: "testtube.2")
+                        Text("Experiments")
+                    }.tag(AppTab.Exepriments)
             }
         }
         .navigationBarBackButtonHidden(true)
