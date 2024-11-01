@@ -48,7 +48,7 @@ enum FriendListRowItemContent {
     case emptyContent
     case checkIn
     case requestButtons(onAccept: () -> Void, onReject: () -> Void)
-    case inviteRescindButton(onDecline: () -> Void)
+    case inviteRescindButton(onRevoke: () -> Void)
     
     func view() -> AnyView {
         switch self {
@@ -68,8 +68,8 @@ enum FriendListRowItemContent {
                 }
             )
             
-            case .inviteRescindButton(let onDecline): return AnyView(
-                FriendsListAcceptRejectButtonsView(buttonType: .Reject, action: onDecline)
+            case .inviteRescindButton(let onRevoke): return AnyView(
+                FriendsListAcceptRejectButtonsView(buttonType: .Reject, action: onRevoke)
             )
         }
     }
@@ -79,9 +79,12 @@ struct FriendListRowView: View {
     @State var itemName: String
     var itemContent: FriendListRowItemContent
     
-    init(itemName: String, itemContent: FriendListRowItemContent = .emptyContent) {
+    var hasShadow: Bool
+    
+    init(itemName: String, itemContent: FriendListRowItemContent = .emptyContent, hasShadow: Bool = true) {
         self.itemName = itemName
         self.itemContent = itemContent
+        self.hasShadow = hasShadow
     }
     
     var body: some View {
@@ -99,7 +102,7 @@ struct FriendListRowView: View {
         .padding()
         .background(Color.rgb(221, 237, 240))
         .clipShape(RoundedCorner(radius: 15))
-        .shadow(color: .black.opacity(0.25), radius: 2, x: 0, y: 4)
+        .shadow(color: .black.opacity(hasShadow ? 0.25 : 0.0), radius: 2, x: 0, y: 4)
         .overlay(
             RoundedRectangle(cornerRadius: 15)
                 .inset(by: 1)

@@ -12,6 +12,7 @@ struct FriendsView: View {
     @Environment(\.editMode) var editMode
     
     @State private var isEditing = false
+    @State private var path = NavigationPath()
     
     var body: some View {
         NavigationStack {
@@ -33,6 +34,7 @@ struct FriendsView: View {
                         Text("Invitations").tag(FriendSelectionContent.Invitations)
                     }
                     .pickerStyle(.segmented)
+                    .padding(.top, 5.0)
                     .padding()
                     
                     SearchBarView(searchText: $viewModel.searchQuery)
@@ -47,13 +49,55 @@ struct FriendsView: View {
                     }
                     
                     List {
-                        ForEach(viewModel.getFilteredFriends(), id: \.self) { friend in
-                            FriendListRowView(itemName: friend,
-                                              itemContent: .emptyContent
-                            )
+                        switch viewModel.selectedContent {
+                            case .Friends:
+                                ForEach(viewModel.getFilteredFriends(), id: \.self) { friendUserName in
+                                    FriendListRowView(itemName: friendUserName,
+                                                      itemContent: .checkIn)
+                                    .background(
+                                        NavigationLink("",
+                                                       destination: FriendCheckInView(friendName: friendUserName,
+                                                                         friendsViewModel: viewModel)
+                                                      ).opacity(0)
+                                    )
+                                    .listRowBackground(Color.clear)
+                                }
+                                .onDelete(perform: viewModel.delete(at:))
+                                
+                            case .Requests:
+                                ForEach(viewModel.getFilteredRequests(), id: \.self) { requestUserName in
+                                    FriendListRowView(itemName: requestUserName,
+                                                      itemContent: .requestButtons(
+                                                        onAccept: {
+                                                            Task {
+                                                                await viewModel.acceptFriendRequest(username: requestUserName)
+                                                            }
+                                                        },
+                                                        onReject: {
+                                                            Task {
+                                                                await viewModel.rejectFriendRequest(username: requestUserName)
+                                                            }
+                                                        }
+                                                      )
+                                    )
+                                }
+                                
+                            case .Invitations:
+                                ForEach(viewModel.getFilteredInvitations(), id: \.self) { inviteUserName in
+                                    FriendListRowView(itemName: inviteUserName,
+                                                      itemContent: .inviteRescindButton(
+                                                        onRevoke: {
+                                                            Task {
+                                                                await viewModel.revokeFriendInvite(username: inviteUserName)
+                                                            }
+                                                        }
+                                                      )
+                                    )
+                                }
                         }
                     }
                     .listStyle(.plain)
+                    .environment(\.editMode, isEditing ? .constant(.active) : .constant(.inactive))
                     
                 }
             }

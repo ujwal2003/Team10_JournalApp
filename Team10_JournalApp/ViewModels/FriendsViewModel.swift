@@ -88,9 +88,26 @@ class FriendsViewModel: ObservableObject {
     }
     
     //FIXME: - actually delete from db
-    func removeFriend(friend: String) async {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            self.friends.removeAll{ $0 == friend }
+    func removeFriend(friend: String) async throws {
+        try await Task.sleep(nanoseconds: 1_000_000_000) // 1 second delay
+        print("\(friend) deleted from database")
+    }
+    
+    func delete(at offsets: IndexSet) {
+        for offset in offsets {
+            let itemToDelete = friends[offset]
+            
+            Task {
+                do {
+                    try await removeFriend(friend: itemToDelete)
+                    
+                    DispatchQueue.main.async {
+                        self.friends.remove(atOffsets: offsets)
+                    }
+                } catch {
+                    print("Failed to delete \(itemToDelete): \(error)")
+                }
+            }
         }
     }
     
