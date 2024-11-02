@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct SignUpView: View {
+    @ObservedObject var appController: AppViewController
     
     @State private var username: String = ""
     @State private var password: String = ""
@@ -50,6 +51,7 @@ struct SignUpView: View {
                                     .frame(width: 295, height: 52)
                                     .foregroundColor(.black)
                                     .focused($focusedField, equals: .username)
+                                    .submitLabel(.next)
                             }
                         }
                         
@@ -71,6 +73,7 @@ struct SignUpView: View {
                                     .frame(width: 295, height: 52)
                                     .foregroundColor(.black)
                                     .focused($focusedField, equals: .password)
+                                    .submitLabel(.next)
                             }
                         }
                         
@@ -92,6 +95,7 @@ struct SignUpView: View {
                                     .frame(width: 295, height: 52)
                                     .foregroundColor(.black)
                                     .focused($focusedField, equals: .password_confirm)
+                                    .submitLabel(.done)
                             }
                         }
                         
@@ -100,7 +104,7 @@ struct SignUpView: View {
 
                     // MARK: Sign in and sign up buttons
                     VStack(spacing: 91) {
-                        NavigationLink(destination: ContentView()) {
+                        Group {
                             ZStack {
                                 Rectangle()
                                     .foregroundColor(.clear)
@@ -114,8 +118,11 @@ struct SignUpView: View {
                                     .foregroundColor(.white)
                             }
                         }
+                        .onTapGesture {
+                            self.appController.loggedIn = true
+                        }
                         
-                        NavigationLink(destination: SignInView()) {
+                        Group {
                             ZStack {
                                 Text("Already have an account? ")
                                     .font(.system(size: 18, weight: .medium))
@@ -126,7 +133,10 @@ struct SignUpView: View {
                             }
                             .frame(width: 275, alignment: .topLeading)
                         }
-                        .navigationBarBackButtonHidden(true)
+                        .onTapGesture {
+                            self.appController.viewSignUpFlag = false
+                        }
+                        
                     }
                     .padding([.bottom], 80)
                 }
@@ -136,9 +146,15 @@ struct SignUpView: View {
             }
             
         }
+        .onSubmit {
+            switch focusedField {
+                case .username:
+                    focusedField = .password
+                case .password:
+                    focusedField = .password_confirm
+                default:
+                    focusedField = nil
+            }
+        }
     }
-}
-
-#Preview {
-    SignUpView()
 }

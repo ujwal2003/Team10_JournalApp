@@ -14,8 +14,7 @@ struct SplashScreenView: View {
     
     var body: some View {
         if isActive {
-            SignInView()
-                .preferredColorScheme(.light)
+            ContentView()
         } else {
             VStack {
                 Image("CatchUpLogo")

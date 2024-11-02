@@ -14,6 +14,8 @@ struct Constants {
 
 
 struct SignInView: View {
+    @ObservedObject var appController: AppViewController
+    
     @State private var username: String = ""
     @State private var password: String = ""
     
@@ -52,6 +54,7 @@ struct SignInView: View {
                                     .frame(width: 295, height: 52)
                                     .foregroundColor(.black)
                                     .focused($focusedField, equals: .username)
+                                    .submitLabel(.next)
                             }
                         }
                         
@@ -73,6 +76,7 @@ struct SignInView: View {
                                     .frame(width: 295, height: 52)
                                     .foregroundColor(.black)
                                     .focused($focusedField, equals: .password)
+                                    .submitLabel(.done)
                             }
                         }
                     }
@@ -80,7 +84,7 @@ struct SignInView: View {
 
                     // MARK: Sign in and sign up buttons
                     VStack(spacing: 91) {
-                        NavigationLink(destination: ContentView().preferredColorScheme(.light)) {
+                        Group {
                             ZStack {
                                 Rectangle()
                                     .foregroundColor(.clear)
@@ -94,9 +98,12 @@ struct SignInView: View {
                                     .foregroundColor(.white)
                             }
                         }
+                        .onTapGesture {
+                            self.appController.loggedIn = true
+                        }
                         
 
-                        NavigationLink(destination: SignUpView().preferredColorScheme(.light)) {
+                        Group {
                             ZStack {
                                 Text("Don’t have an account? ")
                                     .font(.system(size: 18, weight: .medium))
@@ -107,7 +114,10 @@ struct SignInView: View {
                             }
                             .frame(width: 275, alignment: .topLeading)
                         }
-                        .navigationBarBackButtonHidden(true)
+                        .onTapGesture {
+                            self.appController.viewSignUpFlag = true
+                        }
+                        
                     }
                     .padding([.bottom], 80)
                 }
@@ -119,10 +129,13 @@ struct SignInView: View {
             
             
         }
+        .onSubmit {
+            switch focusedField {
+                case .username:
+                    focusedField = .password
+                default:
+                    focusedField = nil
+            }
+        }
     }
 }
-
-#Preview {
-    SignInView()
-}
-
