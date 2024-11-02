@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct SettingView: View {
+    @ObservedObject var appController: AppViewController
+    
     @State private var username: String = ""
     @State private var password: String = ""
     @State private var isShowingResetAlert: Bool = false
@@ -68,7 +70,9 @@ struct SettingView: View {
                                     .alert("Sign Out?", isPresented: $isShowingSignOutAlert) {
                                         Button("No") { }
                                         Button("Yes") {
-                                            isSignedOut = true
+//                                            isSignedOut = true
+                                            self.appController.viewSignUpFlag = false
+                                            self.appController.loggedIn = false
                                         }
                                     } message: {
                                         Text("Are you sure you want to sign out?")
@@ -109,9 +113,9 @@ struct SettingView: View {
                             
                             
                         }
-                        .fullScreenCover(isPresented: $isSignedOut) {
+//                        .fullScreenCover(isPresented: $isSignedOut) {
 //                            SignInView()
-                        }
+//                        }
                     }
                 }
             }
@@ -125,6 +129,6 @@ struct ToggleCustomLocationView: View {
     }
 }
 
-#Preview {
-    SettingView()
-}
+//#Preview {
+//    SettingView()
+//}

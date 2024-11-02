@@ -82,20 +82,20 @@ struct ChangeCredentialsView: View {
             }
         }
         VStack(spacing: 91) {
-            NavigationLink(destination: SettingView()) {
-                ZStack {
-                    Rectangle()
-                        .foregroundColor(.clear)
-                        .frame(width: 315, height: 52)
-                        .background(Color(red: 0.09, green: 0.28, blue: 0.39))
-                        .cornerRadius(100)
-                        .shadow(color: .black.opacity(0.25), radius: 2, x: 0, y: 4)
-                    
-                    Text("Save")
-                        .font(.system(size: 18, weight: .medium))
-                        .foregroundColor(.white)
-                }
-            }
+//            NavigationLink(destination: SettingView()) {
+//                ZStack {
+//                    Rectangle()
+//                        .foregroundColor(.clear)
+//                        .frame(width: 315, height: 52)
+//                        .background(Color(red: 0.09, green: 0.28, blue: 0.39))
+//                        .cornerRadius(100)
+//                        .shadow(color: .black.opacity(0.25), radius: 2, x: 0, y: 4)
+//                    
+//                    Text("Save")
+//                        .font(.system(size: 18, weight: .medium))
+//                        .foregroundColor(.white)
+//                }
+//            }
         }
         
         .padding([.bottom], 160)

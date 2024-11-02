@@ -13,6 +13,7 @@ enum AppTab: Hashable {
 }
 
 struct UserContentView: View {
+    @ObservedObject var appController: AppViewController
     @State var selectedTab: AppTab = .Home
     
     var body: some View {
@@ -32,7 +33,7 @@ struct UserContentView: View {
 //                .badge(2)
                 
                 Tab("Settings", systemImage: "gear", value: .Settings) {
-                    SettingView()
+                    SettingView(appController: appController)
                 }
                 
                 //! FOR TESTING

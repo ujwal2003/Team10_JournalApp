@@ -13,7 +13,8 @@ struct ContentView: View {
     var body: some View {
         VStack {
             if appController.loggedIn {
-                UserContentView().preferredColorScheme(.light)
+                UserContentView(appController: appController)
+                    .preferredColorScheme(.light)
             } else {
                 if appController.viewSignUpFlag {
                     SignUpView(appController: appController).preferredColorScheme(.light)
