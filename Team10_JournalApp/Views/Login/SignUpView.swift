@@ -51,6 +51,7 @@ struct SignUpView: View {
                                     .frame(width: 295, height: 52)
                                     .foregroundColor(.black)
                                     .focused($focusedField, equals: .username)
+                                    .submitLabel(.next)
                             }
                         }
                         
@@ -72,6 +73,7 @@ struct SignUpView: View {
                                     .frame(width: 295, height: 52)
                                     .foregroundColor(.black)
                                     .focused($focusedField, equals: .password)
+                                    .submitLabel(.next)
                             }
                         }
                         
@@ -93,6 +95,7 @@ struct SignUpView: View {
                                     .frame(width: 295, height: 52)
                                     .foregroundColor(.black)
                                     .focused($focusedField, equals: .password_confirm)
+                                    .submitLabel(.done)
                             }
                         }
                         
@@ -142,6 +145,16 @@ struct SignUpView: View {
                 focusedField = nil
             }
             
+        }
+        .onSubmit {
+            switch focusedField {
+                case .username:
+                    focusedField = .password
+                case .password:
+                    focusedField = .password_confirm
+                default:
+                    focusedField = nil
+            }
         }
     }
 }

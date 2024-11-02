@@ -54,6 +54,7 @@ struct SignInView: View {
                                     .frame(width: 295, height: 52)
                                     .foregroundColor(.black)
                                     .focused($focusedField, equals: .username)
+                                    .submitLabel(.next)
                             }
                         }
                         
@@ -75,6 +76,7 @@ struct SignInView: View {
                                     .frame(width: 295, height: 52)
                                     .foregroundColor(.black)
                                     .focused($focusedField, equals: .password)
+                                    .submitLabel(.done)
                             }
                         }
                     }
@@ -126,6 +128,14 @@ struct SignInView: View {
             }
             
             
+        }
+        .onSubmit {
+            switch focusedField {
+                case .username:
+                    focusedField = .password
+                default:
+                    focusedField = nil
+            }
         }
     }
 }
