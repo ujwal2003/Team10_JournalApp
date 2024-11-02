@@ -7,50 +7,39 @@
 
 import SwiftUI
 
-enum AppTab {
-    case Home; case Journal; case Friends; case Settings
-    case Exepriments //! FOR TESTING
-}
-
 struct ContentView: View {
-    @State var selectedTab: AppTab = .Home
+    @ObservedObject var appController = AppViewController()
     
     var body: some View {
-        VStack {
-            TabView(selection: $selectedTab) {
-                HomeView()
-                    .tabItem {
-                        Image(systemName: "house")
-                        Text("Home")
-                    }.tag(AppTab.Home)
+        ZStack {
+            if appController.loggedIn {
+                UserContentView(appController: appController)
+                    .transition(.asymmetric(
+                        insertion: .move(edge: .bottom),
+                        removal: .move(edge: .top))
+                    )
+                    .preferredColorScheme(.light)
                 
-                JournalEntryView()
-                    .tabItem {
-                        Image(systemName: "book")
-                        Text("Journal")
-                    }.tag(AppTab.Journal)
-                
-                FriendsView()
-                    .tabItem {
-                        Image(systemName: "person.3")
-                        Text("Friends")
-                    }.tag(AppTab.Friends)
-                
-                SettingView()
-                    .tabItem {
-                        Image(systemName: "gear")
-                        Text("Settings")
-                    }.tag(AppTab.Settings)
-                
-                //! FOR TESTING
-                ExperimentsTestView()
-                    .tabItem {
-                        Image(systemName: "testtube.2")
-                        Text("Experiments")
-                    }.tag(AppTab.Exepriments)
+            } else {
+                if appController.viewSignUpFlag {
+                    SignUpView(appController: appController)
+                        .transition(.asymmetric(
+                            insertion: .move(edge: .trailing),
+                            removal: .move(edge: .leading))
+                        )
+                        .preferredColorScheme(.light)
+                } else {
+                    SignInView(appController: appController)
+                        .transition(.asymmetric(
+                            insertion: .move(edge: .leading),
+                            removal: .move(edge: .trailing))
+                        )
+                        .preferredColorScheme(.light)
+                }
             }
         }
-        .navigationBarBackButtonHidden(true)
+        .animation(.spring, value: appController.loggedIn || appController.viewSignUpFlag)
+        .environmentObject(appController)
     }
 }
 
