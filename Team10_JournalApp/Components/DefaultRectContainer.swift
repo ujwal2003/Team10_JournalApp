@@ -20,6 +20,7 @@ enum HeadTextLocation {
     case signInAlign
 }
 
+@available(*, deprecated, message: "Use AppLayoutContainer instead")
 struct DefaultRectContainer<Content: View>: View {
     var title: FrameRectHeadText
     var subtitle: FrameRectHeadText
