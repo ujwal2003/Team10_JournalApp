@@ -11,24 +11,35 @@ struct ContentView: View {
     @ObservedObject var appController = AppViewController()
     
     var body: some View {
-        VStack {
+        ZStack {
             if appController.loggedIn {
                 UserContentView(appController: appController)
+                    .transition(.asymmetric(
+                        insertion: .move(edge: .bottom),
+                        removal: .move(edge: .top))
+                    )
                     .preferredColorScheme(.light)
-                    .transition(.slide)
                 
             } else {
                 if appController.viewSignUpFlag {
                     SignUpView(appController: appController)
+                        .transition(.asymmetric(
+                            insertion: .move(edge: .trailing),
+                            removal: .move(edge: .leading))
+                        )
                         .preferredColorScheme(.light)
-                        .transition(.slide)
                 } else {
                     SignInView(appController: appController)
+                        .transition(.asymmetric(
+                            insertion: .move(edge: .leading),
+                            removal: .move(edge: .trailing))
+                        )
                         .preferredColorScheme(.light)
-                        .transition(.slide)
                 }
             }
         }
+        .animation(.spring, value: appController.loggedIn || appController.viewSignUpFlag)
+        .environmentObject(appController)
     }
 }
 
