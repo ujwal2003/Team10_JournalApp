@@ -9,6 +9,7 @@ import SwiftUI
 
 let FRIENDS_ROW_WIDTH: CGFloat = isIphone16ProMaxPortrait ? 380 : 320
 
+@available(*, deprecated, message: "Use FriendListRowViewIntead")
 struct FriendCheckInRow: View {
     var friendName: String
     var isCheckInVisible: Bool = true
@@ -42,6 +43,7 @@ struct FriendCheckInRow: View {
     }
 }
 
+@available(*, deprecated, message: "Use FriendListRowViewIntead")
 struct FriendRequestRow: View {
     var name: String
     var onAcceptClick: () -> Void
@@ -86,6 +88,7 @@ struct FriendRequestRow: View {
     }
 }
 
+@available(*, deprecated, message: "Use FriendListRowViewIntead")
 struct FriendInviteRow: View {
     var name: String
     var onDismissClick: () -> Void
