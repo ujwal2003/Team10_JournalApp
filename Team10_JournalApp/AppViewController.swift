@@ -7,6 +7,7 @@
 
 import Foundation
 
-class AppController: ObservableObject {
+class AppViewController: ObservableObject {
     @Published var loggedIn: Bool = false
+    @Published var viewSignUpFlag: Bool = false
 }

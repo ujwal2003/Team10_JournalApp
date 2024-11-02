@@ -8,14 +8,18 @@
 import SwiftUI
 
 struct ContentView: View {
-    @ObservedObject var appController = AppController()
+    @ObservedObject var appController = AppViewController()
     
     var body: some View {
         VStack {
             if appController.loggedIn {
                 UserContentView().preferredColorScheme(.light)
             } else {
-                SignInView(appController: appController).preferredColorScheme(.light)
+                if appController.viewSignUpFlag {
+                    SignUpView(appController: appController).preferredColorScheme(.light)
+                } else {
+                    SignInView(appController: appController).preferredColorScheme(.light)
+                }
             }
         }
     }

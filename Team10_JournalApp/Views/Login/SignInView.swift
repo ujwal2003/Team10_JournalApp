@@ -14,7 +14,7 @@ struct Constants {
 
 
 struct SignInView: View {
-    @ObservedObject var appController: AppController
+    @ObservedObject var appController: AppViewController
     
     @State private var username: String = ""
     @State private var password: String = ""
@@ -101,7 +101,7 @@ struct SignInView: View {
                         }
                         
 
-                        NavigationLink(destination: SignUpView().preferredColorScheme(.light)) {
+                        Group {
                             ZStack {
                                 Text("Don’t have an account? ")
                                     .font(.system(size: 18, weight: .medium))
@@ -112,7 +112,10 @@ struct SignInView: View {
                             }
                             .frame(width: 275, alignment: .topLeading)
                         }
-                        .navigationBarBackButtonHidden(true)
+                        .onTapGesture {
+                            self.appController.viewSignUpFlag = true
+                        }
+                        
                     }
                     .padding([.bottom], 80)
                 }

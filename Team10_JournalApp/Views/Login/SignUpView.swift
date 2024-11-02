@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct SignUpView: View {
+    @ObservedObject var appController: AppViewController
     
     @State private var username: String = ""
     @State private var password: String = ""
@@ -100,7 +101,7 @@ struct SignUpView: View {
 
                     // MARK: Sign in and sign up buttons
                     VStack(spacing: 91) {
-                        NavigationLink(destination: ContentView()) {
+                        Group {
                             ZStack {
                                 Rectangle()
                                     .foregroundColor(.clear)
@@ -114,19 +115,25 @@ struct SignUpView: View {
                                     .foregroundColor(.white)
                             }
                         }
+                        .onTapGesture {
+                            self.appController.loggedIn = true
+                        }
                         
-//                        NavigationLink(destination: SignInView()) {
-//                            ZStack {
-//                                Text("Already have an account? ")
-//                                    .font(.system(size: 18, weight: .medium))
-//                                    .foregroundColor(Constants.LabelsPrimary) +
-//                                Text("Sign In")
-//                                    .font(.system(size: 18, weight: .bold))
-//                                    .foregroundColor(Constants.LabelsPrimary)
-//                            }
-//                            .frame(width: 275, alignment: .topLeading)
-//                        }
-//                        .navigationBarBackButtonHidden(true)
+                        Group {
+                            ZStack {
+                                Text("Already have an account? ")
+                                    .font(.system(size: 18, weight: .medium))
+                                    .foregroundColor(Constants.LabelsPrimary) +
+                                Text("Sign In")
+                                    .font(.system(size: 18, weight: .bold))
+                                    .foregroundColor(Constants.LabelsPrimary)
+                            }
+                            .frame(width: 275, alignment: .topLeading)
+                        }
+                        .onTapGesture {
+                            self.appController.viewSignUpFlag = false
+                        }
+                        
                     }
                     .padding([.bottom], 80)
                 }
@@ -137,8 +144,4 @@ struct SignUpView: View {
             
         }
     }
-}
-
-#Preview {
-    SignUpView()
 }
