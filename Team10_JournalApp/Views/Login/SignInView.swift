@@ -14,6 +14,8 @@ struct Constants {
 
 
 struct SignInView: View {
+    @ObservedObject var appController: AppController
+    
     @State private var username: String = ""
     @State private var password: String = ""
     
@@ -80,7 +82,7 @@ struct SignInView: View {
 
                     // MARK: Sign in and sign up buttons
                     VStack(spacing: 91) {
-                        NavigationLink(destination: ContentView().preferredColorScheme(.light)) {
+                        Group {
                             ZStack {
                                 Rectangle()
                                     .foregroundColor(.clear)
@@ -93,6 +95,9 @@ struct SignInView: View {
                                     .font(.system(size: 18, weight: .medium))
                                     .foregroundColor(.white)
                             }
+                        }
+                        .onTapGesture {
+                            self.appController.loggedIn = true
                         }
                         
 
@@ -121,8 +126,3 @@ struct SignInView: View {
         }
     }
 }
-
-#Preview {
-    SignInView()
-}
-

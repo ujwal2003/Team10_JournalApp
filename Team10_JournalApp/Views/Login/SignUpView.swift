@@ -115,18 +115,18 @@ struct SignUpView: View {
                             }
                         }
                         
-                        NavigationLink(destination: SignInView()) {
-                            ZStack {
-                                Text("Already have an account? ")
-                                    .font(.system(size: 18, weight: .medium))
-                                    .foregroundColor(Constants.LabelsPrimary) +
-                                Text("Sign In")
-                                    .font(.system(size: 18, weight: .bold))
-                                    .foregroundColor(Constants.LabelsPrimary)
-                            }
-                            .frame(width: 275, alignment: .topLeading)
-                        }
-                        .navigationBarBackButtonHidden(true)
+//                        NavigationLink(destination: SignInView()) {
+//                            ZStack {
+//                                Text("Already have an account? ")
+//                                    .font(.system(size: 18, weight: .medium))
+//                                    .foregroundColor(Constants.LabelsPrimary) +
+//                                Text("Sign In")
+//                                    .font(.system(size: 18, weight: .bold))
+//                                    .foregroundColor(Constants.LabelsPrimary)
+//                            }
+//                            .frame(width: 275, alignment: .topLeading)
+//                        }
+//                        .navigationBarBackButtonHidden(true)
                     }
                     .padding([.bottom], 80)
                 }

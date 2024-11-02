@@ -110,7 +110,7 @@ struct SettingView: View {
                             
                         }
                         .fullScreenCover(isPresented: $isSignedOut) {
-                            SignInView()
+//                            SignInView()
                         }
                     }
                 }

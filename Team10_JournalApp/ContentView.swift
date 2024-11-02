@@ -7,50 +7,17 @@
 
 import SwiftUI
 
-enum AppTab {
-    case Home; case Journal; case Friends; case Settings
-    case Exepriments //! FOR TESTING
-}
-
 struct ContentView: View {
-    @State var selectedTab: AppTab = .Home
+    @ObservedObject var appController = AppController()
     
     var body: some View {
         VStack {
-            TabView(selection: $selectedTab) {
-                HomeView()
-                    .tabItem {
-                        Image(systemName: "house")
-                        Text("Home")
-                    }.tag(AppTab.Home)
-                
-                JournalEntryView()
-                    .tabItem {
-                        Image(systemName: "book")
-                        Text("Journal")
-                    }.tag(AppTab.Journal)
-                
-                FriendsView()
-                    .tabItem {
-                        Image(systemName: "person.3")
-                        Text("Friends")
-                    }.tag(AppTab.Friends)
-                
-                SettingView()
-                    .tabItem {
-                        Image(systemName: "gear")
-                        Text("Settings")
-                    }.tag(AppTab.Settings)
-                
-                //! FOR TESTING
-                ExperimentsTestView()
-                    .tabItem {
-                        Image(systemName: "testtube.2")
-                        Text("Experiments")
-                    }.tag(AppTab.Exepriments)
+            if appController.loggedIn {
+                UserContentView().preferredColorScheme(.light)
+            } else {
+                SignInView(appController: appController).preferredColorScheme(.light)
             }
         }
-        .navigationBarBackButtonHidden(true)
     }
 }
 
