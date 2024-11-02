@@ -15,11 +15,17 @@ struct ContentView: View {
             if appController.loggedIn {
                 UserContentView(appController: appController)
                     .preferredColorScheme(.light)
+                    .transition(.slide)
+                
             } else {
                 if appController.viewSignUpFlag {
-                    SignUpView(appController: appController).preferredColorScheme(.light)
+                    SignUpView(appController: appController)
+                        .preferredColorScheme(.light)
+                        .transition(.slide)
                 } else {
-                    SignInView(appController: appController).preferredColorScheme(.light)
+                    SignInView(appController: appController)
+                        .preferredColorScheme(.light)
+                        .transition(.slide)
                 }
             }
         }
