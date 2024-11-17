@@ -31,7 +31,7 @@ struct HomeView: View {
                     onClick: {}
                 ) // add sheet for reccomended actions here
                 
-                // TODO: city map
+                UserJournalCityBlockView()
                 
                 BottomNavigationView(
                     isDisabled: false,

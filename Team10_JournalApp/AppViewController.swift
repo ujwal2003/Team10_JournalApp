@@ -8,6 +8,6 @@
 import Foundation
 
 class AppViewController: ObservableObject {
-    @Published var loggedIn: Bool = false
+    @Published var loggedIn: Bool = true
     @Published var viewSignUpFlag: Bool = false
 }
