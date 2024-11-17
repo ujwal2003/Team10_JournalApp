@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct HomeView: View {
+struct OLDHomeView: View {
     //FIXME: - pass in weather status from journal entry sentiment calculation
     //FIXME: - pass in reccomended actions from journal entry sentiment calculation
     //FIXME: - pass in num friends from initial user data fetch
