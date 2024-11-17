@@ -20,7 +20,8 @@ struct UserContentView: View {
         VStack {
             TabView(selection: $selectedTab) {
                 Tab("Home", systemImage: "house", value: .Home) {
-                    OLDHomeView()
+//                    OLDHomeView()
+                    HomeView()
                 }
                 
                 Tab("Journal", systemImage: "book", value: .Journal) {
