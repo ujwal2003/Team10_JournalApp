@@ -11,7 +11,7 @@ struct OLDHomeView: View {
     //FIXME: - pass in weather status from journal entry sentiment calculation
     //FIXME: - pass in reccomended actions from journal entry sentiment calculation
     //FIXME: - pass in num friends from initial user data fetch
-    @StateObject private var viewModel = HomeViewModel(weatherStatus: .NoData,
+    @StateObject private var viewModel = OLDHomeViewModel(weatherStatus: .NoData,
                                                        recommendedActions: [
                                                         .init(searchQuery: "parks",
                                                               title: "Park",

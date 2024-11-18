@@ -9,7 +9,7 @@ import Foundation
 import SwiftUI
 import MapKit
 
-class HomeViewModel: ObservableObject {
+class OLDHomeViewModel: ObservableObject {
     //FIXME: - these two will be set by the load / async function
     @Published var currCityJournal: CityMap = CityMap(map: .LoadingMap, buildings: [], reports: [])
     @Published var currCityBlock: String = "Loading.."
