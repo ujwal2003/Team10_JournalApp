@@ -40,7 +40,7 @@ struct HomeView: View {
                     isDisabled: false,
                     onLeftArrowClick: {},
                     onRightArrowClick: {},
-                    currWeek: "XX/XX/XX - XX/XX/XX",
+                    currWeek: viewModel.currWeek,
                     numFriends: 5
                 )
                 
@@ -48,6 +48,8 @@ struct HomeView: View {
         }
         .onAppear {
             //FIXME: use stuff from DB here
+            viewModel.currWeek = viewModel.getWeekRange(offset: 0)
+            
             viewModel.cityHealthPercentage = 1.0
             viewModel.currSentimentWeather = .Cloudy
             
@@ -61,6 +63,7 @@ struct HomeView: View {
                 .init(style: .BrownTower, onClick: {}),
                 .init(style: .LightGreenTower, onClick: {})
             ]
+            
         }
 
     }
