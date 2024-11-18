@@ -17,6 +17,9 @@ class HomeViewModel: ObservableObject {
     @Published var currMap: Map = .LoadingMap
     @Published var currCityBlockBuildings: [BuildingConfig] = []
     
+    @Published var isRecommendedActionsShowing: Bool = false
+    @Published var recommendedActions: [RecommendedAction] = []
+    
     let currentDate = Date()
     
     /// Returns the start and end date of the week in format: "mm/dd/yy - mm/dd/yy"

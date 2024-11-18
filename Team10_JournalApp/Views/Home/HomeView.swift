@@ -28,8 +28,11 @@ struct HomeView: View {
                 
                 ActionButtonView(
                     isDisabled: false,
-                    onClick: {}
-                ) // add sheet for reccomended actions here
+                    onClick: { viewModel.isRecommendedActionsShowing.toggle() }
+                )
+                .sheet(isPresented: $viewModel.isRecommendedActionsShowing) {
+                    ReccomendedActionsView(actions: viewModel.recommendedActions)
+                }
                 
                 UserJournalCityBlockView(
                     map: viewModel.currMap,
@@ -62,6 +65,16 @@ struct HomeView: View {
                 .init(style: .PurpleConstruction, onClick: {}),
                 .init(style: .BrownTower, onClick: {}),
                 .init(style: .LightGreenTower, onClick: {})
+            ]
+            
+            viewModel.recommendedActions = [
+                .init(searchQuery: "parks",
+                      title: "Park",
+                      description: "Going to the park is a great way to improve your physical and mental health."),
+                
+                    .init(searchQuery: "coffee shops",
+                          title: "Chill & Chat",
+                          description: "Reach out to a friend or loved one for a chat at a coffee shop")
             ]
             
         }
