@@ -84,9 +84,8 @@ struct UserJournalCityBlockView: View {
                 
             }
         }
-        .frame(height: 380)
+        .frame(height: isIphone16ProMaxPortrait ? 400 : 380)
         .clipped()
-        .border(Color.red, width: 2)
         .padding(4)
         
     }
@@ -98,30 +97,31 @@ struct UserJournalCityBlockView: View {
             
         case .Map1:
             return [
-                (0.10, 0.15), (0.42, 0.20), (0.84, 0.14), (0.18, 0.65),
+                (0.10, 0.15), (0.42, 0.20), (0.85, 0.12), (0.18, 0.65),
                 (0.32, 0.88), (0.58, 0.62), (0.82, 0.82)
             ]
             
         case .Map2:
             return [
-                (0.16, 0.10), (0.44, 0.20), (0.85, 0.12), (0.15, 0.52),
-                (0.38, 0.85), (0.80, 0.85), (0.72, 0.56)
+                (0.16, 0.10), (0.44, 0.20), (0.85, 0.10), (0.15, 0.54),
+                (0.38, 0.86), (0.80, 0.85), (0.72, 0.56)
             ]
             
         case .Map3:
             return [
-                (0.22, 0.18), (0.10, 0.40), (0.15, 0.70), (0.35, 0.85),
-                (0.62, 0.42), (0.90, 0.08), (0.88, 0.82)
+                (0.20, 0.10), (0.18, 0.32), (0.20, 0.54), (0.18, 0.78),
+                (0.50, 0.88), (0.70, 0.40), (0.80, 0.82)
             ]
             
         case .Map4:
             return [
-                (0.10, 0.10), (0.35, 0.28), (0.85, 0.10), (0.70, 0.60),
-                (0.08, 0.52), (0.22, 0.90), (0.90, 0.82)
+                (0.18, 0.10), (0.35, 0.28), (0.85, 0.10), (0.55, 0.46),
+                (0.84, 0.66), (0.13, 0.48), (0.40, 0.85)
             ]
         }
     }
     
+    /// Specifies sign type for building (depending on Map and Building type as well as Day of week)
     private func getBuildingSign(dayIndex: Int, building: Building, map: Map) -> BuildingNameSign {
         let prefersBillboard: () -> Bool = {
             return building.category.preferredSign == .Billboard
@@ -129,8 +129,29 @@ struct UserJournalCityBlockView: View {
         
         let billboardOverride: () -> Bool = {
             switch map {
+                case .Map1:
+                    if dayIndex == 2 {
+                        return true
+                    } else {
+                        return false
+                    }
+                
                 case .Map2:
                     if dayIndex == 0 || dayIndex == 2 {
+                        return true
+                    } else {
+                        return false
+                    }
+                
+                case .Map3:
+                    if dayIndex == 0 || dayIndex == 1 || dayIndex == 2 || dayIndex == 3 || dayIndex == 5 {
+                        return true
+                    } else {
+                        return false
+                    }
+                
+                case .Map4:
+                    if dayIndex == 0 || dayIndex == 1 || dayIndex == 2 || dayIndex == 3 || dayIndex == 4 {
                         return true
                     } else {
                         return false
@@ -184,4 +205,5 @@ struct UserJournalCityBlockView: View {
         
         return buildingViews
     }
+    
 }
