@@ -31,7 +31,18 @@ struct HomeView: View {
                     onClick: {}
                 ) // add sheet for reccomended actions here
                 
-                UserJournalCityBlockView()
+                UserJournalCityBlockView(
+                    map: .Map1,
+                    buildings: [
+                        .init(style: .LightBlueTower, onClick: {}),
+                        .init(style: .RedRuin, onClick: {}),
+                        .init(style: .PurpleConstruction, onClick: {}),
+                        .init(style: .Scaffolding, onClick: {}),
+                        .init(style: .PurpleConstruction, onClick: {}),
+                        .init(style: .BrownTower, onClick: {}),
+                        .init(style: .LightGreenTower, onClick: {})
+                    ]
+                ) // add sheet for city growth here
                 
                 BottomNavigationView(
                     isDisabled: false,

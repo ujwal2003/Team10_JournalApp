@@ -54,16 +54,8 @@ struct CityBuildingView: View {
 }
 
 struct UserJournalCityBlockView: View {
-    var map: Map = .Map1
-    var buildings: [BuildingConfig] = [
-        .init(style: .LightBlueTower, onClick: {}),
-        .init(style: .RedRuin, onClick: {}),
-        .init(style: .PurpleConstruction, onClick: {}),
-        .init(style: .Scaffolding, onClick: {}),
-        .init(style: .PurpleConstruction, onClick: {}),
-        .init(style: .BrownTower, onClick: {}),
-        .init(style: .LightGreenTower, onClick: {})
-    ]
+    var map: Map
+    var buildings: [BuildingConfig]
     
     var body: some View {
         GeometryReader { geometry in
