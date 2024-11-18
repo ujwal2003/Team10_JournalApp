@@ -54,17 +54,17 @@ struct HomeView: View {
             viewModel.currWeek = viewModel.getWeekRange(offset: 0)
             
             viewModel.cityHealthPercentage = 1.0
-            viewModel.currSentimentWeather = .Cloudy
+            viewModel.currSentimentWeather = .Sunny
             
             viewModel.currMap = .Map1
             viewModel.currCityBlockBuildings = [
-                .init(style: .LightBlueTower, onClick: {}),
-                .init(style: .RedRuin, onClick: {}),
-                .init(style: .PurpleConstruction, onClick: {}),
-                .init(style: .Scaffolding, onClick: {}),
-                .init(style: .PurpleConstruction, onClick: {}),
-                .init(style: .BrownTower, onClick: {}),
-                .init(style: .LightGreenTower, onClick: {})
+                .init(style: .LightBlueTower, onClick: { viewModel.selectedBuildingIndex = 0 }),
+                .init(style: .RedRuin, onClick: { viewModel.selectedBuildingIndex = 1 }),
+                .init(style: .YellowConstruction, onClick: { viewModel.selectedBuildingIndex = 2 }),
+                .init(style: .Scaffolding, onClick: { viewModel.selectedBuildingIndex = 3 }),
+                .init(style: .PurpleConstruction, onClick: { viewModel.selectedBuildingIndex = 4 }),
+                .init(style: .BrownTower, onClick: { viewModel.selectedBuildingIndex = 5 }),
+                .init(style: .LightGreenTower, onClick: { viewModel.selectedBuildingIndex = 6 })
             ]
             
             viewModel.recommendedActions = [

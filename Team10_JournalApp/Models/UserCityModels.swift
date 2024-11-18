@@ -121,3 +121,8 @@ struct CityMap {
     var buildings: [BuildingConfig]
     var reports: [GrowthReport]
 }
+
+enum CityBuildingViewSelection {
+    case Sentiment
+    case Journal
+}

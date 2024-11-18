@@ -20,6 +20,9 @@ class HomeViewModel: ObservableObject {
     @Published var isRecommendedActionsShowing: Bool = false
     @Published var recommendedActions: [RecommendedAction] = []
     
+    @Published var isGrowthReportShowing: Bool = false
+    @Published var selectedBuildingIndex: Int = 0
+    
     let currentDate = Date()
     
     /// Returns the start and end date of the week in format: "mm/dd/yy - mm/dd/yy"
