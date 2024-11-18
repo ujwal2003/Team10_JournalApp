@@ -54,7 +54,7 @@ struct CityBuildingView: View {
 }
 
 struct UserJournalCityBlockView: View {
-    var map: Map = .Map3
+    var map: Map = .Map1
     var buildings: [BuildingConfig] = [
         .init(style: .LightBlueTower, onClick: {}),
         .init(style: .RedRuin, onClick: {}),
@@ -70,9 +70,7 @@ struct UserJournalCityBlockView: View {
             ZStack {
                 Image(map.rawValue)
                     .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .padding(4)
-                    .frame(width: geometry.size.width, alignment: .center)
+                    .aspectRatio(contentMode: .fill)
                 
                 let buildingViews: [CityBuildingView] = getMapBuildings(
                     geometry: geometry,
@@ -86,6 +84,10 @@ struct UserJournalCityBlockView: View {
                 
             }
         }
+        .frame(height: 380)
+        .clipped()
+        .border(Color.red, width: 2)
+        .padding(4)
         
     }
     
