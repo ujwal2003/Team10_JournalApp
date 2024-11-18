@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct HomeView: View {
+    @StateObject var viewModel = HomeViewModel()
+    
     var body: some View {
         AppLayoutContainer(height: 10.0) {
             Text("CatchUp")
@@ -19,11 +21,9 @@ struct HomeView: View {
             
         } containerContent: {
             VStack {
-                CityHealthWeatherView(
-                    cityHealthPercentage: .constant(1.0),
-                    cityHealthBar: (borderColor: Color(red: 0, green: 0.66, blue: 0.39).opacity(0.4),
-                                    barColor: Color(red: 0.79, green: 1, blue: 0.87)),
-                    todaysWeather: JournalWeather.Sunny.weatherStatusStyle
+                CityStatsView(
+                    percentage: viewModel.cityHealthPercentage,
+                    weather: viewModel.currSentimentWeather
                 )
                 
                 ActionButtonView(
@@ -53,6 +53,11 @@ struct HomeView: View {
                 )
                 
             }
+        }
+        .onAppear {
+            //FIXME: use stuff from DB here
+            viewModel.cityHealthPercentage = 1.0
+            viewModel.currSentimentWeather = .Cloudy
         }
 
     }
