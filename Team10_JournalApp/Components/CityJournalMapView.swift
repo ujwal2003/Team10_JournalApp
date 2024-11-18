@@ -10,11 +10,6 @@ import SwiftUI
 //! Magic Number
 let isIphone16ProMaxPortrait: Bool = UIScreen.main.bounds.height == 956.0
 
-struct BuildingConfig {
-    var style: Building
-    var onClick: () -> Void
-}
-
 struct BuildingView: View {
     var id = UUID()
     var geometry: GeometryProxy

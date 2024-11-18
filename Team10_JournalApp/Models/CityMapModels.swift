@@ -20,6 +20,15 @@ enum BuildingCategory {
     case Building
     case Construction
     case Ruin
+    
+    var preferredSign: BuildingNameSignCategory {
+        switch self {
+            case .Building:
+                return .Billboard
+            default:
+                return .Sign
+        }
+    }
 }
 
 enum Building: String {
@@ -99,4 +108,9 @@ enum BuildingNameSign: String {
             return .Sign
         }
     }
+}
+
+struct BuildingConfig {
+    var style: Building
+    var onClick: () -> Void
 }
