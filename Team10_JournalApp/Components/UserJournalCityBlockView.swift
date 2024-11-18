@@ -175,6 +175,11 @@ struct UserJournalCityBlockView: View {
     }
     
     private func getMapBuildings(geometry: GeometryProxy, map: Map, buildingsList: [BuildingConfig]) -> [CityBuildingView] {
+        
+        if map == .LoadingMap || map == .NotFoundMap || buildingsList.isEmpty {
+            return []
+        }
+        
         let coords = getBuildingCoords(map: map)
         var buildingViews: [CityBuildingView] = []
         

@@ -32,16 +32,8 @@ struct HomeView: View {
                 ) // add sheet for reccomended actions here
                 
                 UserJournalCityBlockView(
-                    map: .Map1,
-                    buildings: [
-                        .init(style: .LightBlueTower, onClick: {}),
-                        .init(style: .RedRuin, onClick: {}),
-                        .init(style: .PurpleConstruction, onClick: {}),
-                        .init(style: .Scaffolding, onClick: {}),
-                        .init(style: .PurpleConstruction, onClick: {}),
-                        .init(style: .BrownTower, onClick: {}),
-                        .init(style: .LightGreenTower, onClick: {})
-                    ]
+                    map: viewModel.currMap,
+                    buildings: viewModel.currCityBlockBuildings
                 ) // add sheet for city growth here
                 
                 BottomNavigationView(
@@ -58,6 +50,17 @@ struct HomeView: View {
             //FIXME: use stuff from DB here
             viewModel.cityHealthPercentage = 1.0
             viewModel.currSentimentWeather = .Cloudy
+            
+            viewModel.currMap = .Map1
+            viewModel.currCityBlockBuildings = [
+                .init(style: .LightBlueTower, onClick: {}),
+                .init(style: .RedRuin, onClick: {}),
+                .init(style: .PurpleConstruction, onClick: {}),
+                .init(style: .Scaffolding, onClick: {}),
+                .init(style: .PurpleConstruction, onClick: {}),
+                .init(style: .BrownTower, onClick: {}),
+                .init(style: .LightGreenTower, onClick: {})
+            ]
         }
 
     }
