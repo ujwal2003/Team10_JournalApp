@@ -94,7 +94,7 @@ enum Sentiment {
     var report: String {
         switch self {
             case .Positive:
-                return "You have infused the city with positivity, causing this building to shine brightly. Citizens feel more connected and at peace. This uplifting energy has led to increased city growth and well-being."
+                return "Infusing the city with positivity causes this building to shine brightly. Citizens feel more connected and at peace. This uplifting energy leads to increased city growth and well-being."
             
             case .Neutral:
                 return "This reflects a balanced mindset today, neither overly joyful nor overly troubled. Progress is steady, and the city remains stable."
