@@ -77,8 +77,8 @@ struct HomeView: View {
                 
                 BottomNavigationView(
                     isDisabled: false,
-                    onLeftArrowClick: {},
-                    onRightArrowClick: {},
+                    onLeftArrowClick: { print("TODO: Navigate Previous") },
+                    onRightArrowClick: { print("TODO: Navigate Next") },
                     currWeek: viewModel.currWeek,
                     numFriends: 5
                 )

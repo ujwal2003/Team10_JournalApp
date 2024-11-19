@@ -11,6 +11,6 @@ import SwiftUI
 let isIphone16ProMaxPortrait: Bool = UIScreen.main.bounds.height == 956.0
 
 class AppViewController: ObservableObject {
-    @Published var loggedIn: Bool = true
+    @Published var loggedIn: Bool = false
     @Published var viewSignUpFlag: Bool = false
 }
