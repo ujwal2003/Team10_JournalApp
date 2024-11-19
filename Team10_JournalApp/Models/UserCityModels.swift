@@ -8,6 +8,16 @@
 import Foundation
 import SwiftUI
 
+let dayToIndex = [
+    0 : "Sunday",
+    1 : "Monday",
+    2 : "Tuesday",
+    3 : "Wednesday",
+    4 : "Thursday",
+    5 : "Friday",
+    6 : "Saturday",
+]
+
 enum JournalWeather {
     case Sunny
     case Cloudy

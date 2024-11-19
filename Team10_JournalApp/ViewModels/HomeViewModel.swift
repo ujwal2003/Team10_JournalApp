@@ -16,6 +16,7 @@ class HomeViewModel: ObservableObject {
     
     @Published var currMap: Map = .LoadingMap
     @Published var currCityBlockBuildings: [BuildingConfig] = []
+    @Published var currWeekJournal: [GrowthReport] = []
     
     @Published var isRecommendedActionsShowing: Bool = false
     @Published var recommendedActions: [RecommendedAction] = []
@@ -43,5 +44,4 @@ class HomeViewModel: ObservableObject {
         
         return "\(startDateString) - \(endDateString)"
     }
-    
 }

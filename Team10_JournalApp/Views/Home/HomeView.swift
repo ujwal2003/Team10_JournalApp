@@ -37,7 +37,43 @@ struct HomeView: View {
                 UserJournalCityBlockView(
                     map: viewModel.currMap,
                     buildings: viewModel.currCityBlockBuildings
-                ) // add sheet for city growth here
+                )
+                .sheet(isPresented: $viewModel.isGrowthReportShowing) {
+                    let day = "\(dayToIndex[viewModel.selectedBuildingIndex] ?? "Day")"
+                    let selectedBuilding = viewModel.currCityBlockBuildings[viewModel.selectedBuildingIndex].style
+                    
+                    var growthHeadline: String {
+                        if selectedBuilding.category == .Ruin {
+                            return "Ruins of \(day)"
+                        }
+                        
+                        return "\(day) City Growth"
+                    }
+                    
+                    let currWeekJournal = viewModel.currWeekJournal
+                    if !currWeekJournal.isEmpty {
+                        CityJournalBuildingView(
+                            headlineTitle: growthHeadline,
+                            building: selectedBuilding,
+                            growthReport: viewModel.currWeekJournal[viewModel.selectedBuildingIndex]
+                        )
+                        
+                    } else {
+                        CityJournalBuildingView(
+                            headlineTitle: growthHeadline,
+                            building: selectedBuilding,
+                            growthReport: .init(
+                                gratitudeSentiment: .Neutral,
+                                gratitudeEntry: "ERROR",
+                                learningSentiment: .Neutral,
+                                learningEntry: "ERROR",
+                                thoughtSentiment: .Neutral,
+                                thoughtEntry: "ERROR"),
+                            selectedMenuView: .Journal
+                        )
+                    }
+                    
+                }
                 
                 BottomNavigationView(
                     isDisabled: false,
@@ -56,15 +92,45 @@ struct HomeView: View {
             viewModel.cityHealthPercentage = 1.0
             viewModel.currSentimentWeather = .Sunny
             
+            let dummyText = "Lorem ipsum dolor sit amet, consectetur adipiscing elit"
+            viewModel.currWeekJournal = Array(repeating: .init(gratitudeSentiment: .Positive,
+                                                               gratitudeEntry: dummyText,
+                                                               learningSentiment: .Neutral,
+                                                               learningEntry: dummyText,
+                                                               thoughtSentiment: .Negative,
+                                                               thoughtEntry: dummyText),
+                                              count: 7)
+            
             viewModel.currMap = .Map1
             viewModel.currCityBlockBuildings = [
-                .init(style: .LightBlueTower, onClick: { viewModel.selectedBuildingIndex = 0 }),
-                .init(style: .RedRuin, onClick: { viewModel.selectedBuildingIndex = 1 }),
-                .init(style: .YellowConstruction, onClick: { viewModel.selectedBuildingIndex = 2 }),
-                .init(style: .Scaffolding, onClick: { viewModel.selectedBuildingIndex = 3 }),
-                .init(style: .PurpleConstruction, onClick: { viewModel.selectedBuildingIndex = 4 }),
-                .init(style: .BrownTower, onClick: { viewModel.selectedBuildingIndex = 5 }),
-                .init(style: .LightGreenTower, onClick: { viewModel.selectedBuildingIndex = 6 })
+                .init(style: .LightBlueTower, onClick: {
+                    viewModel.selectedBuildingIndex = 0
+                    viewModel.isGrowthReportShowing.toggle()
+                }),
+                .init(style: .RedRuin, onClick: {
+                    viewModel.selectedBuildingIndex = 1
+                    viewModel.isGrowthReportShowing.toggle()
+                }),
+                .init(style: .YellowConstruction, onClick: {
+                    viewModel.selectedBuildingIndex = 2
+                    viewModel.isGrowthReportShowing.toggle()
+                }),
+                .init(style: .Scaffolding, onClick: {
+                    viewModel.selectedBuildingIndex = 3
+                    viewModel.isGrowthReportShowing.toggle()
+                }),
+                .init(style: .PurpleConstruction, onClick: {
+                    viewModel.selectedBuildingIndex = 4
+                    viewModel.isGrowthReportShowing.toggle()
+                }),
+                .init(style: .BrownTower, onClick: {
+                    viewModel.selectedBuildingIndex = 5
+                    viewModel.isGrowthReportShowing.toggle()
+                }),
+                .init(style: .LightGreenTower, onClick: {
+                    viewModel.selectedBuildingIndex = 6
+                    viewModel.isGrowthReportShowing.toggle()
+                })
             ]
             
             viewModel.recommendedActions = [
