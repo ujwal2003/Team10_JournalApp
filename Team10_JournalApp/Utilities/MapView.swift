@@ -82,5 +82,7 @@ struct MapView: UIViewRepresentable {
                 parent.annotations.append(longPressAnnotation)
             }
         }
+        
+        
     }
 }

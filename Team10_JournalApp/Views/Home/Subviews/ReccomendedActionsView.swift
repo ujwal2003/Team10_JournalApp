@@ -93,6 +93,7 @@ struct ReccomendedActionsView: View {
                             .multilineTextAlignment(.center)
                         
                     } else {
+                        // FIXME: use actually calculated sentiment
                         Group {
                             Text("Your overall sentiment is ")
                             + Text("Negative").foregroundStyle(Color.hex("#DE5353"))

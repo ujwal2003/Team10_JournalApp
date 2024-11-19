@@ -8,6 +8,16 @@
 import Foundation
 import SwiftUI
 
+let dayToIndex = [
+    0 : "Sunday",
+    1 : "Monday",
+    2 : "Tuesday",
+    3 : "Wednesday",
+    4 : "Thursday",
+    5 : "Friday",
+    6 : "Saturday",
+]
+
 enum JournalWeather {
     case Sunny
     case Cloudy
@@ -94,7 +104,7 @@ enum Sentiment {
     var report: String {
         switch self {
             case .Positive:
-                return "You have infused the city with positivity, causing this building to shine brightly. Citizens feel more connected and at peace. This uplifting energy has led to increased city growth and well-being."
+                return "Infusing the city with positivity causes this building to shine brightly. Citizens feel more connected and at peace. This uplifting energy leads to increased city growth and well-being."
             
             case .Neutral:
                 return "This reflects a balanced mindset today, neither overly joyful nor overly troubled. Progress is steady, and the city remains stable."
@@ -120,4 +130,9 @@ struct CityMap {
     var map: Map
     var buildings: [BuildingConfig]
     var reports: [GrowthReport]
+}
+
+enum CityBuildingViewSelection {
+    case Sentiment
+    case Journal
 }
