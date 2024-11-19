@@ -40,6 +40,7 @@ struct BuildingView: View {
     }
 }
 
+@available(*, deprecated, message: "Use UserJournalCityBlockView instead")
 struct CityJournalMapView: View {
     var map: Map
     var buildings: [BuildingConfig]
