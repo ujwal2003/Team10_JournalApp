@@ -8,6 +8,7 @@
 import Foundation
 import SwiftUI
 
+@MainActor
 class HomeViewModel: ObservableObject {
     @Published var currWeek: String = "XX/XX/XX - XX/XX/XX"
     

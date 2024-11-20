@@ -8,6 +8,7 @@
 import Foundation
 import MapKit
 
+@MainActor
 class ActionsViewModel: ObservableObject {
     @Published var mapsData: [MapData] = []
     
