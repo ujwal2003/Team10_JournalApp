@@ -71,8 +71,9 @@ struct SettingView: View {
                                         Button("No") { }
                                         Button("Yes") {
 //                                            isSignedOut = true
-                                            self.appController.viewSignUpFlag = false
-                                            self.appController.loggedIn = false
+                                            print("TODO: Sign Out")
+//                                            self.appController.viewSignUpFlag = false
+//                                            self.appController.loggedIn = false
                                         }
                                     } message: {
                                         Text("Are you sure you want to sign out?")
