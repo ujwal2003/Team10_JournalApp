@@ -84,6 +84,8 @@ struct SignInView: View {
 
                     // MARK: Sign in and sign up buttons
                     VStack(spacing: 91) {
+                        let emptyFields = viewModel.email.isEmpty || viewModel.password.isEmpty
+                        
                         Button(action: {
                             print("TODO: Sign In")
                         }) {
@@ -98,6 +100,7 @@ struct SignInView: View {
                                 )
                         }
                         .buttonStyle(PlainButtonStyle())
+                        .disabled(emptyFields)
 
                         Button(action: {
                             self.appController.viewSignUpFlag = true
