@@ -120,7 +120,7 @@ struct SignUpView: View {
                         }
                         .onTapGesture {
                             viewModel.signUp()
-//                            self.appController.loggedIn = true
+                            appController.certifyAuthStatus()
                         }
                         
                         Group {
