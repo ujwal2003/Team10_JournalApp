@@ -49,7 +49,7 @@ struct SignInView: View {
                                             .stroke(Color(red: 0.61, green: 0.75, blue: 0.78).opacity(0.4), lineWidth: 1)
                                     )
                                 
-                                TextField("Username", text: $username)
+                                TextField("Email", text: $username)
                                     .padding(.horizontal, 5)
                                     .frame(width: 295, height: 52)
                                     .foregroundColor(.black)
