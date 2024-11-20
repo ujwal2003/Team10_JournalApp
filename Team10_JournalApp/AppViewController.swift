@@ -14,8 +14,14 @@ class AppViewController: ObservableObject {
     @Published var loggedIn: Bool = false
     @Published var viewSignUpFlag: Bool = false
     
-    func certifyAuthStatus() {
+    func certifyAuthStatus(redirectToSignInIfNoAuth: Bool = false) {
         let authUser = try? AuthenticationManager.shared.getAuthenticatedUser()
         self.loggedIn = authUser != nil
+        
+        if !loggedIn {
+            viewSignUpFlag = redirectToSignInIfNoAuth ? false : viewSignUpFlag
+            print("SYSTEM: No authenticated user found.")
+        }
     }
+    
 }
