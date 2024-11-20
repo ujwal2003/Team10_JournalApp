@@ -104,40 +104,48 @@ struct SignUpView: View {
 
                     // MARK: Sign in and sign up buttons
                     VStack(spacing: 91) {
-                        Group {
-                            ZStack {
-                                Rectangle()
-                                    .foregroundColor(.clear)
-                                    .frame(width: 315, height: 52)
-                                    .background(Color(red: 0.09, green: 0.28, blue: 0.39))
-                                    .cornerRadius(100)
-                                    .shadow(color: .black.opacity(0.25), radius: 2, x: 0, y: 4)
-                                
+                        let emptyFields = viewModel.email.isEmpty || viewModel.password.isEmpty || viewModel.retypedPassword.isEmpty
+                        let nonMatchingPasswords = viewModel.password != viewModel.retypedPassword
+                        
+                        VStack(spacing: 0.0) {
+                            if nonMatchingPasswords {
+                                Text("Password fields must match.")
+                                    .font(.system(size: 16))
+                                    .fontWeight(.medium)
+                                    .foregroundStyle(.black)
+                                    .padding()
+                            }
+                            
+                            Button(action: {
+                                print("TODO: Sign Up")
+                            }) {
                                 Text("Sign Up")
                                     .font(.system(size: 18, weight: .medium))
                                     .foregroundColor(.white)
+                                    .frame(width: 315, height: 52)
+                                    .background(
+                                        RoundedRectangle(cornerRadius: 100)
+                                            .fill(Color(red: 0.09, green: 0.28, blue: 0.39))
+                                            .shadow(color: .black.opacity(0.25), radius: 2, x: 0, y: 4)
+                                    )
                             }
+                            .buttonStyle(PlainButtonStyle())
+                            .disabled(emptyFields || nonMatchingPasswords)
                         }
-                        .onTapGesture {
-                            viewModel.signUp()
-                            appController.certifyAuthStatus()
-                        }
-                        
-                        Group {
-                            ZStack {
-                                Text("Already have an account? ")
-                                    .font(.system(size: 18, weight: .medium))
-                                    .foregroundColor(Constants.LabelsPrimary) +
-                                Text("Sign In")
-                                    .font(.system(size: 18, weight: .bold))
-                                    .foregroundColor(Constants.LabelsPrimary)
-                            }
-                            .frame(width: 275, alignment: .topLeading)
-                        }
-                        .onTapGesture {
+
+                        Button(action: {
                             self.appController.viewSignUpFlag = false
+                        }) {
+                            Text("Already have an account? ")
+                                .font(.system(size: 18, weight: .medium))
+                                .foregroundColor(Constants.LabelsPrimary) +
+                            Text("Sign In")
+                                .font(.system(size: 18, weight: .bold))
+                                .foregroundColor(Constants.LabelsPrimary)
                         }
-                        
+                        .buttonStyle(PlainButtonStyle())
+                        .frame(width: 275, alignment: .topLeading)
+
                     }
                     .padding([.bottom], 80)
                 }
