@@ -9,10 +9,7 @@ import SwiftUI
 
 struct SignUpView: View {
     @ObservedObject var appController: AppViewController
-    
-    @State private var username: String = ""
-    @State private var password: String = ""
-    @State private var retypePassword: String = ""
+    @StateObject var viewModel = SignUpViewModel()
     
     @FocusState private var focusedField: SignUpField?
     enum SignUpField {
@@ -46,7 +43,8 @@ struct SignUpView: View {
                                             .stroke(Color(red: 0.61, green: 0.75, blue: 0.78).opacity(0.4), lineWidth: 1)
                                     )
                                 
-                                TextField("Email", text: $username)
+                                TextField("Email", text: $viewModel.email)
+                                    .autocorrectionDisabled()
                                     .padding(.horizontal, 5)
                                     .frame(width: 295, height: 52)
                                     .foregroundColor(.black)
@@ -68,7 +66,8 @@ struct SignUpView: View {
                                             .stroke(Color(red: 0.61, green: 0.75, blue: 0.78).opacity(0.4), lineWidth: 1)
                                     )
                                 
-                                SecureField("Password", text: $password)
+                                SecureField("Password", text: $viewModel.password)
+                                    .autocorrectionDisabled()
                                     .padding(.horizontal, 5)
                                     .frame(width: 295, height: 52)
                                     .foregroundColor(.black)
@@ -90,7 +89,8 @@ struct SignUpView: View {
                                             .stroke(Color(red: 0.61, green: 0.75, blue: 0.78).opacity(0.4), lineWidth: 1)
                                     )
                                 
-                                SecureField("Retype Password", text: $retypePassword)
+                                SecureField("Retype Password", text: $viewModel.retypedPassword)
+                                    .autocorrectionDisabled()
                                     .padding(.horizontal, 5)
                                     .frame(width: 295, height: 52)
                                     .foregroundColor(.black)
@@ -119,7 +119,8 @@ struct SignUpView: View {
                             }
                         }
                         .onTapGesture {
-                            self.appController.loggedIn = true
+                            viewModel.signUp()
+//                            self.appController.loggedIn = true
                         }
                         
                         Group {
