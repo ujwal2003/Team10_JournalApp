@@ -13,6 +13,8 @@ class SignUpViewModel: ObservableObject {
     @Published var password: String = ""
     @Published var retypedPassword: String = ""
     
+    @Published var isSignUpFailedAlertShowing: Bool = false
+    
     func signUp(onSignUp: @escaping () -> Void) {
         guard !email.isEmpty, !password.isEmpty, !retypedPassword.isEmpty else {
             print("No email or password found")
@@ -33,7 +35,8 @@ class SignUpViewModel: ObservableObject {
                 onSignUp()
                 
             } catch {
-                print("Error: \(error)")
+                print("Failed to sign up with error: \(error)")
+                self.isSignUpFailedAlertShowing.toggle()
             }
         }
     }

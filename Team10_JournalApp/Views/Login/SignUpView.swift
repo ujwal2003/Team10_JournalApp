@@ -133,6 +133,13 @@ struct SignUpView: View {
                             }
                             .buttonStyle(PlainButtonStyle())
                             .disabled(emptyFields || nonMatchingPasswords)
+                            .alert("Sign Up Failed", isPresented: $viewModel.isSignUpFailedAlertShowing) {
+                                Button("Try Again") {}
+                            } message: {
+                                Text("Failed to sign up new user, please try again.")
+                            }
+
+                            
                         }
 
                         Button(action: {
