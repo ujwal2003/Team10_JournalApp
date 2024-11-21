@@ -16,6 +16,8 @@ class AppViewController: ObservableObject {
     
     func certifyAuthStatus(redirectToSignInIfNoAuth: Bool = false) {
         let authUser = try? AuthenticationManager.shared.getAuthenticatedUser()
+        print(authUser ?? "authUser: NONE")
+        
         self.loggedIn = authUser != nil
         
         if !loggedIn {

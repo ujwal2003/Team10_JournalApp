@@ -11,4 +11,23 @@ import Foundation
 class SignInViewModel: ObservableObject {
     @Published var email: String = ""
     @Published var password: String = ""
+    
+    func signIn() {
+        guard !email.isEmpty, !password.isEmpty else {
+            print("No email or password found")
+            return
+        }
+        
+        Task {
+            do {
+                let userData = try await AuthenticationManager.shared.signInUser(email: email, password: password)
+                print("Sucessfully signed in user: \(email)")
+                print(userData)
+                
+            } catch {
+                print("Failed to sign in user with error: \(error)")
+            }
+        }
+    }
+    
 }
