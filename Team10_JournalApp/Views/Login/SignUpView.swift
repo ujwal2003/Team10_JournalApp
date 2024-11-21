@@ -117,8 +117,9 @@ struct SignUpView: View {
                             }
                             
                             Button(action: {
-                                viewModel.signUp()
-                                appController.certifyAuthStatus()
+                                viewModel.signUp {
+                                    self.appController.loggedIn = true
+                                }
                             }) {
                                 Text("Sign Up")
                                     .font(.system(size: 18, weight: .medium))

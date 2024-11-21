@@ -13,7 +13,7 @@ class SignUpViewModel: ObservableObject {
     @Published var password: String = ""
     @Published var retypedPassword: String = ""
     
-    func signUp() {
+    func signUp(onSignUp: @escaping () -> Void) {
         guard !email.isEmpty, !password.isEmpty, !retypedPassword.isEmpty else {
             print("No email or password found")
             return
@@ -29,6 +29,9 @@ class SignUpViewModel: ObservableObject {
                 let userData = try await AuthenticationManager.shared.createUser(email: email, password: password)
                 print("Succesfully created user: \(email)")
                 print(userData)
+                
+                onSignUp()
+                
             } catch {
                 print("Error: \(error)")
             }

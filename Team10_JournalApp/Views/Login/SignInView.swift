@@ -87,8 +87,9 @@ struct SignInView: View {
                         let emptyFields = viewModel.email.isEmpty || viewModel.password.isEmpty
                         
                         Button(action: {
-                            viewModel.signIn()
-                            appController.certifyAuthStatus()
+                            viewModel.signIn {
+                                self.appController.loggedIn = true
+                            }
                         }) {
                             Text("Sign In")
                                 .font(.system(size: 18, weight: .medium))
