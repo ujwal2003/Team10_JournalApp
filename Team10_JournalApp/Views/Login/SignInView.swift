@@ -103,6 +103,13 @@ struct SignInView: View {
                         }
                         .buttonStyle(PlainButtonStyle())
                         .disabled(emptyFields)
+                        .alert("User Not Found", isPresented: $viewModel.isShowingSignInFailedAlert) {
+                            Button("Ok") {
+                                viewModel.password = ""
+                            }
+                        } message: {
+                            Text("The account '\(viewModel.email)' was not found. The credentials are incorrect or the account does not exist.")
+                        }
 
                         Button(action: {
                             self.appController.viewSignUpFlag = true

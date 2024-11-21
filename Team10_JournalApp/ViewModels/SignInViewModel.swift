@@ -12,6 +12,8 @@ class SignInViewModel: ObservableObject {
     @Published var email: String = ""
     @Published var password: String = ""
     
+    @Published var isShowingSignInFailedAlert: Bool = false
+    
     func signIn(onSignIn: @escaping () -> Void) {
         guard !email.isEmpty, !password.isEmpty else {
             print("No email or password found")
@@ -28,6 +30,7 @@ class SignInViewModel: ObservableObject {
                 
             } catch {
                 print("Failed to sign in user with error: \(error)")
+                self.isShowingSignInFailedAlert.toggle()
             }
         }
     }
