@@ -9,6 +9,7 @@ import SwiftUI
 
 struct SettingView: View {
     @ObservedObject var appController: AppViewController
+    @StateObject var viewModel = SettingsViewModel()
     
     @State private var username: String = ""
     @State private var password: String = ""
@@ -70,9 +71,10 @@ struct SettingView: View {
                                     .alert("Sign Out?", isPresented: $isShowingSignOutAlert) {
                                         Button("No") { }
                                         Button("Yes") {
-//                                            isSignedOut = true
-                                            self.appController.viewSignUpFlag = false
-                                            self.appController.loggedIn = false
+                                            viewModel.signOut {
+                                                self.appController.viewSignUpFlag = false
+                                                self.appController.loggedIn = false
+                                            }
                                         }
                                     } message: {
                                         Text("Are you sure you want to sign out?")

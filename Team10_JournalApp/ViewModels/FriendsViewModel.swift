@@ -22,6 +22,7 @@ enum FriendSelectionContent {
     }
 }
 
+@MainActor
 class FriendsViewModel: ObservableObject {
     @Published var selectedContent: FriendSelectionContent
     @Published var searchQuery: String
