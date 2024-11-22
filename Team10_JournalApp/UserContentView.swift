@@ -9,7 +9,6 @@ import SwiftUI
 
 enum AppTab: Hashable {
     case Home; case Journal; case Friends; case Settings
-    case Exepriments //! FOR TESTING
 }
 
 struct UserContentView: View {
@@ -34,11 +33,6 @@ struct UserContentView: View {
                 
                 Tab("Settings", systemImage: "gear", value: .Settings) {
                     SettingView(appController: appController)
-                }
-                
-                //! FOR TESTING
-                Tab("Experiments", systemImage: "testtube.2", value: .Exepriments) {
-                    ExperimentsTestView()
                 }
             }
         }
