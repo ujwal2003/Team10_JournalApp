@@ -26,7 +26,28 @@ final class UserManager {
         try userDocument(userId: user.userId).setData(from: user, merge: false)
     }
     
-    // TODO: update user display name
+    func updateUserDisplayName(userId: String, displayName: String) async throws {
+        let data: [String: Any] = [
+            UserProfile.CodingKeys.displayName.rawValue : displayName
+        ]
+        
+        try await userDocument(userId: userId).updateData(data)
+    }
     
-    // TODO: update user friends list
+    func addFriend(userId: String, friendUserId: String) async throws {
+        let data: [String: Any] = [
+            UserProfile.CodingKeys.friendUserIDs.rawValue: FieldValue.arrayUnion([friendUserId])
+        ]
+        
+        try await userDocument(userId: userId).updateData(data)
+    }
+    
+    func removeFriend(userId: String, friendUserId: String) async throws {
+        let data: [String: Any] = [
+            UserProfile.CodingKeys.friendUserIDs.rawValue: FieldValue.arrayRemove([friendUserId])
+        ]
+        
+        try await userDocument(userId: userId).updateData(data)
+    }
+    
 }
