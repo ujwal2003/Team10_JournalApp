@@ -90,7 +90,9 @@ struct HomeView: View {
                 
             }
         }
-        .onAppear {
+        .task {
+//            let profile = try? await UserManager.shared.getUser(userId: <#T##String#>)
+            
             //FIXME: use stuff from DB here
             viewModel.currWeek = viewModel.getWeekRange(offset: 0)
             

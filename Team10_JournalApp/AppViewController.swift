@@ -10,13 +10,15 @@ import SwiftUI
 
 let isIphone16ProMaxPortrait: Bool = UIScreen.main.bounds.height == 956.0
 
+@MainActor
 class AppViewController: ObservableObject {
     @Published var loggedIn: Bool = false
     @Published var viewSignUpFlag: Bool = false
     
     @Published var loadedUserProfile: UserProfile?
     
-    func certifyAuthStatus(redirectToSignInIfNoAuth: Bool = false) {
+    @discardableResult
+    func certifyAuthStatus(redirectToSignInIfNoAuth: Bool = false) -> AuthDataResultModel? {
         let authUser = try? AuthenticationManager.shared.getAuthenticatedUser()
         print(authUser ?? "authUser: NONE")
         
@@ -26,6 +28,8 @@ class AppViewController: ObservableObject {
             viewSignUpFlag = redirectToSignInIfNoAuth ? false : viewSignUpFlag
             print("SYSTEM: No authenticated user found.")
         }
+        
+        return authUser
     }
     
 }
