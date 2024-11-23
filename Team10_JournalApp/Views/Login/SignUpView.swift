@@ -117,7 +117,8 @@ struct SignUpView: View {
                             }
                             
                             Button(action: {
-                                viewModel.signUp {
+                                viewModel.signUp { newUser in
+                                    self.appController.loadedUserProfile = newUser
                                     self.appController.loggedIn = true
                                 }
                             }) {

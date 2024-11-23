@@ -15,7 +15,7 @@ class SignUpViewModel: ObservableObject {
     
     @Published var isSignUpFailedAlertShowing: Bool = false
     
-    func signUp(onSignUp: @escaping () -> Void) {
+    func signUp(onSignUp: @escaping (UserProfile) -> Void) {
         guard !email.isEmpty, !password.isEmpty, !retypedPassword.isEmpty else {
             print("No email or password found")
             return
@@ -30,9 +30,12 @@ class SignUpViewModel: ObservableObject {
             do {
                 let userData = try await AuthenticationManager.shared.createUser(email: email, password: password)
                 print("Succesfully created user: \(email)")
-                print(userData)
                 
-                onSignUp()
+                let newUser = UserProfile(authUser: userData)
+                try await UserManager.shared.createNewUser(user: newUser)
+                
+                print(newUser)
+                onSignUp(newUser)
                 
             } catch {
                 print("Failed to sign up with error: \(error)")

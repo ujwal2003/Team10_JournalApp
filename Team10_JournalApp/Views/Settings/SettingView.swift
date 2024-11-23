@@ -72,6 +72,7 @@ struct SettingView: View {
                                         Button("No") { }
                                         Button("Yes") {
                                             viewModel.signOut {
+                                                self.appController.loadedUserProfile = nil
                                                 self.appController.viewSignUpFlag = false
                                                 self.appController.loggedIn = false
                                             }

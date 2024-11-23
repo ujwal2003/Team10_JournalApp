@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct HomeView: View {
+    @ObservedObject var appController: AppViewController
     @StateObject var viewModel = HomeViewModel()
     
     var body: some View {
@@ -18,6 +19,10 @@ struct HomeView: View {
                 .padding()
                 .padding(.leading)
                 .frame(maxWidth: .infinity, alignment: .leading)
+            
+            if let userProfile = appController.loadedUserProfile {
+                Text(userProfile.displayName)
+            }
             
         } containerContent: {
             VStack {
