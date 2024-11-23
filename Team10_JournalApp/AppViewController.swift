@@ -22,17 +22,6 @@ class AppViewController: ObservableObject {
         
         self.loggedIn = authUser != nil
         
-        if let signedInUser = authUser {
-            Task {
-                do {
-                    let profile = try await UserManager.shared.getUser(userId: signedInUser.uid)
-                    self.loadedUserProfile = profile
-                } catch {
-                    print("SYSTEM: signed in but failed to load user profile.")
-                }
-            }
-        }
-        
         if !loggedIn {
             viewSignUpFlag = redirectToSignInIfNoAuth ? false : viewSignUpFlag
             print("SYSTEM: No authenticated user found.")

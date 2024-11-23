@@ -87,7 +87,8 @@ struct SignInView: View {
                         let emptyFields = viewModel.email.isEmpty || viewModel.password.isEmpty
                         
                         Button(action: {
-                            viewModel.signIn {
+                            viewModel.signIn { userProfile in
+                                self.appController.loadedUserProfile = userProfile
                                 self.appController.loggedIn = true
                             }
                         }) {
