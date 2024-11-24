@@ -62,3 +62,14 @@ struct JournalEntry: Codable {
         try container.encode(self.thoughtSentiment, forKey: .thoughtSentiment)
     }
 }
+
+struct JournalContent {
+    let gratitudeEntry: String
+    let gratitudeSentiment: String
+    
+    let learningEntry: String
+    let learningSentiment: String
+    
+    let thoughtEntry: String
+    let thoughtSentiment: String
+}

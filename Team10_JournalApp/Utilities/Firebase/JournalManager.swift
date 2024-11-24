@@ -40,4 +40,17 @@ final class JournalManager {
     func getJournalEntry(userId: String, date: Date) async throws -> JournalEntry {
         try await journalEntryDocument(userId: userId, date: date).getDocument(as: JournalEntry.self)
     }
+    
+    func updateJournalEntry(userId: String, date: Date, journalContent: JournalContent) async throws {
+        let data: [String: Any] = [
+            JournalEntry.CodingKeys.gratitudeEntry.rawValue : journalContent.gratitudeEntry,
+            JournalEntry.CodingKeys.gratitudeSentiment.rawValue : journalContent.gratitudeSentiment,
+            JournalEntry.CodingKeys.learningEntry.rawValue : journalContent.learningEntry,
+            JournalEntry.CodingKeys.learningSentiment.rawValue : journalContent.learningSentiment,
+            JournalEntry.CodingKeys.thoughtEntry.rawValue : journalContent.thoughtEntry,
+            JournalEntry.CodingKeys.thoughtSentiment.rawValue : journalContent.thoughtSentiment
+        ]
+        
+        try await journalEntryDocument(userId: userId, date: date).updateData(data)
+    }
 }
