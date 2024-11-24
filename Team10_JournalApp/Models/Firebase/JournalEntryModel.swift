@@ -22,6 +22,28 @@ struct JournalEntry: Codable {
     let thoughtEntry: String
     let thoughtSentiment: String
     
+    init(
+        journalId: String? = nil,
+        userId: String,
+        dateCreated: Date,
+        gratitudeEntry: String,
+        gratitudeSentiment: String,
+        learningEntry: String,
+        learningSentiment: String,
+        thoughtEntry: String,
+        thoughtSentiment: String
+    ) {
+        self.journalId = journalId
+        self.userId = userId
+        self.dateCreated = dateCreated
+        self.gratitudeEntry = gratitudeEntry
+        self.gratitudeSentiment = gratitudeSentiment
+        self.learningEntry = learningEntry
+        self.learningSentiment = learningSentiment
+        self.thoughtEntry = thoughtEntry
+        self.thoughtSentiment = thoughtSentiment
+    }
+    
     enum CodingKeys: String, CodingKey {
         case journalId = "journal_id"
         case userId = "user_id"
