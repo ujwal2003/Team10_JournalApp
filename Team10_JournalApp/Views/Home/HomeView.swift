@@ -8,16 +8,32 @@
 import SwiftUI
 
 struct HomeView: View {
+    @ObservedObject var appController: AppViewController
     @StateObject var viewModel = HomeViewModel()
     
     var body: some View {
         AppLayoutContainer(height: 10.0) {
-            Text("CatchUp")
-                .font(.system(size: 30.0))
-                .fontWeight(.heavy)
-                .padding()
+            VStack(spacing: 0.0) {
+                Text("CatchUp")
+                    .font(.system(size: 30.0))
+                    .fontWeight(.heavy)
+                    .padding()
+                    .padding(.leading)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                
+                Group {
+                    if let userProfile = appController.loadedUserProfile {
+                        Text("Welcome, \(userProfile.displayName)")
+                    } else {
+                        Text("Loading...")
+                    }
+                }
+                .font(.system(size: 20.0))
+                .fontWeight(.light)
+                .padding([.leading, .trailing, .bottom])
                 .padding(.leading)
                 .frame(maxWidth: .infinity, alignment: .leading)
+            }
             
         } containerContent: {
             VStack {
@@ -85,7 +101,17 @@ struct HomeView: View {
                 
             }
         }
-        .onAppear {
+        .task {
+            if appController.loadedUserProfile == nil {
+                let authUserData = appController.certifyAuthStatus()
+                
+                if let userData = authUserData {
+                    let userProfile = try? await UserManager.shared.getUser(userId: userData.uid)
+                    appController.loadedUserProfile = userProfile
+                }
+            }
+            
+            
             //FIXME: use stuff from DB here
             viewModel.currWeek = viewModel.getWeekRange(offset: 0)
             

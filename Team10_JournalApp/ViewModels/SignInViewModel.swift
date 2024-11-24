@@ -14,7 +14,7 @@ class SignInViewModel: ObservableObject {
     
     @Published var isShowingSignInFailedAlert: Bool = false
     
-    func signIn(onSignIn: @escaping () -> Void) {
+    func signIn(onSignIn: @escaping (UserProfile) -> Void) {
         guard !email.isEmpty, !password.isEmpty else {
             print("No email or password found")
             return
@@ -24,9 +24,11 @@ class SignInViewModel: ObservableObject {
             do {
                 let userData = try await AuthenticationManager.shared.signInUser(email: email, password: password)
                 print("Sucessfully signed in user: \(email)")
-                print(userData)
                 
-                onSignIn()
+                let userProfile = try await UserManager.shared.getUser(userId: userData.uid)
+                
+                print(userProfile)
+                onSignIn(userProfile)
                 
             } catch {
                 print("Failed to sign in user with error: \(error)")
