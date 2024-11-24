@@ -66,8 +66,33 @@ struct FeatureTestingView: View {
             }
             .buttonStyle(TestButtonStyle(backgroundColor: Color.blue, textColor: Color.white))
             
+            // MARK: - Update today's journal entry
+            Button {
+                Task {
+                    do {
+                        if let userProfile = loadedUserProfile {
+                            let newContent = JournalContent(
+                                gratitudeEntry: "Gratitude entry updated at \(Date())",
+                                gratitudeSentiment: "Neutral",
+                                learningEntry: "Learning entry updated at \(Date())",
+                                learningSentiment: "Negative",
+                                thoughtEntry: "Thought dump updated at \(Date())",
+                                thoughtSentiment: "Positive"
+                            )
+                            
+                            try await JournalManager.shared.updateJournalEntry(userId: userProfile.userId, date: Date(), journalContent: newContent)
+                            print("Succesfully updated journal for today")
+                        }
+                    } catch {
+                        print("Failed to update today's journal entry with error: \(error)")
+                    }
+                }
+            } label: {
+                Text("Update today's journal entry for user").font(.headline)
+            }
+            .buttonStyle(TestButtonStyle(backgroundColor: Color.cyan, textColor: Color.white))
             
-
+            
         }
     }
 }
