@@ -37,5 +37,7 @@ final class JournalManager {
         return document.reference
     }
     
-    
+    func getJournalEntry(userId: String, date: Date) async throws -> JournalEntry {
+        try await journalEntryDocument(userId: userId, date: date).getDocument(as: JournalEntry.self)
+    }
 }
