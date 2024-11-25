@@ -55,10 +55,11 @@ struct FriendsView: View {
                                     FriendListRowView(itemName: friendUserName,
                                                       itemContent: .checkIn)
                                     .background(
-                                        NavigationLink("",
-                                                       destination: FriendCheckInView(friendName: friendUserName,
-                                                                         friendsViewModel: viewModel)
-                                                      ).opacity(0)
+                                        NavigationLink(
+                                            "",
+                                            destination: FriendCheckInView(friendName: friendUserName,
+                                                                           friendsViewModel: viewModel)
+                                        ).opacity(0)
                                     )
                                     .listRowBackground(Color.clear)
                                 }
@@ -66,32 +67,34 @@ struct FriendsView: View {
                                 
                             case .Requests:
                                 ForEach(viewModel.getFilteredRequests(), id: \.self) { requestUserName in
-                                    FriendListRowView(itemName: requestUserName,
-                                                      itemContent: .requestButtons(
-                                                        onAccept: {
-                                                            Task {
-                                                                await viewModel.acceptFriendRequest(username: requestUserName)
-                                                            }
-                                                        },
-                                                        onReject: {
-                                                            Task {
-                                                                await viewModel.rejectFriendRequest(username: requestUserName)
-                                                            }
-                                                        }
-                                                      )
+                                    FriendListRowView(
+                                        itemName: requestUserName,
+                                        itemContent: .requestButtons(
+                                            onAccept: {
+                                                Task {
+                                                    await viewModel.acceptFriendRequest(username: requestUserName)
+                                                }
+                                            },
+                                            onReject: {
+                                                Task {
+                                                    await viewModel.rejectFriendRequest(username: requestUserName)
+                                                }
+                                            }
+                                        )
                                     )
                                 }
                                 
                             case .Invitations:
                                 ForEach(viewModel.getFilteredInvitations(), id: \.self) { inviteUserName in
-                                    FriendListRowView(itemName: inviteUserName,
-                                                      itemContent: .inviteRescindButton(
-                                                        onRevoke: {
-                                                            Task {
-                                                                await viewModel.revokeFriendInvite(username: inviteUserName)
-                                                            }
-                                                        }
-                                                      )
+                                    FriendListRowView(
+                                        itemName: inviteUserName,
+                                        itemContent: .inviteRescindButton(
+                                            onRevoke: {
+                                                Task {
+                                                    await viewModel.revokeFriendInvite(username: inviteUserName)
+                                                }
+                                            }
+                                        )
                                     )
                                 }
                         }
@@ -102,5 +105,11 @@ struct FriendsView: View {
                 }
             }
         }
+    }
+}
+
+#Preview {
+    AppTabMockContainerView(previewTab: .Friends) {
+        FriendsView()
     }
 }
