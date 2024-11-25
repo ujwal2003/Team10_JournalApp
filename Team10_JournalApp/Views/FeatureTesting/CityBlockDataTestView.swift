@@ -139,9 +139,33 @@ struct CityBlockDataTestView: View {
             .buttonStyle(TestButtonStyle(backgroundColor: Color.indigo, textColor: Color.white))
             .padding([.top, .leading, .trailing])
             
-            // MARK: - Add Journal id to City Block Data
+            // MARK: - Add Journal id to current week City Block Data
             Button {
-                print("add journal id to current week city map")
+                self.cityBlockData = nil
+                
+                Task {
+                    do {
+                        if let userProfile = loadedUserProfile {
+                            let searchDate = getDateWithOffset(offset: dateOffset)
+                            
+                            let fetchedEntry = try await JournalManager.shared.getJournalEntry(userId: userProfile.userId, date: searchDate)
+                            print("Fetched journal for date: \(searchDate)")
+                            
+                            try await CityBlockManager.shared.addJournalToCityBlockMap(
+                                userId: userProfile.userId,
+                                weekStartDate: currWeek.startDate,
+                                weekEndDate: currWeek.endDate,
+                                journalId: fetchedEntry.journalId!
+                            )
+                            
+                            print("Succesfully added journal id to curr city block")
+                            self.resultText = "Added journal \(fetchedEntry.journalId!) to current week city block data."
+                        }
+                    } catch {
+                        print("Failed to add journal id with error: \(error)")
+                        self.resultText = "Error: failed to add journal id to city block data."
+                    }
+                }
             } label: {
                 Text("Add journal for date offset \(dateOffset) to current city block data")
                     .font(.headline)
