@@ -24,7 +24,7 @@ struct FeatureTestingView: View {
                     case .JournalEntry:
                         JournalEntryDataTestView(loadedUserProfile: loadedUserProfile)
                     case .CityBlockData:
-                        Text("WIP")
+                        CityBlockDataTestView(loadedUserProfile: loadedUserProfile)
                 }
             }
             .toolbar {
