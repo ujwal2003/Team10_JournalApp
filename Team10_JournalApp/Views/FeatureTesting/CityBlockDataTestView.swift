@@ -60,6 +60,8 @@ struct CityBlockDataTestView: View {
             HStack {
                 Button {
                     self.dateOffset += 1
+                    self.cityBlockData = nil
+                    self.resultText = "No data loaded..."
                     
                     print("search date set to: \(getDateWithOffset(offset: dateOffset))")
                 } label: {
@@ -72,6 +74,8 @@ struct CityBlockDataTestView: View {
                 
                 Button {
                     self.dateOffset -= 1
+                    self.cityBlockData = nil
+                    self.resultText = "No data loaded..."
                     
                     print("search date set to: \(getDateWithOffset(offset: dateOffset))")
                 } label: {
@@ -82,6 +86,8 @@ struct CityBlockDataTestView: View {
             
             // MARK: - Create City Block Data
             Button {
+                self.cityBlockData = nil
+                
                 Task {
                     do {
                         if let userProfile = loadedUserProfile {
