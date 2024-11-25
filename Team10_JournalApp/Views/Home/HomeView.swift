@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct HomeView: View {
+    @State var useMocks: Bool = false
+    
     @ObservedObject var appController: AppViewController
     @StateObject var viewModel = HomeViewModel()
     
@@ -102,25 +104,21 @@ struct HomeView: View {
             }
         }
         .task {
-            if appController.loadedUserProfile == nil {
-                let authUserData = appController.certifyAuthStatus()
+            if self.useMocks {
+                MockDataManager.shared.loadMockUserProfile(appController: appController)
                 
-                if let userData = authUserData {
-                    let userProfile = try? await UserManager.shared.getUser(userId: userData.uid)
-                    appController.loadedUserProfile = userProfile
+            } else {
+                
+                if appController.loadedUserProfile == nil {
+                    let authUserData = appController.certifyAuthStatus()
+                    
+                    if let userData = authUserData {
+                        let userProfile = try? await UserManager.shared.getUser(userId: userData.uid)
+                        appController.loadedUserProfile = userProfile
+                    }
                 }
+                
             }
-            
-            // FOR PREVIEW:
-//            appController.loadedUserProfile = UserProfile(
-//                userId: UUID().uuidString,
-//                email: "mockData@mockEmail.com",
-//                displayName: "mockData@mockEmail.com",
-//                dateCreated: Date(),
-//                photoURL: nil,
-//                friendUserIDs: []
-//            )
-            
             
             //FIXME: use stuff from DB here
             viewModel.currWeek = viewModel.getWeekRange(offset: 0)
@@ -184,22 +182,8 @@ struct HomeView: View {
     }
 }
 
-//#Preview {
-//    TabView(selection: .constant(AppTab.Home)) {
-//        Tab("Home", systemImage: "house", value: .Home) {
-//            HomeView(appController: AppViewController())
-//        }
-//        
-//        Tab("Journal", systemImage: "book", value: .Journal) {
-//            Text("PREVIEW")
-//        }
-//        
-//        Tab("Friends", systemImage: "person.3", value: .Friends) {
-//            Text("PREVIEW")
-//        }
-//        
-//        Tab("Settings", systemImage: "gear", value: .Settings) {
-//            Text("PREVIEW")
-//        }
-//    }
-//}
+#Preview {
+    AppTabMockContainerView(previewTab: .Home) {
+        HomeView(useMocks: true, appController: AppViewController())
+    }
+}
