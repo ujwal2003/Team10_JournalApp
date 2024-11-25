@@ -11,14 +11,23 @@ struct CityBlockDataTestView: View {
     @State var loadedUserProfile: UserProfile?
     
     @State var dateOffset: Int
+    @State var weekOffset: Int
     @State var cityBlockData: CityBlockData?
     @State var resultText: String
+    @State var currWeek: (startDate: Date, endDate: Date)
+    
+    @State private var modifyWeekOffset: Bool
     
     init(loadedUserProfile: UserProfile?) {
         self.loadedUserProfile = loadedUserProfile
         self.dateOffset = 0
+        self.weekOffset = 0
         self.cityBlockData = nil
         self.resultText = "No data loaded..."
+        
+        self.currWeek = (startDate: Date(), endDate: Date())
+        
+        self.modifyWeekOffset = false
     }
     
     func getDateWithOffset(offset: Int) -> Date {
@@ -28,22 +37,20 @@ struct CityBlockDataTestView: View {
         return newDate
     }
     
-    func getCurrentWeekDates() -> (startDate: Date, endDate: Date) {
+    func getStartEndWeekDates(offset: Int = 0) -> (startDate: Date, endDate: Date) {
         let currentDate = Date()
         
         let calendar = Calendar.current
         
         let startOfWeek = calendar.date(from: calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: currentDate))!
         
-        let targetWeekStart = calendar.date(byAdding: .weekOfYear, value: 0, to: startOfWeek)!
+        let targetWeekStart = calendar.date(byAdding: .weekOfYear, value: offset, to: startOfWeek)!
         let targetWeekEnd = calendar.date(byAdding: .day, value: 6, to: targetWeekStart)!
         
         return (startDate: targetWeekStart, endDate: targetWeekEnd)
     }
     
     var body: some View {
-        let currWeek = getCurrentWeekDates()
-        
         VStack {
             Group {
                 if let userProfile = loadedUserProfile {
@@ -53,36 +60,53 @@ struct CityBlockDataTestView: View {
                 }
             }
             
-            Text("Current Week: \(currWeek.startDate.formatted(.dateTime.month().day().year())) - \(currWeek.endDate.formatted(.dateTime.month().day().year()))")
+            Text("Week Offset \(weekOffset): \(currWeek.startDate.formatted(.dateTime.month().day().year())) - \(currWeek.endDate.formatted(.dateTime.month().day().year()))")
                 .padding()
             
-            // MARK: - Date Offset controls
+            // MARK: - Date & Week Offset controls
             HStack {
                 Button {
-                    self.dateOffset += 1
+                    if modifyWeekOffset {
+                        self.weekOffset += 1
+                        currWeek = getStartEndWeekDates(offset: weekOffset)
+                    } else {
+                        self.dateOffset += 1
+                        print("search date set to: \(getDateWithOffset(offset: dateOffset))")
+                    }
+                    
                     self.cityBlockData = nil
                     self.resultText = "No data loaded..."
                     
-                    print("search date set to: \(getDateWithOffset(offset: dateOffset))")
                 } label: {
                     Text("+").font(.headline)
                 }
                 .buttonStyle(TestButtonStyle(backgroundColor: Color.green, textColor: Color.white))
                 
-                Text("Date Offset: \(dateOffset)")
-                    .padding()
+                VStack {
+                    Toggle("Modify Week Offset", isOn: $modifyWeekOffset)
+                    Text("Date Offset: \(dateOffset)")
+                    Text("Week Offset: \(weekOffset)")
+                }
+                .padding()
                 
                 Button {
-                    self.dateOffset -= 1
+                    if modifyWeekOffset {
+                        self.weekOffset -= 1
+                        currWeek = getStartEndWeekDates(offset: weekOffset)
+                    } else {
+                        self.dateOffset -= 1
+                        print("search date set to: \(getDateWithOffset(offset: dateOffset))")
+                    }
+                    
                     self.cityBlockData = nil
                     self.resultText = "No data loaded..."
                     
-                    print("search date set to: \(getDateWithOffset(offset: dateOffset))")
                 } label: {
                     Text("-").font(.headline)
                 }
                 .buttonStyle(TestButtonStyle(backgroundColor: Color.red, textColor: Color.white))
             }
+            .padding([.leading, .trailing])
             
             // MARK: - Create City Block Data
             Button {
@@ -100,8 +124,8 @@ struct CityBlockDataTestView: View {
                             )
                             
                             try await CityBlockManager.shared.createNewCityBlockMap(cityBlockData: newCityData)
-                            print("Succesfully created new city block data for current week")
-                            self.resultText = "Succesfully created new city block data for current week."
+                            print("Succesfully created new city block data for week offset \(weekOffset)")
+                            self.resultText = "Succesfully created new city block data for week offset \(weekOffset)"
                         }
                     } catch {
                         print("Failed to make new city block data with error: \(error)")
@@ -109,14 +133,14 @@ struct CityBlockDataTestView: View {
                     }
                 }
             } label: {
-                Text("Create city block data for the current week for user")
+                Text("Create city block data for week offset \(weekOffset)")
                     .font(.headline)
                     .multilineTextAlignment(.center)
             }
             .buttonStyle(TestButtonStyle(backgroundColor: Color.cyan, textColor: Color.white))
             .padding([.top, .leading, .trailing])
             
-            // MARK: - Get City Block Data
+            // MARK: - Get City Block Data by week offset
             Button {
                 Task {
                     do {
@@ -129,7 +153,7 @@ struct CityBlockDataTestView: View {
                                 weekEndDate: currWeek.endDate
                             )
                             
-                            print("Succesfully fetched user's city block data for the current week")
+                            print("Succesfully fetched user's city block data for week offset \(weekOffset)")
                             self.cityBlockData = fetchedData
                         }
                     } catch {
@@ -138,12 +162,13 @@ struct CityBlockDataTestView: View {
                     }
                 }
             } label: {
-                Text("Get city block data for the current week for the user")
+                Text("Get city block data for week offset \(weekOffset) for the user")
                     .font(.headline)
                     .multilineTextAlignment(.center)
             }
             .buttonStyle(TestButtonStyle(backgroundColor: Color.indigo, textColor: Color.white))
             .padding([.top, .leading, .trailing])
+
             
             // MARK: - Add Journal id to current week City Block Data
             Button {
@@ -194,6 +219,9 @@ struct CityBlockDataTestView: View {
                 Text(resultText).padding()
             }
             
+        }
+        .onAppear {
+            self.currWeek = getStartEndWeekDates()
         }
     }
 }
