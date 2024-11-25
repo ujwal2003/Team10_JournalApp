@@ -82,7 +82,26 @@ struct CityBlockDataTestView: View {
             
             // MARK: - Create City Block Data
             Button {
-                print("create new city block data for user")
+                Task {
+                    do {
+                        if let userProfile = loadedUserProfile {
+                            let newCityData = CityBlockData(
+                                userId: userProfile.userId,
+                                weekStartDate: currWeek.startDate,
+                                weekEndDate: currWeek.endDate,
+                                mapName: "Map1",
+                                journalIDs: []
+                            )
+                            
+                            try await CityBlockManager.shared.createNewCityBlockMap(cityBlockData: newCityData)
+                            print("Succesfully created new city block data for current week")
+                            self.resultText = "Succesfully created new city block data for current week."
+                        }
+                    } catch {
+                        print("Failed to make new city block data with error: \(error)")
+                        self.resultText = "Error: failed to make new city block."
+                    }
+                }
             } label: {
                 Text("Create city block data for the current week for user")
                     .font(.headline)
