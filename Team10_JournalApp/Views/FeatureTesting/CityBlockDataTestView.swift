@@ -112,7 +112,25 @@ struct CityBlockDataTestView: View {
             
             // MARK: - Get City Block Data
             Button {
-                print("get the city block data for the current week for user")
+                Task {
+                    do {
+                        if let userProfile = loadedUserProfile {
+                            self.resultText = "No data loaded..."
+                            
+                            let fetchedData = try await CityBlockManager.shared.getCityBlockData(
+                                userId: userProfile.userId,
+                                weekStartDate: currWeek.startDate,
+                                weekEndDate: currWeek.endDate
+                            )
+                            
+                            print("Succesfully fetched user's city block data for the current week")
+                            self.cityBlockData = fetchedData
+                        }
+                    } catch {
+                        print("Failed to fetch user's city block data with error: \(error)")
+                        self.resultText = "Error: failed to fetch city block data."
+                    }
+                }
             } label: {
                 Text("Get city block data for the current week for the user")
                     .font(.headline)
