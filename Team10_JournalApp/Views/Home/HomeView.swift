@@ -111,6 +111,16 @@ struct HomeView: View {
                 }
             }
             
+            // FOR PREVIEW:
+//            appController.loadedUserProfile = UserProfile(
+//                userId: UUID().uuidString,
+//                email: "mockData@mockEmail.com",
+//                displayName: "mockData@mockEmail.com",
+//                dateCreated: Date(),
+//                photoURL: nil,
+//                friendUserIDs: []
+//            )
+            
             
             //FIXME: use stuff from DB here
             viewModel.currWeek = viewModel.getWeekRange(offset: 0)
@@ -173,3 +183,23 @@ struct HomeView: View {
 
     }
 }
+
+//#Preview {
+//    TabView(selection: .constant(AppTab.Home)) {
+//        Tab("Home", systemImage: "house", value: .Home) {
+//            HomeView(appController: AppViewController())
+//        }
+//        
+//        Tab("Journal", systemImage: "book", value: .Journal) {
+//            Text("PREVIEW")
+//        }
+//        
+//        Tab("Friends", systemImage: "person.3", value: .Friends) {
+//            Text("PREVIEW")
+//        }
+//        
+//        Tab("Settings", systemImage: "gear", value: .Settings) {
+//            Text("PREVIEW")
+//        }
+//    }
+//}
