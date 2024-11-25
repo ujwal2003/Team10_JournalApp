@@ -10,11 +10,33 @@ import SwiftUI
 struct FeatureTestingView: View {
     @ObservedObject var appController: AppViewController
     
+    @State private var selectedTestTab: TestingTab = .JournalEntry
+    enum TestingTab: String {
+        case JournalEntry, CityBlockData
+    }
+    
     var body: some View {
-        let loadedUserProfile = appController.loadedUserProfile
-        
-        VStack {
-            JournalCRUDTestView(loadedUserProfile: loadedUserProfile)
+        NavigationStack {
+            let loadedUserProfile = appController.loadedUserProfile
+            
+            VStack {
+                switch selectedTestTab {
+                    case .JournalEntry:
+                        JournalEntryDataTestView(loadedUserProfile: loadedUserProfile)
+                    case .CityBlockData:
+                        Text("WIP")
+                }
+            }
+            .toolbar {
+                ToolbarItem(placement: .principal) {
+                    Picker("Feature Test", selection: $selectedTestTab) {
+                        Text(TestingTab.JournalEntry.rawValue).tag(TestingTab.JournalEntry)
+                        Text(TestingTab.CityBlockData.rawValue).tag(TestingTab.CityBlockData)
+                    }
+                    .pickerStyle(.segmented)
+                }
+            }
+            
         }
     }
 }

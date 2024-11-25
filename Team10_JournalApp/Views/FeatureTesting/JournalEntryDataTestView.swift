@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct JournalCRUDTestView: View {
+struct JournalEntryDataTestView: View {
     @State var loadedUserProfile: UserProfile?
     
     @State var dateOffset: Int
