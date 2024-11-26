@@ -13,6 +13,7 @@ enum Sentiment {
     case Neutral
     case Concerning
     case Negative
+    case Error
     
     var textView: Text {
         switch self {
@@ -45,6 +46,13 @@ enum Sentiment {
                             .font(.system(size: 16))
                             .fontWeight(.medium)
                             .foregroundStyle(Color.hex("#DE5353"))
+            
+            case .Error:
+                return Text("Error")
+                            .font(.system(size: 16))
+                            .fontWeight(.medium)
+                            .foregroundStyle(Color.black)
+                            .background(.red) as! Text
         }
     }
     
@@ -64,6 +72,9 @@ enum Sentiment {
                 
             case .Negative:
                 return "Negative feelings have weighed down this building, causing its lights to dim. The city is struggling to maintain its usual vibrancy, and citizens feel a bit disconnected. Consider journaling tomorrow to rebuild your city’s strength."
+            
+            case .Error:
+                return "This is an error."
         }
     }
     
@@ -79,6 +90,8 @@ enum Sentiment {
                 return .Rain
             case .Negative:
                 return .Stormy
+            case .Error:
+                return .Error
         }
     }
 }

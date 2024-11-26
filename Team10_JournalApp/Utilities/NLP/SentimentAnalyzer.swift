@@ -25,4 +25,16 @@ final class SentimentAnalyzer {
     func calculateOverallSentimentScore(gratitudeScore: Double, thoughtDumpScore: Double, learningScore: Double) -> Double {
         return 0.50 * (gratitudeScore) + 0.35 * (thoughtDumpScore) + 0.15 * (learningScore)
     }
+    
+    func getMappedSentimentLabelFromScore(sentimentScore: Double) -> Sentiment {
+        switch sentimentScore {
+            case 0.625 ... 1.0: return .Positive
+            case 0.25 ..< 0.625: return .Fair
+            case -0.25 ..< 0.25: return .Neutral
+            case -0.625 ..< -0.25: return .Concerning
+            case -1.0 ..< -0.625: return .Negative
+            
+            default: return .Error
+        }
+    }
 }
