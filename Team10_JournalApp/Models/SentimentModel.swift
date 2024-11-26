@@ -66,4 +66,19 @@ enum Sentiment {
                 return "Negative feelings have weighed down this building, causing its lights to dim. The city is struggling to maintain its usual vibrancy, and citizens feel a bit disconnected. Consider journaling tomorrow to rebuild your city’s strength."
         }
     }
+    
+    var mappedWeather: JournalWeather {
+        switch self {
+            case .Positive:
+                return .Sunny
+            case .Fair:
+                return .Cloudy
+            case .Neutral:
+                return .Drizzle
+            case .Concerning:
+                return .Rain
+            case .Negative:
+                return .Stormy
+        }
+    }
 }

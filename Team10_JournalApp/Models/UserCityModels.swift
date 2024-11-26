@@ -54,7 +54,7 @@ enum JournalWeather {
                         iconColor: Color.cyan)
                 
             case .Rain:
-                return (name: "Rain",
+                return (name: "Rainy",
                         icon: "cloud.rain.fill",
                         iconWidth: 28,
                         iconColor: Color.blue)
