@@ -74,47 +74,6 @@ enum JournalWeather {
     }
 }
 
-enum Sentiment {
-    case Positive
-    case Neutral
-    case Negative
-    
-    var textView: Text {
-        switch self {
-            case .Positive:
-                return Text("Positive")
-                            .font(.system(size: 16))
-                            .fontWeight(.medium)
-                            .foregroundStyle(Color.hex("#5EB881"))
-            
-            case .Neutral:
-                return Text("Neutral")
-                            .font(.system(size: 16))
-                            .fontWeight(.medium)
-                            .foregroundStyle(Color.hex("#8A8A8A"))
-            
-            case .Negative:
-                return Text("Negative")
-                            .font(.system(size: 16))
-                            .fontWeight(.medium)
-                            .foregroundStyle(Color.hex("#DE5353"))
-        }
-    }
-    
-    var report: String {
-        switch self {
-            case .Positive:
-                return "Infusing the city with positivity causes this building to shine brightly. Citizens feel more connected and at peace. This uplifting energy leads to increased city growth and well-being."
-            
-            case .Neutral:
-                return "This reflects a balanced mindset today, neither overly joyful nor overly troubled. Progress is steady, and the city remains stable."
-                
-            case .Negative:
-                return "Negative feelings have weighed down this building, causing its lights to dim. The city is struggling to maintain its usual vibrancy, and citizens feel a bit disconnected. Consider journaling tomorrow to rebuild your city’s strength."
-        }
-    }
-}
-
 struct GrowthReport {
     var gratitudeSentiment: Sentiment
     var gratitudeEntry: String
