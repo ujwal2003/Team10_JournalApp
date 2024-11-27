@@ -22,6 +22,7 @@ final class SentimentAnalyzer {
         return Double(sentimentScore?.rawValue ?? "0") ?? 0
     }
     
+    /// The Sentiment computEd Analyzed Number (SEAN) equation
     func calculateOverallSentimentScore(gratitudeScore: Double, thoughtDumpScore: Double, learningScore: Double) -> Double {
         return 0.50 * (gratitudeScore) + 0.35 * (thoughtDumpScore) + 0.15 * (learningScore)
     }
