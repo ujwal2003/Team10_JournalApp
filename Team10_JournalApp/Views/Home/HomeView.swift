@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct HomeView: View {
-    @State var useMocks: Bool = false
+    @State var usePreviewMocks: Bool = false
     
     @ObservedObject var appController: AppViewController
     @StateObject var viewModel = HomeViewModel()
@@ -71,7 +71,7 @@ struct HomeView: View {
             }
         }
         .task {
-            if self.useMocks {
+            if self.usePreviewMocks {
                 MockDataManager.shared.loadMockUserProfile(appController: appController)
                 
             } else {
@@ -88,61 +88,7 @@ struct HomeView: View {
             }
             
             //FIXME: use stuff from DB here
-            viewModel.currWeek = viewModel.getWeekRange(offset: 0)
-            
-            viewModel.cityHealthPercentage = 1.0
-            viewModel.currSentimentWeather = .Sunny
-            
-            let dummyText = "Lorem ipsum dolor sit amet, consectetur adipiscing elit"
-            viewModel.currWeekJournal = Array(repeating: .init(gratitudeSentiment: .Positive,
-                                                               gratitudeEntry: dummyText,
-                                                               learningSentiment: .Neutral,
-                                                               learningEntry: dummyText,
-                                                               thoughtSentiment: .Negative,
-                                                               thoughtEntry: dummyText),
-                                              count: 7)
-            
-            viewModel.currMap = .Map1
-            viewModel.currCityBlockBuildings = [
-                .init(style: .LightBlueTower, onClick: {
-                    viewModel.selectedBuildingIndex = 0
-                    viewModel.isGrowthReportShowing.toggle()
-                }),
-                .init(style: .RedRuin, onClick: {
-                    viewModel.selectedBuildingIndex = 1
-                    viewModel.isGrowthReportShowing.toggle()
-                }),
-                .init(style: .YellowConstruction, onClick: {
-                    viewModel.selectedBuildingIndex = 2
-                    viewModel.isGrowthReportShowing.toggle()
-                }),
-                .init(style: .Scaffolding, onClick: {
-                    viewModel.selectedBuildingIndex = 3
-                    viewModel.isGrowthReportShowing.toggle()
-                }),
-                .init(style: .PurpleConstruction, onClick: {
-                    viewModel.selectedBuildingIndex = 4
-                    viewModel.isGrowthReportShowing.toggle()
-                }),
-                .init(style: .BrownTower, onClick: {
-                    viewModel.selectedBuildingIndex = 5
-                    viewModel.isGrowthReportShowing.toggle()
-                }),
-                .init(style: .LightGreenTower, onClick: {
-                    viewModel.selectedBuildingIndex = 6
-                    viewModel.isGrowthReportShowing.toggle()
-                })
-            ]
-            
-            viewModel.recommendedActions = [
-                .init(searchQuery: "parks",
-                      title: "Park",
-                      description: "Going to the park is a great way to improve your physical and mental health."),
-                
-                    .init(searchQuery: "coffee shops",
-                          title: "Chill & Chat",
-                          description: "Reach out to a friend or loved one for a chat at a coffee shop")
-            ]
+            MockDataManager.shared.loadMockUserJournalsMap(homeViewModel: viewModel)
             
         }
 
@@ -151,6 +97,6 @@ struct HomeView: View {
 
 #Preview {
     AppTabMockContainerView(previewTab: .Home) {
-        HomeView(useMocks: true, appController: AppViewController())
+        HomeView(usePreviewMocks: true, appController: AppViewController())
     }
 }
