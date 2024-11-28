@@ -49,7 +49,7 @@ struct HomeView: View {
                     onClick: { viewModel.isRecommendedActionsShowing.toggle() }
                 )
                 .sheet(isPresented: $viewModel.isRecommendedActionsShowing) {
-                    ReccomendedActionsView(actions: viewModel.recommendedActions)
+                    ReccomendedActionsView(overallSentiment: .Negative, actions: viewModel.recommendedActions)
                 }
                 
                 UserJournalCityBlockView(

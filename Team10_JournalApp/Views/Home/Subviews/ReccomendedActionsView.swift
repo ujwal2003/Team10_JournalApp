@@ -55,6 +55,7 @@ struct ActionsMapView: View {
 }
 
 struct ReccomendedActionsView: View {
+    @State var overallSentiment: Sentiment
     @State var actions: [RecommendedAction]
     
     @Environment(\.dismiss) var dismiss
@@ -93,10 +94,9 @@ struct ReccomendedActionsView: View {
                             .multilineTextAlignment(.center)
                         
                     } else {
-                        // FIXME: use actually calculated sentiment
                         Group {
                             Text("Your overall sentiment is ")
-                            + Text("Negative").foregroundStyle(Color.hex("#DE5353"))
+                            + overallSentiment.textView
                             + Text(", consider taking the following actions:")
                         }
                         .font(.system(size: 18.0))
@@ -134,18 +134,21 @@ struct ReccomendedActionsView: View {
     @Previewable @State var viewEmptyStatePreview = false
     
     if viewEmptyStatePreview {
-        ReccomendedActionsView(actions: [])
+        ReccomendedActionsView(overallSentiment: .Negative, actions: [])
         
     } else {
-        ReccomendedActionsView(actions: [
-            .init(searchQuery: "parks",
-                  title: "Park",
-                  description: "Going to the park is a great way to improve your physical and mental health."),
-            
-                .init(searchQuery: "coffee shops",
-                      title: "Chill & Chat",
-                      description: "Reach out to a friend or loved one for a chat at a coffee shop")
-        ])
+        ReccomendedActionsView(
+            overallSentiment: .Negative,
+            actions: [
+                .init(searchQuery: "parks",
+                      title: "Park",
+                      description: "Going to the park is a great way to improve your physical and mental health."),
+                
+                    .init(searchQuery: "coffee shops",
+                          title: "Chill & Chat",
+                          description: "Reach out to a friend or loved one for a chat at a coffee shop")
+            ]
+        )
     }
     
 }
