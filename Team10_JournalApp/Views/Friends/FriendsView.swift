@@ -45,7 +45,10 @@ struct FriendsView: View {
                         isEditing: isEditing,
                         onEditClick: { isEditing.toggle() },
                         onAddIconClick: { viewModel.isAddFriendSheetVisible.toggle() }
-                    ) // TODO: add sheet for adding friends
+                    )
+                    .sheet(isPresented: $viewModel.isAddFriendSheetVisible) {
+                        AddFriendView()
+                    }
                     
                     List {
                         if viewModel.isSelectedContentListEmpty() {
