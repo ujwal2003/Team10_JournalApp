@@ -60,11 +60,60 @@ class FriendsViewModel: ObservableObject {
         }
     }
     
+    func getFilteredFriends() -> [DBUserInfo] {
+        guard !searchQuery.isEmpty else { return friends }
+        
+        return friends.filter { friend in
+            return friend.displayName.lowercased().contains(searchQuery.lowercased())
+        }
+    }
+    
+    func getFilteredRequests() -> [DBUserInfo] {
+        guard !searchQuery.isEmpty else { return friendRequests }
+        
+        return friendRequests.filter { request in
+            return request.displayName.lowercased().contains(searchQuery.lowercased())
+        }
+    }
+    
+    func getFilteredInvitations() -> [DBUserInfo] {
+        guard !searchQuery.isEmpty else { return friendInvites }
+        
+        return friendInvites.filter { invite in
+            return invite.displayName.lowercased().contains(searchQuery.lowercased())
+        }
+    }
+    
+    //FIXME: - actually delete from db
+    func removeFriend(friend: DBUserInfo) async throws {
+        try await Task.sleep(nanoseconds: 1_000_000_000) // 1 second delay
+        print("\(friend.displayName) deleted from database")
+    }
+    
+    func deleteFriend(at offsets: IndexSet) {
+        for offset in offsets {
+            let itemToDelete = friends[offset]
+            
+            Task {
+                do {
+                    try await removeFriend(friend: itemToDelete)
+                    
+                    DispatchQueue.main.async {
+                        self.friends.remove(atOffsets: offsets)
+                    }
+                } catch {
+                    print("Failed to delete \(itemToDelete): \(error)")
+                    //TODO: show alert if failed to delete friend
+                }
+            }
+        }
+    }
+    
     func getContentList() -> AnyView {
         switch self.selectedContent {
             case .Friends:
                 return AnyView(
-                    ForEach(self.friends, id: \.userID) { friendProfileInfo in
+                    ForEach(self.getFilteredFriends(), id: \.userID) { friendProfileInfo in
                         FriendListRowView(
                             itemName: friendProfileInfo.displayName,
                             itemContent: .checkIn
@@ -77,12 +126,12 @@ class FriendsViewModel: ObservableObject {
                         )
                         .listRowBackground(Color.clear)
                     }
-                    // TODO: on delete function
+                    .onDelete(perform: self.deleteFriend(at:))
                 )
             
             case .Requests:
                 return AnyView(
-                    ForEach(self.friendRequests, id: \.userID) { requestProfileInfo in
+                    ForEach(self.getFilteredRequests(), id: \.userID) { requestProfileInfo in
                         FriendListRowView(
                             itemName: requestProfileInfo.displayName,
                             itemContent: .requestButtons(
@@ -99,7 +148,7 @@ class FriendsViewModel: ObservableObject {
             
             case .Invitations:
                 return AnyView(
-                    ForEach(self.friendInvites, id: \.userID) { inviteProfileInfo in
+                    ForEach(self.getFilteredInvitations(), id: \.userID) { inviteProfileInfo in
                         FriendListRowView(
                             itemName: inviteProfileInfo.displayName,
                             itemContent: .inviteRescindButton(
