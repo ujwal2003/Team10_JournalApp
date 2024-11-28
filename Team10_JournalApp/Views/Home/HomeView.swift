@@ -57,40 +57,7 @@ struct HomeView: View {
                     buildings: viewModel.currCityBlockBuildings
                 )
                 .sheet(isPresented: $viewModel.isGrowthReportShowing) {
-                    let day = "\(dayToIndex[viewModel.selectedBuildingIndex] ?? "Day")"
-                    let selectedBuilding = viewModel.currCityBlockBuildings[viewModel.selectedBuildingIndex].style
-                    
-                    var growthHeadline: String {
-                        if selectedBuilding.category == .Ruin {
-                            return "Ruins of \(day)"
-                        }
-                        
-                        return "\(day) City Growth"
-                    }
-                    
-                    let currWeekJournal = viewModel.currWeekJournal
-                    if !currWeekJournal.isEmpty {
-                        CityJournalBuildingView(
-                            headlineTitle: growthHeadline,
-                            building: selectedBuilding,
-                            growthReport: viewModel.currWeekJournal[viewModel.selectedBuildingIndex]
-                        )
-                        
-                    } else {
-                        CityJournalBuildingView(
-                            headlineTitle: growthHeadline,
-                            building: selectedBuilding,
-                            growthReport: .init(
-                                gratitudeSentiment: .Neutral,
-                                gratitudeEntry: "ERROR",
-                                learningSentiment: .Neutral,
-                                learningEntry: "ERROR",
-                                thoughtSentiment: .Neutral,
-                                thoughtEntry: "ERROR"),
-                            selectedMenuView: .Journal
-                        )
-                    }
-                    
+                    viewModel.getJournalBuildingView()
                 }
                 
                 BottomNavigationView(

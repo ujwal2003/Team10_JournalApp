@@ -45,4 +45,40 @@ class HomeViewModel: ObservableObject {
         
         return "\(startDateString) - \(endDateString)"
     }
+    
+    func getJournalBuildingView() -> CityJournalBuildingView {
+        let day = "\(dayToIndex[self.selectedBuildingIndex] ?? "Day")"
+        let selectedBuilding = self.currCityBlockBuildings[self.selectedBuildingIndex].style
+        
+        var growthHeadline: String {
+            if selectedBuilding.category == .Ruin {
+                return "Ruins of \(day)"
+            }
+            
+            return "\(day) City Growth"
+        }
+        
+        let currWeekJournal = self.currWeekJournal
+        if !currWeekJournal.isEmpty {
+            return CityJournalBuildingView(
+                headlineTitle: growthHeadline,
+                building: selectedBuilding,
+                growthReport: self.currWeekJournal[self.selectedBuildingIndex]
+            )
+        }
+        
+        return CityJournalBuildingView(
+            headlineTitle: growthHeadline,
+            building: selectedBuilding,
+            growthReport: .init(
+                gratitudeSentiment: .Error,
+                gratitudeEntry: "ERROR",
+                learningSentiment: .Error,
+                learningEntry: "ERROR",
+                thoughtSentiment: .Error,
+                thoughtEntry: "ERROR"
+            )
+        )
+    }
+    
 }
