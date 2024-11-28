@@ -8,46 +8,34 @@
 import SwiftUI
 
 struct FriendCheckInView: View {
-    @State var friendName: String
-    @ObservedObject var friendsViewModel: OLDFriendsViewModel
-    
-    var days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+    @State var friendDBInfo: DBUserInfo
     
     var body: some View {
         VStack {
             VStack(spacing: 15.0) {
-                Text("\(friendName)’s City")
+                Text("\(friendDBInfo.displayName)'s City")
                     .font(.system(size: 30))
                     .fontWeight(.heavy)
-                    .foregroundColor(.black)
+                    .foregroundStyle(.black)
                 
-                Text("City Block: \(friendsViewModel.selectedFriendCityBlock)")
+                Text("City Block: Loading...")
                     .font(.system(size: 16))
                     .fontWeight(.medium)
-                    .foregroundColor(.black)
+                    .foregroundStyle(.black)
             }
             .padding()
             
-            let friendCityMap = friendsViewModel.selectedFriendMap
-            
-            CityJournalMapView(map: friendCityMap.map, buildings: friendCityMap.buildings)
-                .sheet(isPresented: $friendsViewModel.isSelectedFriendGrowthReportShowing) {
-                    let reportIdx = friendsViewModel.selectedFriendBuildingIndex
-                    
-                    CityGrowthView(headlineTitle: "\(friendName): \(days[reportIdx]) Growth",
-                                   buildingType: friendsViewModel.selectedBuilding.category,
-                                   growthReport: friendCityMap.reports[reportIdx],
-                                   overrideName: friendName,
-                                   selectedMenuView: .Journal)
-                }
-                .padding(isIphone16ProMaxPortrait ? 8 : 25)
+            UserJournalCityBlockView(
+                map: .LoadingMap,
+                buildings: []
+            )
             
             VStack {
-                Text("\(friendName)’s City weather is: ")
+                Text("\(friendDBInfo.displayName)’s City weather is: ")
                     .font(.system(size: 18))
                     .fontWeight(.medium)
                 
-                let friendWeather = friendsViewModel.selectedFriendWeather.weatherStatusStyle
+                let friendWeather = JournalWeather.Cloudy.weatherStatusStyle
                 
                 HStack {
                     Text(friendWeather.name)
@@ -61,13 +49,14 @@ struct FriendCheckInView: View {
                         .foregroundStyle(friendWeather.iconColor)
                 }
             }
+            .padding()
             
-            Spacer().frame(height: isIphone16ProMaxPortrait ? 180 : 140)
+            Spacer()
+            
         }
-        .task {
-            await friendsViewModel.getFriendCurrWeekMap(friend: friendName)
-            await friendsViewModel.calculateFriendWeather()
-        }
-        
     }
+}
+
+#Preview {
+    FriendCheckInView(friendDBInfo: .init(userID: "iuyeiqwyiq8276388", email: "test", displayName: "Friend1"))
 }
