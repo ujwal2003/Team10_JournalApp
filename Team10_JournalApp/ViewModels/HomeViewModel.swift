@@ -11,6 +11,7 @@ import SwiftUI
 @MainActor
 class HomeViewModel: ObservableObject {
     @Published var currWeek: String = "XX/XX/XX - XX/XX/XX"
+    @Published var numFriends: Int = 0
     
     @Published var cityHealthPercentage: CGFloat = 0.0
     @Published var currSentimentWeather: JournalWeather = .NoData

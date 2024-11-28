@@ -25,6 +25,7 @@ class MockDataManager {
     
     func loadMockUserJournalsMap(homeViewModel: HomeViewModel) {
         homeViewModel.currWeek = homeViewModel.getWeekRange(offset: 0)
+        homeViewModel.numFriends = 5
         
         homeViewModel.cityHealthPercentage = 1.0
         homeViewModel.currSentimentWeather = .Sunny

@@ -65,7 +65,7 @@ struct HomeView: View {
                     onLeftArrowClick: { print("TODO: Navigate Previous") },
                     onRightArrowClick: { print("TODO: Navigate Next") },
                     currWeek: viewModel.currWeek,
-                    numFriends: 5
+                    numFriends: viewModel.numFriends
                 )
                 
             }
