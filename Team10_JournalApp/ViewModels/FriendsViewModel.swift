@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftUI
 
 enum FriendSelectionContent {
     case Friends
@@ -16,7 +17,7 @@ enum FriendSelectionContent {
         switch self {
             case .Friends: return "Your Friends"
             case .Requests: return "Friend Requests"
-            case .Invitations: return "City Invitations"
+            case .Invitations: return "Your Invites"
         }
     }
 }
@@ -50,4 +51,66 @@ class FriendsViewModel: ObservableObject {
     @Published var isAddFriendSheetVisible: Bool = false
     @Published var cityInviteFailedAlert: Bool = false
     @Published var isMapLoading: Bool = true
+    
+    func isSelectedContentListEmpty() -> Bool {
+        switch self.selectedContent {
+            case .Friends: return self.friends.isEmpty
+            case .Requests: return self.friendRequests.isEmpty
+            case .Invitations: return self.friendInvites.isEmpty
+        }
+    }
+    
+    func getContentList() -> AnyView {
+        switch self.selectedContent {
+            case .Friends:
+                return AnyView(
+                    ForEach(self.friends, id: \.userID) { friendProfileInfo in
+                        FriendListRowView(
+                            itemName: friendProfileInfo.displayName,
+                            itemContent: .checkIn
+                        )
+                        .background(
+                            NavigationLink(
+                                "",
+                                destination: Text("WIP")
+                            ).opacity(0)
+                        )
+                        .listRowBackground(Color.clear)
+                    }
+                    // TODO: on delete function
+                )
+            
+            case .Requests:
+                return AnyView(
+                    ForEach(self.friendRequests, id: \.userID) { requestProfileInfo in
+                        FriendListRowView(
+                            itemName: requestProfileInfo.displayName,
+                            itemContent: .requestButtons(
+                                onAccept: {
+                                    
+                                },
+                                onReject: {
+                                    
+                                }
+                            )
+                        )
+                    }
+                )
+            
+            case .Invitations:
+                return AnyView(
+                    ForEach(self.friendInvites, id: \.userID) { inviteProfileInfo in
+                        FriendListRowView(
+                            itemName: inviteProfileInfo.displayName,
+                            itemContent: .inviteRescindButton(
+                                onRevoke: {
+                                    
+                                }
+                            )
+                        )
+                    }
+                )
+        }
+    }
+    
 }
