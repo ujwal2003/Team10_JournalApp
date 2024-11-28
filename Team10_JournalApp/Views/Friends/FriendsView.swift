@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct FriendsView: View {
-    @StateObject var viewModel = FriendsViewModel()
+    @StateObject var viewModel = OLDFriendsViewModel()
     @Environment(\.editMode) var editMode
     
     @State private var isEditing = false

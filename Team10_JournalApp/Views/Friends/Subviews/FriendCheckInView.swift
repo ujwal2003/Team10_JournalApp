@@ -9,7 +9,7 @@ import SwiftUI
 
 struct FriendCheckInView: View {
     @State var friendName: String
-    @ObservedObject var friendsViewModel: FriendsViewModel
+    @ObservedObject var friendsViewModel: OLDFriendsViewModel
     
     var days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
     

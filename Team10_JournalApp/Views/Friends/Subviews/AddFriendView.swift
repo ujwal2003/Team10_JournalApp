@@ -9,7 +9,7 @@ import SwiftUI
 
 struct AddFriendView: View {
     @State var searchUserName: String = ""
-    @ObservedObject var friendsViewModel: FriendsViewModel
+    @ObservedObject var friendsViewModel: OLDFriendsViewModel
     
     @Environment(\.dismiss) var dismiss
     @State private var showAlert = false
