@@ -6,10 +6,13 @@
 //
 
 import Foundation
+import SwiftUI
 
 final class CommonUtilities {
     static let util = CommonUtilities()
     private init() { }
+    
+    let isIphone16ProMaxPortrait: Bool = UIScreen.main.bounds.height == 956.0
     
     /// Returns the start and end date of the week in format: "mm/dd/yy - mm/dd/yy"
     /// (offset of 0 is current week, negative numbers are previous week from the current and positive numbers are future weeks from current)
