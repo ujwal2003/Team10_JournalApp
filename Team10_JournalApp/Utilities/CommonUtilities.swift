@@ -1,35 +1,23 @@
 //
-//  HomeViewModel.swift
+//  CommonUtilities.swift
 //  Team10_JournalApp
 //
-//  Created by ujwal joshi on 11/18/24.
+//  Created by ujwal joshi on 11/28/24.
 //
 
 import Foundation
 import SwiftUI
 
-@MainActor
-class HomeViewModel: ObservableObject {
-    @Published var currWeek: String = "XX/XX/XX - XX/XX/XX"
+final class CommonUtilities {
+    static let util = CommonUtilities()
+    private init() { }
     
-    @Published var cityHealthPercentage: CGFloat = 0.0
-    @Published var currSentimentWeather: JournalWeather = .NoData
-    
-    @Published var currMap: Map = .LoadingMap
-    @Published var currCityBlockBuildings: [BuildingConfig] = []
-    @Published var currWeekJournal: [GrowthReport] = []
-    
-    @Published var isRecommendedActionsShowing: Bool = false
-    @Published var recommendedActions: [RecommendedAction] = []
-    
-    @Published var isGrowthReportShowing: Bool = false
-    @Published var selectedBuildingIndex: Int = 0
-    
-    let currentDate = Date()
+    let isIphone16ProMaxPortrait: Bool = UIScreen.main.bounds.height == 956.0
     
     /// Returns the start and end date of the week in format: "mm/dd/yy - mm/dd/yy"
     /// (offset of 0 is current week, negative numbers are previous week from the current and positive numbers are future weeks from current)
     func getWeekRange(offset: Int) -> String {
+        let currentDate = Date()
         let calendar = Calendar.current
         
         let startOfWeek = calendar.date(from: calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: currentDate))!

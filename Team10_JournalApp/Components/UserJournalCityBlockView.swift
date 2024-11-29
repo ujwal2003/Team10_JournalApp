@@ -76,7 +76,7 @@ struct UserJournalCityBlockView: View {
                 
             }
         }
-        .frame(height: isIphone16ProMaxPortrait ? 400 : 320)
+        .frame(height: CommonUtilities.util.isIphone16ProMaxPortrait ? 400 : 320)
         .clipped()
         .padding(4)
         

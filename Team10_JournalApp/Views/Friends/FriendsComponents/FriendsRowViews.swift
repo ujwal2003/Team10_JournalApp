@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-let FRIENDS_ROW_WIDTH: CGFloat = isIphone16ProMaxPortrait ? 380 : 320
+let FRIENDS_ROW_WIDTH: CGFloat = CommonUtilities.util.isIphone16ProMaxPortrait ? 380 : 320
 
 @available(*, deprecated, message: "Use FriendListRowViewIntead")
 struct FriendCheckInRow: View {

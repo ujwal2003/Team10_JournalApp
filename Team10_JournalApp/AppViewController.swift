@@ -8,8 +8,6 @@
 import Foundation
 import SwiftUI
 
-let isIphone16ProMaxPortrait: Bool = UIScreen.main.bounds.height == 956.0
-
 @MainActor
 class AppViewController: ObservableObject {
     @Published var loggedIn: Bool = false

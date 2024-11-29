@@ -27,6 +27,9 @@ struct AppTabMockContainerView<Content: View>: View {
                     content
                 } else {
                     Text("MOCK PREVIEW")
+                    Text("You are currently previewing \(selectedPreview) with mocks. Run the app or preview without mocks to see all other tabs.")
+                        .multilineTextAlignment(.center)
+                        .padding()
                 }
             }
             
@@ -35,6 +38,9 @@ struct AppTabMockContainerView<Content: View>: View {
                     content
                 } else {
                     Text("MOCK PREVIEW")
+                    Text("You are currently previewing \(selectedPreview) with mocks. Run the app or preview without mocks to see all other tabs.")
+                        .multilineTextAlignment(.center)
+                        .padding()
                 }
             }
             
@@ -43,6 +49,9 @@ struct AppTabMockContainerView<Content: View>: View {
                     content
                 } else {
                     Text("MOCK PREVIEW")
+                    Text("You are currently previewing \(selectedPreview) with mocks. Run the app or preview without mocks to see all other tabs.")
+                        .multilineTextAlignment(.center)
+                        .padding()
                 }
             }
             
@@ -51,6 +60,9 @@ struct AppTabMockContainerView<Content: View>: View {
                     content
                 } else {
                     Text("MOCK PREVIEW")
+                    Text("You are currently previewing \(selectedPreview) with mocks. Run the app or preview without mocks to see all other tabs.")
+                        .multilineTextAlignment(.center)
+                        .padding()
                 }
             }
         }

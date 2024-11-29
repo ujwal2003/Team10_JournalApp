@@ -85,6 +85,7 @@ struct GrowthReport {
     var thoughtEntry: String
 }
 
+@available(*, deprecated, message: "Manually embed journal city configurations into component.")
 struct CityMap {
     var map: Map
     var buildings: [BuildingConfig]

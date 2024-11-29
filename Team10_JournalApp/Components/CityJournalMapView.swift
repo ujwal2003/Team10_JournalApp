@@ -52,7 +52,7 @@ struct CityJournalMapView: View {
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(width: geometry.size.width)
-                    .scaleEffect(x: isIphone16ProMaxPortrait ? 1 : 1.13)
+                    .scaleEffect(x: CommonUtilities.util.isIphone16ProMaxPortrait ? 1 : 1.13)
                 
                 let buildingViews: [BuildingView] = getMapBuildings(geometry: geometry,
                                                                     map: map,
