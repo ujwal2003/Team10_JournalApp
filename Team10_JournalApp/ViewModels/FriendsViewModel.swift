@@ -44,9 +44,6 @@ class FriendsViewModel: ObservableObject {
     @Published var selectedFriendJournalWeek: String = "Loading..."
     @Published var selectedFriendWeather: JournalWeather = .NoData
     
-    @Published var selectedFriendBuildingIndex: Int = 0
-    @Published var selectedBuilding: Building = .BlueConstruction
-    
     @Published var isAddFriendSheetVisible: Bool = false
     @Published var cityInviteFailedAlert: Bool = false
     @Published var isMapLoading: Bool = true
@@ -120,7 +117,7 @@ class FriendsViewModel: ObservableObject {
                         .background(
                             NavigationLink(
                                 "",
-                                destination: Text("WIP")
+                                destination: FriendCheckInView(friendDBInfo: friendProfileInfo)
                             ).opacity(0)
                         )
                         .listRowBackground(Color.clear)

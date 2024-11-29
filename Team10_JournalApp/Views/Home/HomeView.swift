@@ -72,7 +72,7 @@ struct HomeView: View {
         }
         .task {
             if self.usePreviewMocks {
-                MockDataManager.shared.loadMockUserProfile(appController: appController)
+                MockDataManager.mock.loadMockUserProfile(appController: appController)
                 
             } else {
                 
@@ -88,7 +88,7 @@ struct HomeView: View {
             }
             
             //FIXME: use stuff from DB here
-            MockDataManager.shared.loadMockUserJournalsMap(homeViewModel: viewModel)
+            MockDataManager.mock.loadMockUserJournalsMap(homeViewModel: viewModel)
             
         }
 

@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct FriendCheckInView: View {
+    @StateObject var viewModel = FriendCheckInViewModel()
     @State var friendDBInfo: DBUserInfo
     
     var body: some View {
@@ -18,7 +19,7 @@ struct FriendCheckInView: View {
                     .fontWeight(.heavy)
                     .foregroundStyle(.black)
                 
-                Text("City Block: Loading...")
+                Text("City Block: \(CommonUtilities.util.getWeekRange(offset: 0))")
                     .font(.system(size: 16))
                     .fontWeight(.medium)
                     .foregroundStyle(.black)
@@ -26,16 +27,19 @@ struct FriendCheckInView: View {
             .padding()
             
             UserJournalCityBlockView(
-                map: .LoadingMap,
-                buildings: []
+                map: viewModel.friendCityMap,
+                buildings: viewModel.friendCityBlockBuildings
             )
+            .sheet(isPresented: $viewModel.isGrowthReportShowing) {
+                viewModel.getBuildingJournalView()
+            }
             
             VStack {
                 Text("\(friendDBInfo.displayName)’s City weather is: ")
                     .font(.system(size: 18))
                     .fontWeight(.medium)
                 
-                let friendWeather = JournalWeather.Cloudy.weatherStatusStyle
+                let friendWeather = viewModel.friendSentimentWeather.weatherStatusStyle
                 
                 HStack {
                     Text(friendWeather.name)
@@ -54,6 +58,11 @@ struct FriendCheckInView: View {
             Spacer()
             
         }
+        .task {
+            // FIXME: Use stuff from db
+            MockDataManager.mock.loadMockFriendJournalsMap(checkInViewModel: viewModel)
+        }
+        
     }
 }
 

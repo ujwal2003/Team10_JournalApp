@@ -9,7 +9,7 @@ import Foundation
 
 @MainActor
 class MockDataManager {
-    static let shared = MockDataManager()
+    static let mock = MockDataManager()
     private init() { }
     
     func loadMockUserProfile(appController: AppViewController) {
@@ -83,6 +83,55 @@ class MockDataManager {
                 .init(searchQuery: "coffee shops",
                       title: "Chill & Chat",
                       description: "Reach out to a friend or loved one for a chat at a coffee shop")
+        ]
+    }
+    
+    func loadMockFriendJournalsMap(checkInViewModel: FriendCheckInViewModel) {
+        checkInViewModel.friendCityMap = .Map3
+        checkInViewModel.friendSentimentWeather = .Drizzle
+        
+        let dummyText = "Lorem ipsum dolor sit amet, consectetur adipiscing elit"
+        checkInViewModel.friendCurrWeekJournal = Array(
+            repeating: .init(
+                gratitudeSentiment: .Positive,
+                gratitudeEntry: dummyText,
+                learningSentiment: .Neutral,
+                learningEntry: dummyText,
+                thoughtSentiment: .Negative,
+                thoughtEntry: dummyText
+            ),
+            count: 7
+        )
+        
+        checkInViewModel.friendCityBlockBuildings =  [
+            .init(style: .LightBlueTower, onClick: {
+                checkInViewModel.selectedBuildingIndex = 0
+                checkInViewModel.isGrowthReportShowing.toggle()
+            }),
+            .init(style: .RedRuin, onClick: {
+                checkInViewModel.selectedBuildingIndex = 1
+                checkInViewModel.isGrowthReportShowing.toggle()
+            }),
+            .init(style: .YellowConstruction, onClick: {
+                checkInViewModel.selectedBuildingIndex = 2
+                checkInViewModel.isGrowthReportShowing.toggle()
+            }),
+            .init(style: .Scaffolding, onClick: {
+                checkInViewModel.selectedBuildingIndex = 3
+                checkInViewModel.isGrowthReportShowing.toggle()
+            }),
+            .init(style: .PurpleConstruction, onClick: {
+                checkInViewModel.selectedBuildingIndex = 4
+                checkInViewModel.isGrowthReportShowing.toggle()
+            }),
+            .init(style: .BrownTower, onClick: {
+                checkInViewModel.selectedBuildingIndex = 5
+                checkInViewModel.isGrowthReportShowing.toggle()
+            }),
+            .init(style: .LightGreenTower, onClick: {
+                checkInViewModel.selectedBuildingIndex = 6
+                checkInViewModel.isGrowthReportShowing.toggle()
+            })
         ]
     }
     
