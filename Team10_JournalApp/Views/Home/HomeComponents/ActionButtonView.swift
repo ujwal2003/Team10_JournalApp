@@ -20,6 +20,7 @@ struct ActionButtonView: View {
                 .fontWeight(.medium)
                 .multilineTextAlignment(.center)
                 .lineLimit(nil)
+                .fixedSize(horizontal: false, vertical: true)
                 .padding(.horizontal)
                 .padding(.vertical, 8.0)
         })

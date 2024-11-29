@@ -8,46 +8,38 @@
 import SwiftUI
 
 struct FriendCheckInView: View {
-    @State var friendName: String
-    @ObservedObject var friendsViewModel: FriendsViewModel
-    
-    var days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+    @StateObject var viewModel = FriendCheckInViewModel()
+    @State var friendDBInfo: DBUserInfo
     
     var body: some View {
         VStack {
             VStack(spacing: 15.0) {
-                Text("\(friendName)’s City")
+                Text("\(friendDBInfo.displayName)'s City")
                     .font(.system(size: 30))
                     .fontWeight(.heavy)
-                    .foregroundColor(.black)
+                    .foregroundStyle(.black)
                 
-                Text("City Block: \(friendsViewModel.selectedFriendCityBlock)")
+                Text("City Block: \(CommonUtilities.util.getWeekRange(offset: 0))")
                     .font(.system(size: 16))
                     .fontWeight(.medium)
-                    .foregroundColor(.black)
+                    .foregroundStyle(.black)
             }
             .padding()
             
-            let friendCityMap = friendsViewModel.selectedFriendMap
-            
-            CityJournalMapView(map: friendCityMap.map, buildings: friendCityMap.buildings)
-                .sheet(isPresented: $friendsViewModel.isSelectedFriendGrowthReportShowing) {
-                    let reportIdx = friendsViewModel.selectedFriendBuildingIndex
-                    
-                    CityGrowthView(headlineTitle: "\(friendName): \(days[reportIdx]) Growth",
-                                   buildingType: friendsViewModel.selectedBuilding.category,
-                                   growthReport: friendCityMap.reports[reportIdx],
-                                   overrideName: friendName,
-                                   selectedMenuView: .Journal)
-                }
-                .padding(isIphone16ProMaxPortrait ? 8 : 25)
+            UserJournalCityBlockView(
+                map: viewModel.friendCityMap,
+                buildings: viewModel.friendCityBlockBuildings
+            )
+            .sheet(isPresented: $viewModel.isGrowthReportShowing) {
+                viewModel.getBuildingJournalView()
+            }
             
             VStack {
-                Text("\(friendName)’s City weather is: ")
+                Text("\(friendDBInfo.displayName)’s City weather is: ")
                     .font(.system(size: 18))
                     .fontWeight(.medium)
                 
-                let friendWeather = friendsViewModel.selectedFriendWeather.weatherStatusStyle
+                let friendWeather = viewModel.friendSentimentWeather.weatherStatusStyle
                 
                 HStack {
                     Text(friendWeather.name)
@@ -61,13 +53,19 @@ struct FriendCheckInView: View {
                         .foregroundStyle(friendWeather.iconColor)
                 }
             }
+            .padding()
             
-            Spacer().frame(height: isIphone16ProMaxPortrait ? 180 : 140)
+            Spacer()
+            
         }
         .task {
-            await friendsViewModel.getFriendCurrWeekMap(friend: friendName)
-            await friendsViewModel.calculateFriendWeather()
+            // FIXME: Use stuff from db
+            MockDataManager.mock.loadMockFriendJournalsMap(checkInViewModel: viewModel)
         }
         
     }
+}
+
+#Preview {
+    FriendCheckInView(friendDBInfo: .init(userID: "iuyeiqwyiq8276388", email: "test", displayName: "Friend1"))
 }

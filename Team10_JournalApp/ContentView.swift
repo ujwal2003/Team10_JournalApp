@@ -28,6 +28,10 @@ struct ContentView: View {
                             removal: .move(edge: .leading))
                         )
                         .preferredColorScheme(.light)
+                        .onAppear {
+                            appController.certifyAuthStatus()
+                        }
+                    
                 } else {
                     SignInView(appController: appController)
                         .transition(.asymmetric(
@@ -35,8 +39,12 @@ struct ContentView: View {
                             removal: .move(edge: .trailing))
                         )
                         .preferredColorScheme(.light)
+                        .onAppear {
+                            appController.certifyAuthStatus()
+                        }
                 }
             }
+            
         }
         .animation(.spring, value: appController.loggedIn || appController.viewSignUpFlag)
         .environmentObject(appController)

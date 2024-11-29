@@ -28,72 +28,39 @@ struct FriendsView: View {
                 
             } containerContent: {
                 VStack {
-                    Picker("", selection: $viewModel.selectedContent) {
+                    Picker("Friends Selection Picker", selection: $viewModel.selectedContent) {
                         Text("Friends").tag(FriendSelectionContent.Friends)
                         Text("Requests").tag(FriendSelectionContent.Requests)
                         Text("Invitations").tag(FriendSelectionContent.Invitations)
                     }
                     .pickerStyle(.segmented)
-                    .padding(.top, 5.0)
                     .padding()
                     
                     SearchBarView(searchText: $viewModel.searchQuery)
                     
-                    HeadingToolBarView(contentTitle: viewModel.selectedContent.contentTitle,
-                                       isEditVisible: viewModel.isEditButtonVisible(),
-                                       isEditing: isEditing,
-                                       onEditClick: { isEditing.toggle() },
-                                       onAddIconClick: { viewModel.isAddFriendSheetVisible.toggle() })
+                    let isViewingCurrFriends = viewModel.selectedContent == .Friends
+                    HeadingToolBarView(
+                        contentTitle: viewModel.selectedContent.contentTitle,
+                        isEditVisible: isViewingCurrFriends,
+                        isEditing: isEditing,
+                        onEditClick: { isEditing.toggle() },
+                        onAddIconClick: { viewModel.isAddFriendSheetVisible.toggle() }
+                    )
                     .sheet(isPresented: $viewModel.isAddFriendSheetVisible) {
-                        AddFriendView(friendsViewModel: viewModel)
+                        AddFriendView()
                     }
                     
                     List {
-                        switch viewModel.selectedContent {
-                            case .Friends:
-                                ForEach(viewModel.getFilteredFriends(), id: \.self) { friendUserName in
-                                    FriendListRowView(itemName: friendUserName,
-                                                      itemContent: .checkIn)
-                                    .background(
-                                        NavigationLink("",
-                                                       destination: FriendCheckInView(friendName: friendUserName,
-                                                                         friendsViewModel: viewModel)
-                                                      ).opacity(0)
-                                    )
-                                    .listRowBackground(Color.clear)
-                                }
-                                .onDelete(perform: viewModel.delete(at:))
-                                
-                            case .Requests:
-                                ForEach(viewModel.getFilteredRequests(), id: \.self) { requestUserName in
-                                    FriendListRowView(itemName: requestUserName,
-                                                      itemContent: .requestButtons(
-                                                        onAccept: {
-                                                            Task {
-                                                                await viewModel.acceptFriendRequest(username: requestUserName)
-                                                            }
-                                                        },
-                                                        onReject: {
-                                                            Task {
-                                                                await viewModel.rejectFriendRequest(username: requestUserName)
-                                                            }
-                                                        }
-                                                      )
-                                    )
-                                }
-                                
-                            case .Invitations:
-                                ForEach(viewModel.getFilteredInvitations(), id: \.self) { inviteUserName in
-                                    FriendListRowView(itemName: inviteUserName,
-                                                      itemContent: .inviteRescindButton(
-                                                        onRevoke: {
-                                                            Task {
-                                                                await viewModel.revokeFriendInvite(username: inviteUserName)
-                                                            }
-                                                        }
-                                                      )
-                                    )
-                                }
+                        if viewModel.isSelectedContentListEmpty() {
+                            HStack {
+                                Spacer()
+                                Text("No Content Found").opacity(0.5)
+                                Spacer()
+                            }
+                            .listRowSeparator(.hidden)
+                            
+                        } else {
+                            viewModel.getContentList()
                         }
                     }
                     .listStyle(.plain)
@@ -101,6 +68,39 @@ struct FriendsView: View {
                     
                 }
             }
+            .task {
+                // FIXME: use actual db stuff here
+                viewModel.friends = [
+                    .init(
+                        userID: "rweiuruiwueriw8927381ia",
+                          email: "test",
+                        displayName: "test"
+                    )
+                ]
+                
+                viewModel.friendRequests = [
+                    .init(
+                        userID: "sdsdfsdfdsf987983467538",
+                          email: "test",
+                        displayName: "test"
+                    )
+                ]
+                
+                viewModel.friendInvites = [
+                    .init(
+                        userID: "wegriuweguqaegr83427652983",
+                          email: "test",
+                        displayName: "test"
+                    )
+                ]
+            }
+            
         }
+    }
+}
+
+#Preview {
+    AppTabMockContainerView(previewTab: .Friends) {
+        FriendsView()
     }
 }

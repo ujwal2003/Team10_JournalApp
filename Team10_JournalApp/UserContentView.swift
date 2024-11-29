@@ -9,18 +9,20 @@ import SwiftUI
 
 enum AppTab: Hashable {
     case Home; case Journal; case Friends; case Settings
-    case Exepriments //! FOR TESTING
+    case FeatureTest // for testing purposes
 }
 
 struct UserContentView: View {
     @ObservedObject var appController: AppViewController
     @State var selectedTab: AppTab = .Home
     
+    @State var testingMode: Bool = true
+    
     var body: some View {
         VStack {
             TabView(selection: $selectedTab) {
                 Tab("Home", systemImage: "house", value: .Home) {
-                    HomeView()
+                    HomeView(appController: appController)
                 }
                 
                 Tab("Journal", systemImage: "book", value: .Journal) {
@@ -30,15 +32,15 @@ struct UserContentView: View {
                 Tab("Friends", systemImage: "person.3", value: .Friends) {
                     FriendsView()
                 }
-//                .badge(2)
                 
                 Tab("Settings", systemImage: "gear", value: .Settings) {
                     SettingView(appController: appController)
                 }
                 
-                //! FOR TESTING
-                Tab("Experiments", systemImage: "testtube.2", value: .Exepriments) {
-                    ExperimentsTestView()
+                if testingMode {
+                    Tab("Testing", systemImage: "apple.terminal.fill", value: .FeatureTest) {
+                        FeatureTestingView(appController: appController)
+                    }
                 }
             }
         }

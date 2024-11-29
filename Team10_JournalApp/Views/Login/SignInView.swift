@@ -15,9 +15,7 @@ struct Constants {
 
 struct SignInView: View {
     @ObservedObject var appController: AppViewController
-    
-    @State private var username: String = ""
-    @State private var password: String = ""
+    @StateObject var viewModel = SignInViewModel()
     
     @FocusState private var focusedField: SignInField?
     enum SignInField {
@@ -49,7 +47,8 @@ struct SignInView: View {
                                             .stroke(Color(red: 0.61, green: 0.75, blue: 0.78).opacity(0.4), lineWidth: 1)
                                     )
                                 
-                                TextField("Username", text: $username)
+                                TextField("Email", text: $viewModel.email)
+                                    .autocorrectionDisabled()
                                     .padding(.horizontal, 5)
                                     .frame(width: 295, height: 52)
                                     .foregroundColor(.black)
@@ -71,7 +70,8 @@ struct SignInView: View {
                                             .stroke(Color(red: 0.61, green: 0.75, blue: 0.78).opacity(0.4), lineWidth: 1)
                                     )
                                 
-                                SecureField("Password", text: $password)
+                                SecureField("Password", text: $viewModel.password)
+                                    .autocorrectionDisabled()
                                     .padding(.horizontal, 5)
                                     .frame(width: 295, height: 52)
                                     .foregroundColor(.black)
@@ -84,39 +84,46 @@ struct SignInView: View {
 
                     // MARK: Sign in and sign up buttons
                     VStack(spacing: 91) {
-                        Group {
-                            ZStack {
-                                Rectangle()
-                                    .foregroundColor(.clear)
-                                    .frame(width: 315, height: 52)
-                                    .background(Color(red: 0.09, green: 0.28, blue: 0.39))
-                                    .cornerRadius(100)
-                                    .shadow(color: .black.opacity(0.25), radius: 2, x: 0, y: 4)
-                                
-                                Text("Sign In")
-                                    .font(.system(size: 18, weight: .medium))
-                                    .foregroundColor(.white)
-                            }
-                        }
-                        .onTapGesture {
-                            self.appController.loggedIn = true
-                        }
+                        let emptyFields = viewModel.email.isEmpty || viewModel.password.isEmpty
                         
-
-                        Group {
-                            ZStack {
-                                Text("Don’t have an account? ")
-                                    .font(.system(size: 18, weight: .medium))
-                                    .foregroundColor(Constants.LabelsPrimary) +
-                                Text("Sign Up")
-                                    .font(.system(size: 18, weight: .bold))
-                                    .foregroundColor(Constants.LabelsPrimary)
+                        Button(action: {
+                            viewModel.signIn { userProfile in
+                                self.appController.loadedUserProfile = userProfile
+                                self.appController.loggedIn = true
                             }
-                            .frame(width: 275, alignment: .topLeading)
+                        }) {
+                            Text("Sign In")
+                                .font(.system(size: 18, weight: .medium))
+                                .foregroundColor(.white)
+                                .frame(width: 315, height: 52)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 100)
+                                        .fill(Color(red: 0.09, green: 0.28, blue: 0.39))
+                                        .shadow(color: .black.opacity(0.25), radius: 2, x: 0, y: 4)
+                                )
                         }
-                        .onTapGesture {
+                        .buttonStyle(PlainButtonStyle())
+                        .disabled(emptyFields)
+                        .alert("User Not Found", isPresented: $viewModel.isShowingSignInFailedAlert) {
+                            Button("Ok") {
+                                viewModel.password = ""
+                            }
+                        } message: {
+                            Text("The account '\(viewModel.email)' was not found. The credentials are incorrect or the account does not exist.")
+                        }
+
+                        Button(action: {
                             self.appController.viewSignUpFlag = true
+                        }) {
+                            Text("Don’t have an account? ")
+                                .font(.system(size: 18, weight: .medium))
+                                .foregroundColor(Constants.LabelsPrimary) +
+                            Text("Sign Up")
+                                .font(.system(size: 18, weight: .bold))
+                                .foregroundColor(Constants.LabelsPrimary)
                         }
+                        .buttonStyle(PlainButtonStyle())
+                        .frame(width: 275, alignment: .topLeading)
                         
                     }
                     .padding([.bottom], 80)

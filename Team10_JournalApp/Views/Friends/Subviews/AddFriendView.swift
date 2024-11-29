@@ -8,13 +8,12 @@
 import SwiftUI
 
 struct AddFriendView: View {
-    @State var searchUserName: String = ""
-    @ObservedObject var friendsViewModel: FriendsViewModel
+    @State var searchUserEmail: String = ""
     
     @Environment(\.dismiss) var dismiss
     @State private var showAlert = false
     private var sendButtonDisabled: Bool {
-        searchUserName.isEmpty
+        searchUserEmail.isEmpty
     }
     
     var body: some View {
@@ -32,12 +31,12 @@ struct AddFriendView: View {
             }
             .padding()
             
-            Text("Connect friends with their username")
+            Text("Connect friends with their email")
                 .font(.system(size: 18))
                 .fontWeight(.medium)
                 .foregroundColor(.black)
             
-            TextField("Username", text: $searchUserName)
+            TextField("Email", text: $searchUserEmail)
                 .padding()
                 .frame(height: 52)
                 .background(Color(red: 0.87, green: 0.95, blue: 0.99).opacity(0.5))
@@ -51,15 +50,7 @@ struct AddFriendView: View {
                 .autocorrectionDisabled()
             
             Button(action: {
-                Task {
-                    await friendsViewModel.sendCityInvite(username: searchUserName)
-                }
-                
-                if friendsViewModel.cityInviteFailed {
-                    showAlert.toggle()
-                } else {
-                    dismiss()
-                }
+                // TODO: search for email add send friend request
                 
             }) {
                 Text("Send Invite")
@@ -75,16 +66,19 @@ struct AddFriendView: View {
             .padding(.horizontal)
             .disabled(sendButtonDisabled)
             .alert(isPresented: $showAlert) {
-                Alert(title: Text("Invite Failed"),
-                      message: Text("Could not find username \(searchUserName) or there was a connection error"),
-                      dismissButton: .default(Text("OK"), action: { friendsViewModel.cityInviteFailed = false }))
+                Alert(
+                    title: Text("Invite Failed"),
+                    message: Text("Could not find username \(searchUserEmail) or there was a connection error"),
+                    dismissButton: .default(
+                        Text("OK"),
+                        action: {
+                            // TODO: do something when username could not be found
+                        }
+                    )
+                )
             }
             
             Spacer()
         }
     }
 }
-
-//#Preview {
-//    AddFriendView()
-//}

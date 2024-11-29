@@ -8,6 +8,16 @@
 import Foundation
 import SwiftUI
 
+let dayToIndex = [
+    0 : "Sunday",
+    1 : "Monday",
+    2 : "Tuesday",
+    3 : "Wednesday",
+    4 : "Thursday",
+    5 : "Friday",
+    6 : "Saturday",
+]
+
 enum JournalWeather {
     case Sunny
     case Cloudy
@@ -44,7 +54,7 @@ enum JournalWeather {
                         iconColor: Color.cyan)
                 
             case .Rain:
-                return (name: "Rain",
+                return (name: "Rainy",
                         icon: "cloud.rain.fill",
                         iconWidth: 28,
                         iconColor: Color.blue)
@@ -64,47 +74,6 @@ enum JournalWeather {
     }
 }
 
-enum Sentiment {
-    case Positive
-    case Neutral
-    case Negative
-    
-    var textView: Text {
-        switch self {
-            case .Positive:
-                return Text("Positive")
-                            .font(.system(size: 16))
-                            .fontWeight(.medium)
-                            .foregroundStyle(Color.hex("#5EB881"))
-            
-            case .Neutral:
-                return Text("Neutral")
-                            .font(.system(size: 16))
-                            .fontWeight(.medium)
-                            .foregroundStyle(Color.hex("#8A8A8A"))
-            
-            case .Negative:
-                return Text("Negative")
-                            .font(.system(size: 16))
-                            .fontWeight(.medium)
-                            .foregroundStyle(Color.hex("#DE5353"))
-        }
-    }
-    
-    var report: String {
-        switch self {
-            case .Positive:
-                return "You have infused the city with positivity, causing this building to shine brightly. Citizens feel more connected and at peace. This uplifting energy has led to increased city growth and well-being."
-            
-            case .Neutral:
-                return "This reflects a balanced mindset today, neither overly joyful nor overly troubled. Progress is steady, and the city remains stable."
-                
-            case .Negative:
-                return "Negative feelings have weighed down this building, causing its lights to dim. The city is struggling to maintain its usual vibrancy, and citizens feel a bit disconnected. Consider journaling tomorrow to rebuild your city’s strength."
-        }
-    }
-}
-
 struct GrowthReport {
     var gratitudeSentiment: Sentiment
     var gratitudeEntry: String
@@ -116,8 +85,14 @@ struct GrowthReport {
     var thoughtEntry: String
 }
 
+@available(*, deprecated, message: "Manually embed journal city configurations into component.")
 struct CityMap {
     var map: Map
     var buildings: [BuildingConfig]
     var reports: [GrowthReport]
+}
+
+enum CityBuildingViewSelection {
+    case Sentiment
+    case Journal
 }

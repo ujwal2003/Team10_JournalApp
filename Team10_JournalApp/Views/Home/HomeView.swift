@@ -2,87 +2,101 @@
 //  HomeView.swift
 //  Team10_JournalApp
 //
-//  Created by ujwal joshi on 10/8/24.
+//  Created by ujwal joshi on 11/17/24.
 //
 
 import SwiftUI
 
 struct HomeView: View {
-    //FIXME: - pass in weather status from journal entry sentiment calculation
-    //FIXME: - pass in reccomended actions from journal entry sentiment calculation
-    //FIXME: - pass in num friends from initial user data fetch
-    @StateObject private var viewModel = HomeViewModel(weatherStatus: .NoData,
-                                                       recommendedActions: [
-                                                        .init(searchQuery: "parks",
-                                                              title: "Park",
-                                                              description: "Going to the park is a great way to improve your physical and mental health."),
-                                                        
-                                                            .init(searchQuery: "coffee shops",
-                                                                  title: "Chill & Chat",
-                                                                  description: "Reach out to a friend or loved one for a chat at a coffee shop")
-                                                       ],
-                                                       numFriends: 5)
+    @State var usePreviewMocks: Bool = false
+    
+    @ObservedObject var appController: AppViewController
+    @StateObject var viewModel = HomeViewModel()
     
     var body: some View {
-        ZStack {
-            DefaultRectContainer(title: .init(text: "CatchUp", fontSize: 30.0),
-                                 subtitle: .init(text: "", fontSize: 20.0)) {
+        AppLayoutContainer(height: 10.0) {
+            VStack(spacing: 0.0) {
+                Text("CatchUp")
+                    .font(.system(size: 30.0))
+                    .fontWeight(.heavy)
+                    .padding()
+                    .padding(.leading)
+                    .frame(maxWidth: .infinity, alignment: .leading)
                 
-
-                CityHealthWeatherView(cityHealthPercentage: .constant(viewModel.calcCityHealthPercentage()),
-                                      cityHealthBar: viewModel.getCityHealthColors(),
-                                      todaysWeather: viewModel.weatherStatus.weatherStatusStyle)
-                
-                
-                ActionButtonView(isDisabled: viewModel.isNavigateLoading,
-                                 onClick: { viewModel.isRecommendedActionsShowing.toggle() })
-                    .sheet(isPresented: $viewModel.isRecommendedActionsShowing) {
-                        ReccomendedActionsView(actions: viewModel.recommendedActions)
+                Group {
+                    if let userProfile = appController.loadedUserProfile {
+                        Text("Welcome, \(userProfile.displayName)")
+                    } else {
+                        Text("Loading...")
                     }
-                
-                
-                
-                let currCityMap = viewModel.currCityJournal
-                
-                CityJournalMapView(map: currCityMap.map, buildings: currCityMap.buildings)
-                    .sheet(isPresented: $viewModel.isGrowthReportShowing) {
-                        let reportIdx = viewModel.selectedBuildingIndex
-                        
-                        CityGrowthView(headlineTitle: "\(viewModel.days[reportIdx])'s City Growth",
-                                       buildingType: viewModel.selectedBuilding.category,
-                                       growthReport: currCityMap.reports[reportIdx])
-                    }
-                
-                
-                BottomNavigationView(isDisabled: viewModel.isNavigateLoading,
-                                     onLeftArrowClick: {
-                                         Task {
-                                             await viewModel.getPastCity()
-                                         }
-                                     },
-                                     onRightArrowClick: {
-                                         Task {
-                                            await viewModel.getFutureCity()
-                                         }
-                                     },
-                                     currWeek: viewModel.currCityBlock,
-                                     numFriends: viewModel.numFriends)
-                
-                
-                Spacer()
+                }
+                .font(.system(size: 20.0))
+                .fontWeight(.light)
+                .padding([.leading, .trailing, .bottom])
+                .padding(.leading)
+                .frame(maxWidth: .infinity, alignment: .leading)
             }
             
-            if viewModel.isNavigateLoading {
-                Color.black.opacity(0.5).edgesIgnoringSafeArea(.all)
-                                
-                ProgressView("Loading Data...")
-                    .padding()
-                    .background(Color.white)
-                    .cornerRadius(10)
-                    .shadow(radius: 10)
+        } containerContent: {
+            VStack {
+                CityStatsView(
+                    percentage: viewModel.cityHealthPercentage,
+                    weather: viewModel.currSentimentWeather
+                )
+                
+                ActionButtonView(
+                    isDisabled: false,
+                    onClick: { viewModel.isRecommendedActionsShowing.toggle() }
+                )
+                .sheet(isPresented: $viewModel.isRecommendedActionsShowing) {
+                    ReccomendedActionsView(overallSentiment: .Negative, actions: viewModel.recommendedActions)
+                }
+                
+                UserJournalCityBlockView(
+                    map: viewModel.currMap,
+                    buildings: viewModel.currCityBlockBuildings
+                )
+                .sheet(isPresented: $viewModel.isGrowthReportShowing) {
+                    viewModel.getJournalBuildingView()
+                }
+                
+                BottomNavigationView(
+                    isDisabled: false,
+                    onLeftArrowClick: { print("TODO: Navigate Previous") },
+                    onRightArrowClick: { print("TODO: Navigate Next") },
+                    currWeek: viewModel.currWeek,
+                    numFriends: viewModel.numFriends
+                )
+                
             }
+        }
+        .task {
+            if self.usePreviewMocks {
+                MockDataManager.mock.loadMockUserProfile(appController: appController)
+                
+            } else {
+                
+                if appController.loadedUserProfile == nil {
+                    let authUserData = appController.certifyAuthStatus()
+                    
+                    if let userData = authUserData {
+                        let userProfile = try? await UserManager.shared.getUser(userId: userData.uid)
+                        appController.loadedUserProfile = userProfile
+                    }
+                }
+                
+            }
+            
+            //FIXME: use stuff from DB here
+            MockDataManager.mock.loadMockUserJournalsMap(homeViewModel: viewModel)
             
         }
-        
+
+    }
+}
+
+#Preview {
+    AppTabMockContainerView(previewTab: .Home) {
+        HomeView(usePreviewMocks: true, appController: AppViewController())
     }
 }
