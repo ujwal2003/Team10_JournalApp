@@ -26,15 +26,6 @@ final class FriendsManager {
         userFriendsCollection(userId: userId).document(friendId)
     }
     
-    func getNumberOfFriends(userId: String) async throws -> Int {
-        let query = userFriendsCollection(userId: userId)
-            .whereField("user_friend_status", isEqualTo: FriendStatus.friend.rawValue)
-            .count
-        
-        let querySnapshot = try await query.getAggregation(source: .server)
-        return querySnapshot.count.intValue
-    }
-    
     func addUserNewFriendWithStatus(userId: String, friendId: String, status: FriendStatus) async throws {
         let newFriendUser = UserFriendStatus(friendUserId: friendId, userFriendStatus: status.rawValue)
         try userFriendDocument(userId: userId, friendId: friendId).setData(from: newFriendUser, merge: false)
@@ -46,5 +37,29 @@ final class FriendsManager {
         ]
         
         try await userFriendDocument(userId: userId, friendId: friendId).updateData(data)
+    }
+    
+    func getNumberOfFriends(userId: String) async throws -> Int {
+        let query = userFriendsCollection(userId: userId)
+            .whereField("user_friend_status", isEqualTo: FriendStatus.friend.rawValue)
+            .count
+        
+        let querySnapshot = try await query.getAggregation(source: .server)
+        return querySnapshot.count.intValue
+    }
+    
+    func getAllUserFriendsWithStatus(userId: String, status: FriendStatus) async throws -> [UserFriendStatus] {
+        let query = userFriendsCollection(userId: userId)
+            .whereField("user_friend_status", isEqualTo: status.rawValue)
+        
+        let querySnapshot = try await query.getDocuments()
+        
+        var friendStatuses: [UserFriendStatus] = []
+        for document in querySnapshot.documents {
+            let friend = try document.data(as: UserFriendStatus.self)
+            friendStatuses.append(friend)
+        }
+        
+        return friendStatuses
     }
 }
