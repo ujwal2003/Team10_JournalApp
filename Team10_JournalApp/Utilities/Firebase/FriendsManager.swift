@@ -34,4 +34,9 @@ final class FriendsManager {
         let querySnapshot = try await query.getAggregation(source: .server)
         return querySnapshot.count.intValue
     }
+    
+    func addNewFriendWithStatus(userId: String, friendId: String, status: FriendStatus) async throws {
+        let newFriendUser = UserFriendStatus(friendUserId: friendId, userFriendStatus: status.rawValue)
+        try userFriendDocument(userId: userId, friendId: friendId).setData(from: newFriendUser, merge: false)
+    }
 }
