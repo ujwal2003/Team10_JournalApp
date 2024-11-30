@@ -82,6 +82,7 @@ final class FriendsManager {
     
     func removeAllUserFriendsListener() {
         self.userFriendsListener?.remove()
+        print("[LISTENER STOP]: removed friend subcollection listener.")
     }
     
     func addListenerForUserFriendsWithStatus(
