@@ -62,4 +62,19 @@ final class FriendsManager {
         
         return friendStatuses
     }
+    
+    func removeUserFriendWithStatus(userId: String, friendId: String, status: FriendStatus) async throws {
+        let query = userFriendsCollection(userId: userId)
+            .whereField("user_friend_status", isEqualTo: status.rawValue)
+            .limit(to: 1)
+        
+        let querySnapshot = try await query.getDocuments()
+        guard let document = querySnapshot.documents.first else {
+            throw FirestoreDataError.userFriendNotFound(userID: userId, friendID: friendId)
+        }
+        
+        let data = try document.data(as: UserFriendStatus.self)
+        
+        try await userFriendsCollection(userId: userId).document(data.friendUserId).delete()
+    }
 }
