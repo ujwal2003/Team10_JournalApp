@@ -13,8 +13,10 @@ struct SettingView: View {
     
     @State private var username: String = ""
     @State private var password: String = ""
-    @State private var isShowingResetAlert: Bool = false
+    @State private var displayName: String = ""
+    @State private var isShowingChangeCredentialsAlert: Bool = false
     @State private var isShowingSignOutAlert: Bool = false
+    @State private var isShowingDeleteAccountAlert: Bool = false
     @State private var isSignedOut: Bool = false
     @State private var isLocationShared: Bool = false
     @State private var isNavigating = false
@@ -22,51 +24,76 @@ struct SettingView: View {
     
     var body: some View {
         NavigationStack {
-            DefaultRectContainer(
-                title: .init(text: "Settings", fontSize: 40.0),
-                subtitle: .init(text: "", fontSize: 20.0),
-                minifiedFrame: true,
-                headLeftAlign: .signInAlign,
-                headTopAlign: .topCentralAlign
-            ) {
+            AppLayoutContainer(height: 20.0) {
+                // Title Content
+                VStack(alignment: .leading, spacing: 10) {
+                    Text("Settings")
+                        .font(.system(size: 30.0).weight(.heavy))
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(.horizontal, 40.0)
+                        .foregroundStyle(Color.black)
+                }
+                .padding(.vertical)
+            } containerContent: {
+                // Main Content
                 VStack {
                     NavigationStack {
                         VStack {
                             List {
                                 Section(header:
-                                            Text("Account")
+                                            Text("Account Details")
                                     .font(.system(size: 20, weight: .medium))
                                     .foregroundColor(.black)
                                     .textCase(nil)
-                                    .padding(.leading, 10)
+                                    .frame(height: 0, alignment: .center)
+                                    .padding(.leading, 25)
                                 ) {
                                     Button(action: {
-                                        isShowingResetAlert = true
+                                        isShowingChangeCredentialsAlert = true
+                                    }) {
+                                        SettingButtonWithAccountDetailView(buttonText: "Display Name", accountDetail: "JohnDoe", isCheckInVisible: true)
+                                    }
+                                    
+                                    Button(action: {
+                                        isShowingChangeCredentialsAlert = true
+                                    }) {
+                                        SettingButtonWithAccountDetailView(buttonText: "Email", accountDetail: "johndoe@email.com", isCheckInVisible: true)
+                                    }
+                                    
+                                    Button(action: {
+                                        isShowingChangeCredentialsAlert = true
+                                    }) {
+                                        SettingButtonWithAccountDetailView(buttonText: "Password", accountDetail: "Change Password", isCheckInVisible: true)
+                                    }
+                                    
+                                }
+                                .listRowSeparator(.hidden)
+                                .padding(.top, -10)
+                                
+                                Section(header:
+                                            Text("Manage Account")
+                                    .font(.system(size: 20, weight: .medium))
+                                    .foregroundColor(.black)
+                                    .textCase(nil)
+                                    .frame(height: 0, alignment: .center)
+                                    .padding(.leading, 25)
+                                ) {
+                                    Button(action: {
+                                        isShowingChangeCredentialsAlert = true
                                     }) {
                                         SettingButtonView(buttonText: "Reset Journal", isCheckInVisible: true)
-                                    .padding(.leading, 10)
                                     }
-                                    .alert("Reset Journal?", isPresented: $isShowingResetAlert) {
+                                    .alert("Reset Journal?", isPresented: $isShowingChangeCredentialsAlert) {
                                         Button("No") { }
                                         Button("Yes") { }
                                     } message: {
                                         Text("Are you sure you want to clear all entries and restart? This action cannot be undone!")
                                     }
-                                    ZStack {
-                                        NavigationLink(destination: ChangeCredentialsView()) {
-                                                                    EmptyView()
-                                                                }
-                                                                .opacity(0)
-                                        SettingButtonView(buttonText: "Change Account Credentials", isCheckInVisible: true)
-                                            .padding(.leading, 10)
-                                    }
-                                    .navigationBarBackButtonHidden(true)
                                     
                                     Button(action: {
                                         isShowingSignOutAlert = true
                                     }) {
                                         SettingButtonView(buttonText: "Sign Out", isCheckInVisible: true)
-                                    .padding(.leading, 10)
                                     }
                                     .alert("Sign Out?", isPresented: $isShowingSignOutAlert) {
                                         Button("No") { }
@@ -80,45 +107,67 @@ struct SettingView: View {
                                     } message: {
                                         Text("Are you sure you want to sign out?")
                                     }
+                                    
+                                    Button(action: {
+                                        isShowingDeleteAccountAlert = true
+                                    }) {
+                                        SettingButtonView(buttonText: "Delete Account", isCheckInVisible: true)
+                                    }
+                                    .alert("Delete account?", isPresented: $isShowingDeleteAccountAlert) {
+                                        Button("No") { }
+                                        Button("Yes") {
+                                            viewModel.signOut {
+                                                self.appController.loadedUserProfile = nil
+                                                self.appController.viewSignUpFlag = false
+                                                self.appController.loggedIn = false
+                                            }
+                                        }
+                                    } message: {
+                                        Text("Are you sure you want to delete your account? This action cannot be undone!")
+                                    }
                                 }
                                 .listRowSeparator(.hidden)
+                                .padding(.top, -10)
                                 
                                 Section(header:
                                             Text("Location")
                                     .font(.system(size: 20, weight: .medium))
                                     .foregroundColor(.black)
                                     .textCase(nil)
-                                    .padding(.leading, 10)
+                                    .frame(height: 0, alignment: .center)
+                                    .padding(.leading, 25)
                                 ) {
-                                    ZStack {
-                                        Toggle(isOn: $isLocationShared) {
-                                            SettingButtonView(buttonText: "Share Location", isCheckInVisible: true)
-                                        }
-                                        .toggleStyle(SwitchToggleStyle(tint: Color(red: 0.09, green: 0.28, blue: 0.39)))
-                                        .padding(.trailing, 10)
+                                    HStack {
+                                        SettingButtonWithToggleView(
+                                            buttonText: "Share Location",
+                                            isToggleOn: $isLocationShared
+                                        )
                                     }
-                                    .padding(.leading, 10)
+                                    .frame(width: 370, height: 49)
                                     
-                                    ZStack {
+                                    ZStack() {
                                         NavigationLink(destination: ToggleCustomLocationView()) {
-                                                                    EmptyView()
-                                                                }
-                                                                .opacity(0)
-                                        SettingButtonView(buttonText: "Toggle Custom Location", isCheckInVisible: true)
-                                            .padding(.leading, 10)
+                                            EmptyView()
+                                        }
+                                        .opacity(0)
+                                        
+                                        if !isLocationShared {
+                                                NavigationLink(destination: ToggleCustomLocationView()) {
+                                                    CustomLocationButtonView(isLocationShared: $isLocationShared)
+                                                }
+                                            } else {
+                                                CustomLocationButtonView(isLocationShared: $isLocationShared)
+                                            }
                                     }
-                                    
                                 }
                                 .listRowSeparator(.hidden)
+                                .padding(.top, -10)
                             }
                             .listStyle(PlainListStyle())
                             .background(Color.clear)
-                            
+                            .listRowSpacing(0)
                             
                         }
-//                        .fullScreenCover(isPresented: $isSignedOut) {
-//                            SignInView()
-//                        }
                     }
                 }
             }
@@ -126,12 +175,13 @@ struct SettingView: View {
     }
 }
 
+
 struct ToggleCustomLocationView: View {
     var body: some View {
         Text("Coming soon!")
     }
 }
 
-//#Preview {
-//    SettingView()
-//}
+#Preview {
+    SettingView(appController: AppViewController())
+}
