@@ -14,7 +14,8 @@ struct UserProfile: Codable {
     let displayName: String
     let dateCreated: Date
     let photoURL: String?
-    let friendUserIDs: [String]
+    let locLati: Double
+    let locLongi: Double
     
     init(authUser: AuthDataResultModel) {
         self.userId = authUser.uid
@@ -22,16 +23,18 @@ struct UserProfile: Codable {
         self.displayName = authUser.email
         self.dateCreated = Date()
         self.photoURL = authUser.photoUrl
-        self.friendUserIDs = []
+        self.locLati = 29.718922
+        self.locLongi = -95.339162
     }
     
-    init(userId: String, email: String, displayName: String, dateCreated: Date, photoURL: String?, friendUserIDs: [String]) {
+    init(userId: String, email: String, displayName: String, dateCreated: Date, photoURL: String?, locLati: Double = 29.718922, locLongi: Double = -95.339162) {
         self.userId = userId
         self.email = email
         self.displayName = displayName
         self.dateCreated = dateCreated
         self.photoURL = photoURL
-        self.friendUserIDs = friendUserIDs
+        self.locLati = locLati
+        self.locLongi = locLongi
     }
     
     enum CodingKeys: String, CodingKey {
@@ -40,17 +43,20 @@ struct UserProfile: Codable {
         case displayName = "display_name"
         case dateCreated = "date_created"
         case photoURL = "photo_url"
-        case friendUserIDs = "friend_user_ids"
+        case locLati = "loc_lati"
+        case locLongi = "loc_longi"
     }
     
     init(from decoder: any Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
+        
         self.userId = try container.decode(String.self, forKey: .userId)
         self.email = try container.decode(String.self, forKey: .email)
         self.displayName = try container.decode(String.self, forKey: .displayName)
         self.dateCreated = try container.decode(Date.self, forKey: .dateCreated)
         self.photoURL = try container.decodeIfPresent(String.self, forKey: .photoURL)
-        self.friendUserIDs = try container.decode([String].self, forKey: .friendUserIDs)
+        self.locLati = try container.decode(Double.self, forKey: .locLati)
+        self.locLongi = try container.decode(Double.self, forKey: .locLongi)
     }
     
     func encode(to encoder: any Encoder) throws {
@@ -61,6 +67,7 @@ struct UserProfile: Codable {
         try container.encodeIfPresent(self.displayName, forKey: .displayName)
         try container.encodeIfPresent(self.dateCreated, forKey: .dateCreated)
         try container.encodeIfPresent(self.photoURL, forKey: .photoURL)
-        try container.encodeIfPresent(self.friendUserIDs, forKey: .friendUserIDs)
+        try container.encodeIfPresent(self.locLati, forKey: .locLati)
+        try container.encodeIfPresent(self.locLongi, forKey: .locLongi)
     }
 }

@@ -34,17 +34,10 @@ final class UserManager {
         try await userDocument(userId: userId).updateData(data)
     }
     
-    func addFriend(userId: String, friendUserId: String) async throws {
+    func updateUserLocation(userId: String, newLati: Double, newLongi: Double) async throws {
         let data: [String: Any] = [
-            UserProfile.CodingKeys.friendUserIDs.rawValue: FieldValue.arrayUnion([friendUserId])
-        ]
-        
-        try await userDocument(userId: userId).updateData(data)
-    }
-    
-    func removeFriend(userId: String, friendUserId: String) async throws {
-        let data: [String: Any] = [
-            UserProfile.CodingKeys.friendUserIDs.rawValue: FieldValue.arrayRemove([friendUserId])
+            UserProfile.CodingKeys.locLati.rawValue : newLati,
+            UserProfile.CodingKeys.locLongi.rawValue : newLongi
         ]
         
         try await userDocument(userId: userId).updateData(data)
