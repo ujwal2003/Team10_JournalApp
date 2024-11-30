@@ -18,8 +18,7 @@ class MockDataManager {
             email: "mockData@mockEmail.com",
             displayName: "mockData@mockEmail.com",
             dateCreated: Date(),
-            photoURL: nil,
-            friendUserIDs: []
+            photoURL: nil
         )
     }
     
