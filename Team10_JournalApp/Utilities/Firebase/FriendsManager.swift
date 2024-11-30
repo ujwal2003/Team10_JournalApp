@@ -99,7 +99,7 @@ final class FriendsManager {
                 return
             }
             
-            guard let documents = querySnapshot?.documents else {
+            guard (querySnapshot?.documents) != nil else {
                 print("[LISTENER]: No documents found for user friend updates")
                 return
             }

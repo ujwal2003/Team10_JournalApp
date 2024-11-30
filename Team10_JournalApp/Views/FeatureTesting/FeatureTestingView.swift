@@ -28,7 +28,7 @@ struct FeatureTestingView: View {
                     case .SentimentTest:
                         SentimentAnalysisTestView()
                     case .FriendsTest:
-                        Text("WIP")
+                        FriendsTestView(loadedUserProfile: loadedUserProfile)
                 }
             }
             .toolbar {
