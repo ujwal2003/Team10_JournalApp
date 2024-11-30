@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import FirebaseFirestore
 
 struct FriendsTestView: View {
     @State var loadedUserProfile: UserProfile?
@@ -108,6 +109,20 @@ struct FriendsTestView: View {
             .padding()
 
         }
+        .onFirstAppear {
+            if let userProfile = loadedUserProfile {
+                FriendsManager.shared.addListenerForUserFriendsWithStatus(
+                    userId: userProfile.userId,
+                    status: .friend,
+                    triggeredOn: [.added, .modified, .removed]) { userFriendStatus in
+                        print(userFriendStatus)
+                    }
+            }
+        }
+        .onDisappear {
+            FriendsManager.shared.removeAllUserFriendsListener()
+        }
+        
     }
 }
 
