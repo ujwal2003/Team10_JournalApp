@@ -11,7 +11,7 @@ import FirebaseFirestore
 struct FriendsTestView: View {
     @State var loadedUserProfile: UserProfile?
     
-    let testFriendID = ""
+    let testFriendID = "M6uqWrzHdsTa9GJ4qeXnx8bcoaX2"
     
     var body: some View {
         VStack {
