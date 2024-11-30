@@ -12,6 +12,8 @@ final class FriendsManager {
     static let shared = FriendsManager()
     private init() { }
     
+    private var userFriendsListener: ListenerRegistration? = nil
+    
     private let userCollection = Firestore.firestore().collection("users")
     
     private func userDocument(userId: String) -> DocumentReference {
@@ -77,4 +79,48 @@ final class FriendsManager {
         
         try await userFriendsCollection(userId: userId).document(data.friendUserId).delete()
     }
+    
+    func removeAllUserFriendsListener() {
+        self.userFriendsListener?.remove()
+    }
+    
+    func addListenerForUserFriendsWithStatus(
+        userId: String,
+        status: FriendStatus,
+        triggeredOn allowedValues: [DocumentChangeType],
+        completion: @escaping (UserFriendStatus) -> Void
+    ) {
+        let query = userFriendsCollection(userId: userId)
+            .whereField("user_friend_status", isEqualTo: status.rawValue)
+        
+        self.userFriendsListener = query.addSnapshotListener({ querySnapshot, error in
+            if let error = error {
+                print("Listener Error listening for user friend updates: \(error.localizedDescription)")
+                return
+            }
+            
+            guard let documents = querySnapshot?.documents else {
+                print("[LISTENER]: No documents found for user friend updates")
+                return
+            }
+            
+            querySnapshot?.documentChanges.forEach({ diff in
+                let modificationTypeStr = [
+                    0 : "added", 1 : "modified", 2 : "removed"
+                ]
+                
+                if allowedValues.contains(diff.type) {
+                    print("[LISTENER]: \(modificationTypeStr[diff.type.rawValue] ?? "unknown action done to") friend: \(diff.document.data())")
+                    let userFriendStatusData = try? diff.document.data(as: UserFriendStatus.self)
+                    
+                    if let friendStatusData = userFriendStatusData {
+                        completion(friendStatusData)
+                    } else {
+                        print("[LISTENER]: failed to convert the following data to UserFriendStatus data model during \(modificationTypeStr[diff.type.rawValue] ?? "unknown") trigger: \(diff.document.data())")
+                    }
+                }
+            })
+        })
+    }
+    
 }
