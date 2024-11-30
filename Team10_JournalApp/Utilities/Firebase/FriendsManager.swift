@@ -35,8 +35,16 @@ final class FriendsManager {
         return querySnapshot.count.intValue
     }
     
-    func addNewFriendWithStatus(userId: String, friendId: String, status: FriendStatus) async throws {
+    func addUserNewFriendWithStatus(userId: String, friendId: String, status: FriendStatus) async throws {
         let newFriendUser = UserFriendStatus(friendUserId: friendId, userFriendStatus: status.rawValue)
         try userFriendDocument(userId: userId, friendId: friendId).setData(from: newFriendUser, merge: false)
+    }
+    
+    func updateUserFriendStatus(userId: String, friendId: String, status: FriendStatus) async throws {
+        let data: [String: Any] = [
+            UserFriendStatus.CodingKeys.userFriendStatus.rawValue : status.rawValue
+        ]
+        
+        try await userFriendDocument(userId: userId, friendId: friendId).updateData(data)
     }
 }
