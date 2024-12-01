@@ -7,14 +7,14 @@
 
 import SwiftUI
 
-enum Sentiment {
-    case Positive
-    case Fair
-    case Neutral
-    case Concerning
-    case Negative
-    case Error
-    case Loading
+enum Sentiment: String {
+    case Positive = "Positive"
+    case Fair = "Fair"
+    case Neutral = "Neutral"
+    case Concerning = "Concerning"
+    case Negative = "Negative"
+    case Error = "Error"
+    case Loading = "Loading"
     
     var textView: Text {
         switch self {
