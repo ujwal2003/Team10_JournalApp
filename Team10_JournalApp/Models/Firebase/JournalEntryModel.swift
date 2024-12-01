@@ -22,15 +22,15 @@ struct JournalEntry: Codable {
     let thoughtEntry: String
     let thoughtSentiment: String
     
-    var gratitudeSentimentModel: Sentiment {
+    var gratitudeDecodedSentiment: Sentiment {
         Sentiment(rawValue: gratitudeSentiment) ?? .Error
     }
     
-    var learningSentimentModel: Sentiment {
+    var learningDecodedSentiment: Sentiment {
         Sentiment(rawValue: learningSentiment) ?? .Error
     }
     
-    var thoughtSentimentModel: Sentiment {
+    var thoughtDecodedSentiment: Sentiment {
         Sentiment(rawValue: thoughtSentiment) ?? .Error
     }
     

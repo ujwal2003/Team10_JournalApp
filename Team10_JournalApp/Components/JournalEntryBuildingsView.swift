@@ -61,26 +61,36 @@ struct JournalEntryBuildingsView: View {
                             viewModel.getScaffoldingIndicatorsView()
                             
                         } else {
-                            GrowthReportView(
-                                geometry: geometry,
-                                title: "Title",
-                                text: "Lorem ipsum dolor",
-                                sentiment: .Concerning
-                            )
+                            if let journalEntry = self.fetchedJournalEntry {
+                                GrowthReportView(
+                                    geometry: geometry,
+                                    title: "Gratitude Building",
+                                    text: journalEntry.gratitudeEntry,
+                                    sentiment: journalEntry.gratitudeDecodedSentiment
+                                )
+                                
+                                GrowthReportView(
+                                    geometry: geometry,
+                                    title: "Learning Building",
+                                    text: journalEntry.learningEntry,
+                                    sentiment: journalEntry.learningDecodedSentiment
+                                )
+                                
+                                GrowthReportView(
+                                    geometry: geometry,
+                                    title: "Thought Building",
+                                    text: journalEntry.thoughtEntry,
+                                    sentiment: journalEntry.thoughtDecodedSentiment
+                                )
+                                
+                            } else {
+                                ProgressView {
+                                    Text("Loading...")
+                                }
+                                .controlSize(.extraLarge)
+                                .padding(.vertical, 70.0)
+                            }
                             
-                            GrowthReportView(
-                                geometry: geometry,
-                                title: "Title",
-                                text: "Lorem ipsum dolor",
-                                sentiment: .Concerning
-                            )
-                            
-                            GrowthReportView(
-                                geometry: geometry,
-                                title: "Title",
-                                text: "Lorem ipsum dolor",
-                                sentiment: .Concerning
-                            )
                         }
                     }
                     
@@ -107,7 +117,7 @@ struct JournalEntryBuildingsView: View {
 
 #Preview {
     JournalEntryBuildingsView(
-        building: .RedRuin,
+        building: .BlueTower,
         date: Date(),
         journalID: ""
     )
