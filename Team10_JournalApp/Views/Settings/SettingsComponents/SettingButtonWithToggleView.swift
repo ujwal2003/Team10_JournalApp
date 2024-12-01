@@ -8,33 +8,36 @@
 import SwiftUI
 
 struct SettingButtonWithToggleView: View {
-    var buttonText: String
-        @Binding var isToggleOn: Bool
-        
-        var body: some View {
-            ZStack {
-                Rectangle()
-                    .foregroundColor(.clear)
-                    .frame(width: 370, height: 49)
-                    .background(Color.hex("9BBEC8").opacity(0.28))
-                    .cornerRadius(15)
-                    .shadow(color: .black.opacity(0.25), radius: 2, x: 0, y: 4)
+    var buttonText: String // Text displayed on the button
+    @Binding var isToggleOn: Bool // Toggle state binding
+
+    var body: some View {
+        ZStack {
+            // Button background with shadow
+            Rectangle()
+                .foregroundColor(.clear)
+                .frame(width: 370, height: 49)
+                .background(Color.rgb(221, 237, 240))
+                .cornerRadius(15)
+                .shadow(color: .black.opacity(0.25), radius: 2, x: 0, y: 4)
+            
+            HStack {
+                // Button text
+                Text(buttonText)
+                    .font(.system(size: 20))
+                    .fontWeight(.medium)
+                    .foregroundColor(.black)
                 
-                HStack {
-                    Text(buttonText)
-                        .font(.system(size: 20))
-                        .fontWeight(.medium)
-                        .foregroundColor(.black)
-                    
-                    Spacer()
-                    Toggle("", isOn: $isToggleOn)
-                        .toggleStyle(CustomToggleStyle())
-                    
-                }
-                .padding(.horizontal, 20) // Padding for alignment
+                Spacer()
+                
+                // Custom toggle switch
+                Toggle("", isOn: $isToggleOn)
+                    .toggleStyle(CustomToggleStyle())
             }
-            .frame(width: 370, height: 49)
+            .padding(.horizontal, 20) // Padding for alignment
         }
+        .frame(width: 370, height: 49)
+    }
 }
 
 struct CustomToggleStyle: ToggleStyle {
@@ -44,18 +47,19 @@ struct CustomToggleStyle: ToggleStyle {
             
             Spacer()
             
+            // Custom toggle design
             RoundedRectangle(cornerRadius: 16)
                 .fill(configuration.isOn ? Color(red: 0.09, green: 0.28, blue: 0.39) : Color.gray)
-                .frame(width: 60, height: 30) // Adjust width and height to make it longer
+                .frame(width: 60, height: 30) // Adjust dimensions for the toggle
                 .overlay(
                     Circle()
                         .fill(Color.white)
                         .frame(width: 25, height: 25)
-                        .offset(x: configuration.isOn ? 15 : -15) // Move circle based on state
+                        .offset(x: configuration.isOn ? 15 : -15) // Circle position based on toggle state
                         .animation(.easeInOut(duration: 0.2), value: configuration.isOn)
                 )
                 .onTapGesture {
-                    configuration.isOn.toggle()
+                    configuration.isOn.toggle() // Update toggle state on tap
                 }
         }
     }

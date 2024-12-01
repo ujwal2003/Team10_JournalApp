@@ -8,14 +8,14 @@
 import SwiftUI
 
 struct PasswordView: View {
-    @State private var password: String = "" // Password
-    @State private var passwordRetyped: String = "" // Confirm password
-    @Environment(\.dismiss) private var dismiss // Access the dismiss environment value
+    @State private var password: String = ""
+    @State private var passwordRetyped: String = ""
+    @Environment(\.dismiss) private var dismiss
 
     var body: some View {
         NavigationStack {
+            // Page title
             AppLayoutContainer(height: 20.0) {
-                // Title Content
                 VStack(alignment: .leading, spacing: 10) {
                     Text("Password")
                         .font(.system(size: 30.0).weight(.heavy))
@@ -25,9 +25,8 @@ struct PasswordView: View {
                 }
                 .padding(.vertical)
             } containerContent: {
-                // Main Content
                 VStack(spacing: 20) {
-                    // Rounded text field for the password
+                    // Secure field for entering a new password
                     ZStack {
                         Rectangle()
                             .foregroundColor(.clear)
@@ -36,11 +35,11 @@ struct PasswordView: View {
                             .cornerRadius(100)
                             .overlay(
                                 RoundedRectangle(cornerRadius: 100)
-                                    .inset(by: 0.5)
                                     .stroke(Color(red: 0.61, green: 0.75, blue: 0.78).opacity(0.4), lineWidth: 1)
                             )
                         
                         SecureField("New Password", text: $password)
+                            .textInputAutocapitalization(.never)
                             .autocorrectionDisabled()
                             .padding(.horizontal, 5)
                             .frame(width: 295, height: 52)
@@ -49,6 +48,7 @@ struct PasswordView: View {
                     }
                     .padding(.top, 25)
                     
+                    // Secure field for confirming the new password
                     ZStack {
                         Rectangle()
                             .foregroundColor(.clear)
@@ -57,11 +57,11 @@ struct PasswordView: View {
                             .cornerRadius(100)
                             .overlay(
                                 RoundedRectangle(cornerRadius: 100)
-                                    .inset(by: 0.5)
                                     .stroke(Color(red: 0.61, green: 0.75, blue: 0.78).opacity(0.4), lineWidth: 1)
                             )
                         
                         SecureField("Retype New Password", text: $passwordRetyped)
+                            .textInputAutocapitalization(.never)
                             .autocorrectionDisabled()
                             .padding(.horizontal, 5)
                             .frame(width: 295, height: 52)
@@ -70,11 +70,10 @@ struct PasswordView: View {
                     }
                     .padding(.bottom, 25)
                     
-                    // Done button
+                    // Done button to save the new password
                     Button(action: {
-                        // Add save action here
                         print("Password Updated: \(password)")
-                        dismiss() // Go back to SettingView
+                        dismiss() // Close the view
                     }) {
                         Text("Done")
                             .font(.system(size: 18, weight: .medium))
@@ -87,7 +86,7 @@ struct PasswordView: View {
                             )
                     }
                     
-                    Spacer() // Push the content up
+                    Spacer()
                 }
             }
         }
@@ -97,4 +96,3 @@ struct PasswordView: View {
 #Preview {
     PasswordView()
 }
-

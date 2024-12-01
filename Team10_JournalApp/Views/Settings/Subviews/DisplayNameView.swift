@@ -8,13 +8,13 @@
 import SwiftUI
 
 struct DisplayNameView: View {
-    @State private var displayName: String = "JohnDoe" // Default display name
-    @Environment(\.dismiss) private var dismiss // Access the dismiss environment value
+    @State private var displayName: String = ""
+    @Environment(\.dismiss) private var dismiss
 
     var body: some View {
         NavigationStack {
+            // Title for Display Name page
             AppLayoutContainer(height: 20.0) {
-                // Title Content
                 VStack(alignment: .leading, spacing: 10) {
                     Text("Display Name")
                         .font(.system(size: 30.0).weight(.heavy))
@@ -24,9 +24,8 @@ struct DisplayNameView: View {
                 }
                 .padding(.vertical)
             } containerContent: {
-                // Main Content
                 VStack(spacing: 20) {
-                    // Rounded text field for the display name
+                    // Text field for editing the display name
                     ZStack {
                         Rectangle()
                             .foregroundColor(.clear)
@@ -35,11 +34,11 @@ struct DisplayNameView: View {
                             .cornerRadius(100)
                             .overlay(
                                 RoundedRectangle(cornerRadius: 100)
-                                    .inset(by: 0.5)
                                     .stroke(Color(red: 0.61, green: 0.75, blue: 0.78).opacity(0.4), lineWidth: 1)
                             )
                         
-                        TextField("JohnDoe", text: $displayName) // TODO: fetch the user's actual display name instead
+                        TextField("JohnDoe", text: $displayName)
+                            .textInputAutocapitalization(.never)
                             .autocorrectionDisabled()
                             .padding(.horizontal, 5)
                             .frame(width: 295, height: 52)
@@ -48,11 +47,9 @@ struct DisplayNameView: View {
                     }
                     .padding(.vertical, 25)
                     
-                    // Done button
+                    // Done button to save changes
                     Button(action: {
-                        // Save the updated display name
                         print("Display Name Updated: \(displayName)")
-                        // Dismiss the view and go back to SettingView
                         dismiss()
                     }) {
                         Text("Done")
@@ -66,7 +63,7 @@ struct DisplayNameView: View {
                             )
                     }
                     
-                    Spacer() // Push the content up
+                    Spacer()
                 }
             }
         }
@@ -76,5 +73,3 @@ struct DisplayNameView: View {
 #Preview {
     DisplayNameView()
 }
-
-

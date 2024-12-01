@@ -11,6 +11,7 @@ struct SettingView: View {
     @ObservedObject var appController: AppViewController
     @StateObject var viewModel = SettingsViewModel()
     
+    // User state variables
     @State private var username: String = ""
     @State private var password: String = ""
     @State private var displayName: String = ""
@@ -21,11 +22,11 @@ struct SettingView: View {
     @State private var isLocationShared: Bool = false
     @State private var isNavigating = false
     @Environment(\.dismiss) var dismiss
-    
+
     var body: some View {
         NavigationStack {
             AppLayoutContainer(height: 20.0) {
-                // Title Content
+                // Header for Settings
                 VStack(alignment: .leading, spacing: 10) {
                     Text("Settings")
                         .font(.system(size: 30.0).weight(.heavy))
@@ -35,11 +36,12 @@ struct SettingView: View {
                 }
                 .padding(.vertical)
             } containerContent: {
-                // Main Content
+                // Main content of the settings
                 VStack {
                     NavigationStack {
                         VStack {
                             List {
+                                // Account Details Section
                                 Section(header:
                                             Text("Account Details")
                                     .font(.system(size: 20, weight: .medium))
@@ -48,37 +50,31 @@ struct SettingView: View {
                                     .frame(height: 0, alignment: .center)
                                     .padding(.leading, 25)
                                 ) {
-                                    // Navigate to DisplayNameView
-                                        SettingButtonWithAccountDetailView(
-                                            buttonText: "Display Name",
-                                            accountDetail: "JohnDoe",
-                                            isCheckInVisible: true
-                                        )
-                                        .background(NavigationLink("", destination: DisplayNameView())
-                                            .opacity(0))
+                                    // Display Name Button with navigation
+                                    SettingButtonWithAccountDetailView(
+                                        buttonText: "Display Name",
+                                        accountDetail: "JohnDoe"
+                                    )
+                                    .background(NavigationLink("", destination: DisplayNameView()).opacity(0))
                                     
+                                    // Email Button with navigation
+                                    SettingButtonWithAccountDetailView(
+                                        buttonText: "Email",
+                                        accountDetail: "johndoe@email.com"
+                                    )
+                                    .background(NavigationLink("", destination: EmailView()).opacity(0))
                                     
-                                    // Navigate to EmailView
-                                        SettingButtonWithAccountDetailView(
-                                            buttonText: "Email",
-                                            accountDetail: "johndoe@email.com",
-                                            isCheckInVisible: true
-                                        )
-                                        .background(NavigationLink("", destination: EmailView())
-                                            .opacity(0))
-                                    
-                                    // Navigate to PasswordView
-                                        SettingButtonWithAccountDetailView(
-                                            buttonText: "Password",
-                                            accountDetail: "Change Password",
-                                            isCheckInVisible: true
-                                        )
-                                        .background(NavigationLink("", destination: PasswordView())
-                                            .opacity(0))
+                                    // Password Button with navigation
+                                    SettingButtonWithAccountDetailView(
+                                        buttonText: "Password",
+                                        accountDetail: "Change Password"
+                                    )
+                                    .background(NavigationLink("", destination: PasswordView()).opacity(0))
                                 }
                                 .listRowSeparator(.hidden)
                                 .padding(.top, -10)
                                 
+                                // Manage Account Section
                                 Section(header:
                                             Text("Manage Account")
                                     .font(.system(size: 20, weight: .medium))
@@ -87,10 +83,11 @@ struct SettingView: View {
                                     .frame(height: 0, alignment: .center)
                                     .padding(.leading, 25)
                                 ) {
+                                    // Reset Journal Button with alert
                                     Button(action: {
                                         isShowingChangeCredentialsAlert = true
                                     }) {
-                                        SettingButtonView(buttonText: "Reset Journal", isCheckInVisible: true)
+                                        SettingButtonView(buttonText: "Reset Journal", isDeleteButton: false)
                                     }
                                     .alert("Reset Journal?", isPresented: $isShowingChangeCredentialsAlert) {
                                         Button("No") { }
@@ -99,10 +96,11 @@ struct SettingView: View {
                                         Text("Are you sure you want to clear all entries and restart? This action cannot be undone!")
                                     }
                                     
+                                    // Sign Out Button with alert
                                     Button(action: {
                                         isShowingSignOutAlert = true
                                     }) {
-                                        SettingButtonView(buttonText: "Sign Out", isCheckInVisible: true)
+                                        SettingButtonView(buttonText: "Sign Out", isDeleteButton: false)
                                     }
                                     .alert("Sign Out?", isPresented: $isShowingSignOutAlert) {
                                         Button("No") { }
@@ -117,10 +115,11 @@ struct SettingView: View {
                                         Text("Are you sure you want to sign out?")
                                     }
                                     
+                                    // Delete Account Button with alert
                                     Button(action: {
                                         isShowingDeleteAccountAlert = true
                                     }) {
-                                        SettingButtonView(buttonText: "Delete Account", isCheckInVisible: true)
+                                        SettingButtonView(buttonText: "Delete Account", isDeleteButton: true)
                                     }
                                     .alert("Delete account?", isPresented: $isShowingDeleteAccountAlert) {
                                         Button("No") { }
@@ -138,6 +137,7 @@ struct SettingView: View {
                                 .listRowSeparator(.hidden)
                                 .padding(.top, -10)
                                 
+                                // Location Section
                                 Section(header:
                                             Text("Location")
                                     .font(.system(size: 20, weight: .medium))
@@ -146,6 +146,7 @@ struct SettingView: View {
                                     .frame(height: 0, alignment: .center)
                                     .padding(.leading, 25)
                                 ) {
+                                    // Share Location Toggle
                                     HStack {
                                         SettingButtonWithToggleView(
                                             buttonText: "Use My Location",
@@ -154,13 +155,14 @@ struct SettingView: View {
                                     }
                                     .frame(width: 370, height: 49)
                                     
-                                    ZStack() {
+                                    // Custom Location Button
+                                    ZStack {
                                         if !isLocationShared {
+                                            // Navigate to CustomLocationView when toggle is off
                                             CustomLocationButtonView(isLocationShared: $isLocationShared)
-                                                .background(NavigationLink("", destination: ToggleCustomLocationView())
-                                                    .opacity(0)
-                                                )
+                                                .background(NavigationLink("", destination: CustomLocationView()).opacity(0))
                                         } else {
+                                            // Static button when toggle is on
                                             CustomLocationButtonView(isLocationShared: $isLocationShared)
                                         }
                                     }
@@ -176,13 +178,6 @@ struct SettingView: View {
                 }
             }
         }
-    }
-}
-
-
-struct ToggleCustomLocationView: View {
-    var body: some View {
-        Text("Coming soon!")
     }
 }
 
