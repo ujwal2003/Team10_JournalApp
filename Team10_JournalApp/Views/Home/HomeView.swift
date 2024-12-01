@@ -57,7 +57,9 @@ struct HomeView: View {
                     buildings: viewModel.currCityBlockBuildings
                 )
                 .sheet(isPresented: $viewModel.isGrowthReportShowing) {
-                    viewModel.getJournalBuildingView()
+                    if let profile = appController.loadedUserProfile {
+                        viewModel.getJournalBuildingView(userId: profile.userId)
+                    }
                 }
                 
                 BottomNavigationView(
@@ -89,6 +91,10 @@ struct HomeView: View {
                 viewModel.currSentimentWeather = .NoData
                 viewModel.recommendedActions = []
                 viewModel.currWeek = CommonUtilities.util.getWeekRange(offset: viewModel.weekOffset)
+                
+                if let profile = appController.loadedUserProfile {
+                    await viewModel.loadOrCreateCurrentWeekMap(userId: profile.userId)
+                }
                 
             }
         }

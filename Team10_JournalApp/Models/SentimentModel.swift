@@ -53,7 +53,6 @@ enum Sentiment {
                             .font(.system(size: 16))
                             .fontWeight(.medium)
                             .foregroundStyle(Color.black)
-                            .background(.red) as! Text
             
             case .Loading:
                 return Text("Loading")

@@ -57,4 +57,13 @@ final class CommonUtilities {
         
         return (startDate: targetWeekStart, endDate: targetWeekEnd)
     }
+    
+    /// Returns Date of the day of the week for the specified week
+    /// (Specified by providing the starting date [Sunday] of the week).
+    func getWeekDates(startDateOfWeek: Date, dayOfWeek: DayID) -> Date {
+        let calendar = Calendar.current
+        
+        let resultDate = calendar.date(byAdding: .day, value: dayOfWeek.dayInteger, to: startDateOfWeek)!
+        return resultDate
+    }
 }

@@ -31,6 +31,27 @@ enum DayID: String {
             default: return nil
         }
     }
+    
+    /// Returns integer representation of DayID.
+    /// Where there are N=7 integers, with Sunday being 0.
+    var dayInteger: Int {
+        switch self {
+            case .Sunday:
+                return 0
+            case .Monday:
+                return 1
+            case .Tuesday:
+                return 2
+            case .Wednesday:
+                return 3
+            case .Thursday:
+                return 4
+            case .Friday:
+                return 5
+            case .Saturday:
+                return 6
+        }
+    }
 }
 
 struct JournalDaysIDs: Codable {
