@@ -180,7 +180,7 @@ struct CityBlockDataTestView: View {
                             let searchDate = getDateWithOffset(offset: dateOffset)
                             let searchDay = Calendar.current.component(.weekday, from: searchDate)
                             
-                            let fetchedEntry = try await JournalManager.shared.getJournalEntry(userId: userProfile.userId, date: searchDate)
+                            let fetchedEntry = try await JournalManager.shared.getJournalEntryFromDateQuery(userId: userProfile.userId, date: searchDate)
                             print("Fetched journal for date: \(searchDate)")
                             
                             try await CityBlockManager.shared.addJournalToCityBlockMap(

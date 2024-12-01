@@ -18,7 +18,11 @@ final class JournalManager {
         try journalCollection.addDocument(from: journalEntry)
     }
     
-    private func journalEntryDocument(userId: String, date: Date) async throws -> DocumentReference {
+    private func journalEntryDocument(journalId: String) async throws -> DocumentReference {
+        journalCollection.document(journalId)
+    }
+    
+    private func journalEntryQueriedDocument(userId: String, date: Date) async throws -> DocumentReference {
         let calendar = Calendar.current
         let startOfDay = calendar.startOfDay(for: date)
         let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay)!
@@ -37,8 +41,12 @@ final class JournalManager {
         return document.reference
     }
     
-    func getJournalEntry(userId: String, date: Date) async throws -> JournalEntry {
-        try await journalEntryDocument(userId: userId, date: date).getDocument(as: JournalEntry.self)
+    func getJournalEntryFromId(journalId: String) async throws -> JournalEntry {
+        try await journalEntryDocument(journalId: journalId).getDocument(as: JournalEntry.self)
+    }
+    
+    func getJournalEntryFromDateQuery(userId: String, date: Date) async throws -> JournalEntry {
+        try await journalEntryQueriedDocument(userId: userId, date: date).getDocument(as: JournalEntry.self)
     }
     
     func updateJournalEntry(userId: String, date: Date, journalContent: JournalContent) async throws {
@@ -51,6 +59,6 @@ final class JournalManager {
             JournalEntry.CodingKeys.thoughtSentiment.rawValue : journalContent.thoughtSentiment
         ]
         
-        try await journalEntryDocument(userId: userId, date: date).updateData(data)
+        try await journalEntryQueriedDocument(userId: userId, date: date).updateData(data)
     }
 }
