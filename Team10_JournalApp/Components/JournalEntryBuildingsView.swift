@@ -38,8 +38,9 @@ struct JournalEntryBuildingsView: View {
                 ScrollView {
                     VStack {
                         
+                        let headlineTitle = viewModel.getViewTitle(date: self.date, building: self.building)
                         VStack(spacing: 0) {
-                            Text("Title")
+                            Text(headlineTitle)
                                 .font(.system(size: 30))
                                 .fontWeight(.heavy)
                                 .frame(maxWidth: .infinity, alignment: .center)
@@ -106,7 +107,7 @@ struct JournalEntryBuildingsView: View {
 
 #Preview {
     JournalEntryBuildingsView(
-        building: .Scaffolding,
+        building: .RedRuin,
         date: Date(),
         journalID: ""
     )

@@ -10,6 +10,18 @@ import SwiftUI
 
 @MainActor
 final class CityJournalBuildingViewModel: ObservableObject {
+    func getViewTitle(date: Date, building: Building) -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "EEEE"
+        let day = formatter.string(from: date)
+        
+        if building.category == .Ruin {
+            return "Ruins of \(day)"
+        }
+        
+        return "\(day) City Growth"
+    }
+    
     func getConstructionOrRuinIndicatorsView(building: Building) -> some View {
         let indicatorIcon = (building.category == .Construction) ? "hugeicons_question" : "subway_error"
         let iconSize: CGFloat = (building.category == .Construction) ? 300 : 245
