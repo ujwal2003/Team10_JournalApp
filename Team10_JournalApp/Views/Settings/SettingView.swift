@@ -48,24 +48,33 @@ struct SettingView: View {
                                     .frame(height: 0, alignment: .center)
                                     .padding(.leading, 25)
                                 ) {
-                                    Button(action: {
-                                        isShowingChangeCredentialsAlert = true
-                                    }) {
-                                        SettingButtonWithAccountDetailView(buttonText: "Display Name", accountDetail: "JohnDoe", isCheckInVisible: true)
-                                    }
+                                    // Navigate to DisplayNameView
+                                        SettingButtonWithAccountDetailView(
+                                            buttonText: "Display Name",
+                                            accountDetail: "JohnDoe",
+                                            isCheckInVisible: true
+                                        )
+                                        .background(NavigationLink("", destination: DisplayNameView())
+                                            .opacity(0))
                                     
-                                    Button(action: {
-                                        isShowingChangeCredentialsAlert = true
-                                    }) {
-                                        SettingButtonWithAccountDetailView(buttonText: "Email", accountDetail: "johndoe@email.com", isCheckInVisible: true)
-                                    }
                                     
-                                    Button(action: {
-                                        isShowingChangeCredentialsAlert = true
-                                    }) {
-                                        SettingButtonWithAccountDetailView(buttonText: "Password", accountDetail: "Change Password", isCheckInVisible: true)
-                                    }
+                                    // Navigate to EmailView
+                                        SettingButtonWithAccountDetailView(
+                                            buttonText: "Email",
+                                            accountDetail: "johndoe@email.com",
+                                            isCheckInVisible: true
+                                        )
+                                        .background(NavigationLink("", destination: EmailView())
+                                            .opacity(0))
                                     
+                                    // Navigate to PasswordView
+                                        SettingButtonWithAccountDetailView(
+                                            buttonText: "Password",
+                                            accountDetail: "Change Password",
+                                            isCheckInVisible: true
+                                        )
+                                        .background(NavigationLink("", destination: PasswordView())
+                                            .opacity(0))
                                 }
                                 .listRowSeparator(.hidden)
                                 .padding(.top, -10)
@@ -139,25 +148,21 @@ struct SettingView: View {
                                 ) {
                                     HStack {
                                         SettingButtonWithToggleView(
-                                            buttonText: "Share Location",
+                                            buttonText: "Use My Location",
                                             isToggleOn: $isLocationShared
                                         )
                                     }
                                     .frame(width: 370, height: 49)
                                     
                                     ZStack() {
-                                        NavigationLink(destination: ToggleCustomLocationView()) {
-                                            EmptyView()
-                                        }
-                                        .opacity(0)
-                                        
                                         if !isLocationShared {
-                                                NavigationLink(destination: ToggleCustomLocationView()) {
-                                                    CustomLocationButtonView(isLocationShared: $isLocationShared)
-                                                }
-                                            } else {
-                                                CustomLocationButtonView(isLocationShared: $isLocationShared)
-                                            }
+                                            CustomLocationButtonView(isLocationShared: $isLocationShared)
+                                                .background(NavigationLink("", destination: ToggleCustomLocationView())
+                                                    .opacity(0)
+                                                )
+                                        } else {
+                                            CustomLocationButtonView(isLocationShared: $isLocationShared)
+                                        }
                                     }
                                 }
                                 .listRowSeparator(.hidden)
@@ -166,7 +171,6 @@ struct SettingView: View {
                             .listStyle(PlainListStyle())
                             .background(Color.clear)
                             .listRowSpacing(0)
-                            
                         }
                     }
                 }

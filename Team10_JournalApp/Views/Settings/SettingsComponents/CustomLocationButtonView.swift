@@ -30,7 +30,6 @@ struct CustomLocationButtonView: View {
 
                 Spacer()
 
-                // Conditionally display "Change" and the arrow only if toggle is off
                 if !isLocationShared {
                     HStack(spacing: 20) {
                         Text("Change")
