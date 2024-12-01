@@ -88,8 +88,7 @@ struct HomeView: View {
                 viewModel.cityHealthPercentage = 1.0
                 viewModel.currSentimentWeather = .NoData
                 viewModel.recommendedActions = []
-                
-                
+                viewModel.currWeek = CommonUtilities.util.getWeekRange(offset: viewModel.weekOffset)
                 
             }
         }

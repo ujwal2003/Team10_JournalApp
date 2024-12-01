@@ -10,6 +10,7 @@ import SwiftUI
 
 @MainActor
 class HomeViewModel: ObservableObject {
+    @Published var weekOffset: Int = 0
     @Published var currWeek: String = "XX/XX/XX - XX/XX/XX"
     @Published var numFriends: Int = 0
     
@@ -59,6 +60,25 @@ class HomeViewModel: ObservableObject {
                 thoughtEntry: "ERROR"
             )
         )
+    }
+    
+    func loadOrCreateCurrentWeekMap(userId: String) async {
+        let currWeek = CommonUtilities.util.getWeekStartEndDates()
+        
+        let fetchedCityData = try? await CityBlockManager.shared.getCityBlockData(
+            userId: userId,
+            weekStartDate: currWeek.startDate,
+            weekEndDate: currWeek.endDate
+        )
+        
+        if let cityData = fetchedCityData {
+            self.currMap = cityData.cityMap
+            // TODO: load city data into map & lazy load journals
+            
+        } else { // create new city map
+            // TODO: create new city map and upload to db
+        }
+        
     }
     
 }
