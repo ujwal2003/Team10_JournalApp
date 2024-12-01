@@ -57,7 +57,11 @@ struct HomeView: View {
                     buildings: viewModel.currCityBlockBuildings
                 )
                 .sheet(isPresented: $viewModel.isGrowthReportShowing) {
-                    // TODO: show growth report
+                    JournalEntryBuildingsView(
+                        building: viewModel.currCityBlockBuildings[viewModel.selectedBuildingIndex].style,
+                        date: viewModel.selectedBuildingDate,
+                        journalID: viewModel.selectedJournalID
+                    )
                 }
                 
                 BottomNavigationView(

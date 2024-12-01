@@ -19,16 +19,29 @@ class HomeViewModel: ObservableObject {
     
     @Published var currMap: Map = .LoadingMap
     @Published var currCityBlockBuildings: [BuildingConfig] = []
-    @Published var currWeekJournal: [GrowthReport] = []
     @Published var journalDataLoader: JournalDaysIDs = .init(sundayID: "", mondayID: "", tuesdayID: "", wednesdayID: "", thursdayID: "", fridayID: "", saturdayID: "")
-    @Published var fetchedJournalEntry: JournalEntry?
     
     @Published var isRecommendedActionsShowing: Bool = false
     @Published var recommendedActions: [RecommendedAction] = []
     
     @Published var isGrowthReportShowing: Bool = false
     @Published var selectedBuildingIndex: Int = 0
+    @Published var selectedBuildingDate: Date = Date()
+    @Published var selectedJournalID: String = ""
     
+    func lazyLoadJournalEntry(buildingDayIndex: Int) {
+        let fetchedWeek = CommonUtilities.util.getWeekStartEndDates(offset: self.weekOffset)
+        let selectedDayID = DayID.getDayIDByInteger(dayIndex: buildingDayIndex) ?? .Sunday
+        let selectedDate = CommonUtilities.util.getWeekDates(startDateOfWeek: fetchedWeek.startDate, dayOfWeek: selectedDayID)
+        
+        self.selectedBuildingDate = selectedDate
+        
+        self.selectedBuildingIndex = buildingDayIndex
+        
+        self.selectedJournalID = CommonUtilities.util.getJournalIdByDayIdKey(weekJournals: self.journalDataLoader, day: selectedDayID)
+        
+        self.isGrowthReportShowing.toggle()
+    }
     
     func loadOrCreateCurrentWeekMap(userId: String) async {
         let currWeek = CommonUtilities.util.getWeekStartEndDates()
@@ -43,52 +56,32 @@ class HomeViewModel: ObservableObject {
             self.currMap = cityData.cityMap
             self.journalDataLoader = cityData.journalIDs
             
-            self.currWeekJournal = Array(
-                repeating: .init(
-                    gratitudeSentiment: .Loading,
-                    gratitudeEntry: "Loading...",
-                    learningSentiment: .Loading,
-                    learningEntry: "Loading...",
-                    thoughtSentiment: .Loading,
-                    thoughtEntry: "Loading..."
-                ),
-                count: 7
-            )
-            
             self.currCityBlockBuildings = [
                 .init(style: .LightBlueTower, onClick: {
-                    self.selectedBuildingIndex = 0
-                    self.isGrowthReportShowing.toggle()
+                    self.lazyLoadJournalEntry(buildingDayIndex: 0)
                 }),
                 .init(style: .RedTower, onClick: {
-                    self.selectedBuildingIndex = 1
-                    self.isGrowthReportShowing.toggle()
+                    self.lazyLoadJournalEntry(buildingDayIndex: 1)
                 }),
                 .init(style: .GreenTower, onClick: {
-                    self.selectedBuildingIndex = 2
-                    self.isGrowthReportShowing.toggle()
+                    self.lazyLoadJournalEntry(buildingDayIndex: 2)
                 }),
                 .init(style: .LightBrownTower, onClick: {
-                    self.selectedBuildingIndex = 3
-                    self.isGrowthReportShowing.toggle()
+                    self.lazyLoadJournalEntry(buildingDayIndex: 3)
                 }),
                 .init(style: .BrownTower, onClick: {
-                    self.selectedBuildingIndex = 4
-                    self.isGrowthReportShowing.toggle()
+                    self.lazyLoadJournalEntry(buildingDayIndex: 4)
                 }),
                 .init(style: .LightGreenTower, onClick: {
-                    self.selectedBuildingIndex = 5
-                    self.isGrowthReportShowing.toggle()
+                    self.lazyLoadJournalEntry(buildingDayIndex: 5)
                 }),
                 .init(style: .GreenTower, onClick: {
-                    self.selectedBuildingIndex = 6
-                    self.isGrowthReportShowing.toggle()
+                    self.lazyLoadJournalEntry(buildingDayIndex: 6)
                 })
             ]
             
             let todayDate = CommonUtilities.util.getDateByOffset(offset: 0)
             let todayIndex = Calendar.current.component(.weekday, from: todayDate) - 1
-
             
             let dayIDs = [
                 self.journalDataLoader.sundayID, self.journalDataLoader.mondayID, self.journalDataLoader.tuesdayID,

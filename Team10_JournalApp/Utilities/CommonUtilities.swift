@@ -66,4 +66,23 @@ final class CommonUtilities {
         let resultDate = calendar.date(byAdding: .day, value: dayOfWeek.dayInteger, to: startDateOfWeek)!
         return resultDate
     }
+    
+    func getJournalIdByDayIdKey(weekJournals: JournalDaysIDs, day: DayID) -> String {
+        switch day {
+            case .Sunday:
+                return weekJournals.sundayID
+            case .Monday:
+                return weekJournals.mondayID
+            case .Tuesday:
+                return weekJournals.tuesdayID
+            case .Wednesday:
+                return weekJournals.wednesdayID
+            case .Thursday:
+                return weekJournals.thursdayID
+            case .Friday:
+                return weekJournals.fridayID
+            case .Saturday:
+                return weekJournals.saturdayID
+        }
+    }
 }

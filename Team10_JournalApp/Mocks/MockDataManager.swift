@@ -29,19 +29,6 @@ class MockDataManager {
         homeViewModel.cityHealthPercentage = 1.0
         homeViewModel.currSentimentWeather = .Sunny
         
-        let dummyText = "Lorem ipsum dolor sit amet, consectetur adipiscing elit"
-        homeViewModel.currWeekJournal = Array(
-            repeating: .init(
-                gratitudeSentiment: .Positive,
-                gratitudeEntry: dummyText,
-                learningSentiment: .Neutral,
-                learningEntry: dummyText,
-                thoughtSentiment: .Negative,
-                thoughtEntry: dummyText
-            ),
-            count: 7
-        )
-        
         homeViewModel.currMap = .Map1
         homeViewModel.currCityBlockBuildings = [
             .init(style: .LightBlueTower, onClick: {
