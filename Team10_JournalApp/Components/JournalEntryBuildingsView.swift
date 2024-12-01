@@ -104,7 +104,14 @@ struct JournalEntryBuildingsView: View {
                             self.fetchedJournalEntry = MockDataManager.mock.getMockJournalEntry()
                             
                         } else {
-                            
+                            do {
+                                let fetchedEntry = try await JournalManager.shared.getJournalEntryFromId(journalId: self.journalID)
+                                self.fetchedJournalEntry = fetchedEntry
+                                
+                            } catch {
+                                self.selectedMenuView = .Journal
+                                self.fetchedJournalEntry = viewModel.getErroredEntry()
+                            }
                         }
                     }
                     

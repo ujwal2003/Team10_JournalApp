@@ -70,4 +70,17 @@ final class CityJournalBuildingViewModel: ObservableObject {
         }
     }
     
+    func getErroredEntry() -> JournalEntry {
+        return .init(
+            userId: "",
+            dateCreated: Date(),
+            gratitudeEntry: "Failed to fetch journal entry.",
+            gratitudeSentiment: Sentiment.Error.rawValue,
+            learningEntry: "Failed to fetch journal entry.",
+            learningSentiment: Sentiment.Error.rawValue,
+            thoughtEntry: "Failed to fetch journal entry.",
+            thoughtSentiment: Sentiment.Error.rawValue
+        )
+    }
+    
 }
