@@ -57,9 +57,7 @@ struct HomeView: View {
                     buildings: viewModel.currCityBlockBuildings
                 )
                 .sheet(isPresented: $viewModel.isGrowthReportShowing) {
-                    if let profile = appController.loadedUserProfile {
-                        viewModel.getJournalBuildingView(userId: profile.userId)
-                    }
+                    // TODO: show growth report
                 }
                 
                 BottomNavigationView(

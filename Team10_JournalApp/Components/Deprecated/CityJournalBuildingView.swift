@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+@available(*, deprecated, message: "Use CityJournalBuildingView instead")
 struct CityJournalBuildingView: View {
     @State var headlineTitle: String
     
