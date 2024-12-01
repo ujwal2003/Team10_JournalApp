@@ -14,6 +14,7 @@ enum Sentiment {
     case Concerning
     case Negative
     case Error
+    case Loading
     
     var textView: Text {
         switch self {
@@ -53,6 +54,12 @@ enum Sentiment {
                             .fontWeight(.medium)
                             .foregroundStyle(Color.black)
                             .background(.red) as! Text
+            
+            case .Loading:
+                return Text("Loading")
+                            .font(.system(size: 16))
+                            .fontWeight(.medium)
+                            .foregroundStyle(Color.black)
         }
     }
     
@@ -75,6 +82,9 @@ enum Sentiment {
             
             case .Error:
                 return "This is an error."
+            
+            case .Loading:
+                return "Loading..."
         }
     }
     
@@ -92,6 +102,8 @@ enum Sentiment {
                 return .Stormy
             case .Error:
                 return .Error
+            case .Loading:
+                return .NoData
         }
     }
 }
