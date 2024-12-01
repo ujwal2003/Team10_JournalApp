@@ -73,9 +73,9 @@ struct HomeView: View {
         .task {
             if self.usePreviewMocks {
                 MockDataManager.mock.loadMockUserProfile(appController: appController)
+                MockDataManager.mock.loadMockUserJournalsMap(homeViewModel: viewModel)
                 
             } else {
-                
                 if appController.loadedUserProfile == nil {
                     let authUserData = appController.certifyAuthStatus()
                     
@@ -85,11 +85,13 @@ struct HomeView: View {
                     }
                 }
                 
+                viewModel.cityHealthPercentage = 1.0
+                viewModel.currSentimentWeather = .NoData
+                viewModel.recommendedActions = []
+                
+                
+                
             }
-            
-            //FIXME: use stuff from DB here
-            MockDataManager.mock.loadMockUserJournalsMap(homeViewModel: viewModel)
-            
         }
 
     }

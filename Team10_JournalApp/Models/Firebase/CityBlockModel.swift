@@ -16,6 +16,10 @@ struct CityBlockData: Codable {
     let mapName: String
     let journalIDs: [String]
     
+    var cityMap: Map {
+        Map(rawValue: mapName) ?? .NotFoundMap
+    }
+    
     init(
         cityBlockId: String? = nil,
         userId: String,

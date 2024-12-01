@@ -119,7 +119,7 @@ struct CityBlockDataTestView: View {
                                 userId: userProfile.userId,
                                 weekStartDate: currWeek.startDate,
                                 weekEndDate: currWeek.endDate,
-                                mapName: "Map1",
+                                mapName: "Map_1",
                                 journalIDs: []
                             )
                             
