@@ -134,4 +134,19 @@ class MockDataManager {
         ]
     }
     
+    func getMockJournalEntry() -> JournalEntry {
+        let entry: JournalEntry = .init(
+            userId: "",
+            dateCreated: Date(),
+            gratitudeEntry: "Lorem ipsum dolor",
+            gratitudeSentiment: Sentiment.Positive.rawValue,
+            learningEntry: "Lorem ipsum dolor",
+            learningSentiment: Sentiment.Neutral.rawValue,
+            thoughtEntry: "Lorem ipsum dolor",
+            thoughtSentiment: Sentiment.Negative.rawValue
+        )
+        
+        return entry
+    }
+    
 }

@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct JournalEntryBuildingsView: View {
+    @State var usePreviewMocks: Bool
+    
     @Environment(\.dismiss) var dismiss
     @State var selectedMenuView: CityBuildingViewSelection
     
@@ -20,11 +22,13 @@ struct JournalEntryBuildingsView: View {
     @StateObject var viewModel = CityJournalBuildingViewModel()
     
     init(
+        usePreviewMocks: Bool = false,
         selectedMenuView: CityBuildingViewSelection = .Sentiment,
         building: Building,
         date: Date,
         journalID: String
     ) {
+        self.usePreviewMocks = usePreviewMocks
         self.selectedMenuView = selectedMenuView
         self.building = building
         self.date = date
@@ -62,24 +66,26 @@ struct JournalEntryBuildingsView: View {
                             
                         } else {
                             if let journalEntry = self.fetchedJournalEntry {
+                                let isJournalMode = self.selectedMenuView == .Journal
+                                
                                 GrowthReportView(
                                     geometry: geometry,
                                     title: "Gratitude Building",
-                                    text: journalEntry.gratitudeEntry,
+                                    text: isJournalMode ? journalEntry.gratitudeEntry : journalEntry.gratitudeDecodedSentiment.report,
                                     sentiment: journalEntry.gratitudeDecodedSentiment
                                 )
                                 
                                 GrowthReportView(
                                     geometry: geometry,
                                     title: "Learning Building",
-                                    text: journalEntry.learningEntry,
+                                    text: isJournalMode ? journalEntry.learningEntry : journalEntry.learningDecodedSentiment.report,
                                     sentiment: journalEntry.learningDecodedSentiment
                                 )
                                 
                                 GrowthReportView(
                                     geometry: geometry,
                                     title: "Thought Building",
-                                    text: journalEntry.thoughtEntry,
+                                    text: isJournalMode ? journalEntry.thoughtEntry : journalEntry.thoughtDecodedSentiment.report,
                                     sentiment: journalEntry.thoughtDecodedSentiment
                                 )
                                 
@@ -90,6 +96,14 @@ struct JournalEntryBuildingsView: View {
                                 .controlSize(.extraLarge)
                                 .padding(.vertical, 70.0)
                             }
+                            
+                        }
+                    }
+                    .task {
+                        if usePreviewMocks {
+                            self.fetchedJournalEntry = MockDataManager.mock.getMockJournalEntry()
+                            
+                        } else {
                             
                         }
                     }
@@ -117,7 +131,8 @@ struct JournalEntryBuildingsView: View {
 
 #Preview {
     JournalEntryBuildingsView(
-        building: .BlueTower,
+        usePreviewMocks: true,
+        building: .RedTower,
         date: Date(),
         journalID: ""
     )
