@@ -57,11 +57,15 @@ struct HomeView: View {
                     buildings: viewModel.currCityBlockBuildings
                 )
                 .sheet(isPresented: $viewModel.isGrowthReportShowing) {
-                    JournalEntryBuildingsView(
-                        building: viewModel.currCityBlockBuildings[viewModel.selectedBuildingIndex].style,
-                        date: viewModel.selectedBuildingDate,
-                        journalID: viewModel.selectedJournalID
-                    )
+                    if usePreviewMocks {
+                        MockDataManager.mock.loadMockJournalBuildingView(homeViewModel: viewModel)
+                    } else {
+                        JournalEntryBuildingsView(
+                            building: viewModel.currCityBlockBuildings[viewModel.selectedBuildingIndex].style,
+                            date: viewModel.selectedBuildingDate,
+                            journalID: viewModel.selectedJournalID
+                        )
+                    }
                 }
                 
                 BottomNavigationView(

@@ -72,6 +72,15 @@ class MockDataManager {
         ]
     }
     
+    func loadMockJournalBuildingView(homeViewModel: HomeViewModel) -> JournalEntryBuildingsView {
+        JournalEntryBuildingsView(
+            usePreviewMocks: true,
+            building: homeViewModel.currCityBlockBuildings[homeViewModel.selectedBuildingIndex].style,
+            date: homeViewModel.selectedBuildingDate,
+            journalID: homeViewModel.selectedJournalID
+        )
+    }
+    
     func loadMockFriendJournalsMap(checkInViewModel: FriendCheckInViewModel) {
         checkInViewModel.friendCityMap = .Map3
         checkInViewModel.friendSentimentWeather = .Drizzle
