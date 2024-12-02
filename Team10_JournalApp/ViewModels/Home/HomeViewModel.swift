@@ -52,6 +52,9 @@ class HomeViewModel: ObservableObject {
             weekEndDate: currWeek.endDate
         )
         
+        let todayDate = CommonUtilities.util.getDateByOffset(offset: 0)
+        let todayIndex = Calendar.current.component(.weekday, from: todayDate) - 1
+        
         if let cityData = fetchedCityData {
             self.currMap = cityData.cityMap
             self.journalDataLoader = cityData.journalIDs
@@ -80,9 +83,6 @@ class HomeViewModel: ObservableObject {
                 })
             ]
             
-            let todayDate = CommonUtilities.util.getDateByOffset(offset: 0)
-            let todayIndex = Calendar.current.component(.weekday, from: todayDate) - 1
-            
             let dayIDs = [
                 self.journalDataLoader.sundayID, self.journalDataLoader.mondayID, self.journalDataLoader.tuesdayID,
                 self.journalDataLoader.wednesdayID, self.journalDataLoader.thursdayID, self.journalDataLoader.fridayID,
@@ -104,7 +104,32 @@ class HomeViewModel: ObservableObject {
             }
             
         } else { // create new city map
-            // TODO: create new city map and upload to db
+            let emptyJournals: JournalDaysIDs = .init(sundayID: "", mondayID: "", tuesdayID: "", wednesdayID: "", thursdayID: "", fridayID: "", saturdayID: "")
+            
+            let newCityMap = CityBlockData(
+                userId: userId,
+                weekStartDate: currWeek.startDate,
+                weekEndDate: currWeek.endDate,
+                mapName: Map.Map4.rawValue,
+                journalIDs: emptyJournals
+            )
+            
+            try? await CityBlockManager.shared.createNewCityBlockMap(cityBlockData: newCityMap)
+            
+            self.currMap = newCityMap.cityMap
+            self.journalDataLoader = emptyJournals
+            
+            self.currCityBlockBuildings = (0..<7).map({ index in
+                    .init(style: .Scaffolding) {
+                        self.lazyLoadJournalEntry(buildingDayIndex: index)
+                    }
+            })
+            
+            for index in 0..<7 {
+                if index == todayIndex {
+                    self.currCityBlockBuildings[index].style = .PurpleConstruction
+                }
+            }
         }
         
     }
