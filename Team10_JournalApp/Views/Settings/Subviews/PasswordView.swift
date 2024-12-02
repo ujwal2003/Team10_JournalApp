@@ -36,7 +36,7 @@ struct PasswordView: View {
             // Page title
             AppLayoutContainer(height: 20.0) {
                 VStack(alignment: .leading, spacing: 10) {
-                    Text("Password")
+                    Text("Update Password")
                         .font(.system(size: 30.0).weight(.heavy))
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .padding(.horizontal, 40.0)
