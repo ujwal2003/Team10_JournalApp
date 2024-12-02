@@ -12,6 +12,7 @@ struct DisplayNameView: View {
     @ObservedObject var settingsViewModel: SettingsViewModel
     
     @State private var displayName: String = ""
+    @State private var isShowingChangeNameFailedAlert: Bool = false
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {
@@ -60,8 +61,26 @@ struct DisplayNameView: View {
                     
                     // Done button to save changes
                     Button(action: {
-                        print("Display Name Updated: \(displayName)")
-                        dismiss()
+                        if let profile = appController.loadedUserProfile {
+                            settingsViewModel.changeDisplayName(userId: profile.userId, newName: displayName) {
+                                let updatedProfile: UserProfile = .init(
+                                    userId: profile.userId,
+                                    email: profile.email,
+                                    displayName: displayName,
+                                    dateCreated: profile.dateCreated,
+                                    photoURL: profile.photoURL
+                                )
+                                
+                                self.appController.loadedUserProfile = updatedProfile
+                                print("Succesfully updated name to \(displayName)")
+                                dismiss()
+                                
+                            } onFailure: {
+                                self.displayName = ""
+                                self.isShowingChangeNameFailedAlert.toggle()
+                            }
+
+                        }
                     }) {
                         Text("Done")
                             .font(.system(size: 18, weight: .medium))
@@ -75,6 +94,12 @@ struct DisplayNameView: View {
                             .opacity((displayName.isEmpty || settingsViewModel.isUpdateDisplayNameLoading) ? 0.5 : 1.0)
                     }
                     .disabled(self.displayName.isEmpty || settingsViewModel.isUpdateDisplayNameLoading)
+                    .alert("Rename Failed", isPresented: $isShowingChangeNameFailedAlert) {
+                        Button("Ok") { }
+                    } message: {
+                        Text("Failed to change your display name. This may possibly be due to a network or server issue, please try again.")
+                    }
+
                     
                     Spacer()
                 }

@@ -20,6 +20,23 @@ class SettingsViewModel: ObservableObject {
         }
     }
     
-//    func changeDisplayName
+    func changeDisplayName(userId: String, newName: String, onSuccess: @escaping () -> Void, onFailure: @escaping () -> Void) {
+        guard !userId.isEmpty, !newName.isEmpty else {
+            return
+        }
+        
+        Task {
+            self.isUpdateDisplayNameLoading = true
+            
+            do {
+                try await UserManager.shared.updateUserDisplayName(userId: userId, displayName: newName)
+                self.isUpdateDisplayNameLoading = false
+                onSuccess()
+            } catch {
+                self.isUpdateDisplayNameLoading = false
+                onFailure()
+            }
+        }
+    }
     
 }
