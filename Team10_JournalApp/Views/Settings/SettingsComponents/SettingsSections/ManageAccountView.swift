@@ -86,12 +86,38 @@ struct ManageAccountView: View {
                 
                 SecureField("Password", text: $password)
                 
-                Button("OK") { }
+                Button("OK") {
+                    if let profile = appController.loadedUserProfile {
+                        settingsViewModel.deleteUserAccount(
+                            userProfile: profile,
+                            password: self.password
+                        ) {
+                            settingsViewModel.signOut {
+                                self.appController.loadedUserProfile = nil
+                                self.appController.viewSignUpFlag = false
+                                self.appController.loggedIn = false
+                            }
+                        }
+                    }
+                }
+                
                 Button("Cancel", role: .cancel) { }
                 
             } message: {
                 Text("Please enter your password to proceed with account deletion.")
             }
+            .alert("Error Encountered", isPresented: $settingsViewModel.isShowingDeleteAccountFailedAlert) {
+                Button("Ok") {
+                    settingsViewModel.signOut {
+                        self.appController.loadedUserProfile = nil
+                        self.appController.viewSignUpFlag = false
+                        self.appController.loggedIn = false
+                    }
+                }
+            } message: {
+                Text("Either your password was invalid or there was a network issue. You will be signed out, you may sign back in and try again or contact support if the issue persists.")
+            }
+
 
             
         }

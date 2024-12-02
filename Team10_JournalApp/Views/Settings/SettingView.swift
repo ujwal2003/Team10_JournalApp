@@ -56,7 +56,7 @@ struct SettingView: View {
                     }
                 }
                 
-                if viewModel.isResettingJournal {
+                if viewModel.isResettingJournal || viewModel.isDeletingAccount {
                     ProgressBufferView(backgroundColor: Color(.systemGray5).opacity(0.98)) {
                         Text("Please wait...")
                     }

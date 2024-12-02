@@ -48,6 +48,7 @@ struct SignInView: View {
                                     )
                                 
                                 TextField("Email", text: $viewModel.email)
+                                    .textInputAutocapitalization(.never)
                                     .autocorrectionDisabled()
                                     .padding(.horizontal, 5)
                                     .frame(width: 295, height: 52)

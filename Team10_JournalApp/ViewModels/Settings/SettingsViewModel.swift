@@ -11,7 +11,9 @@ import Foundation
 class SettingsViewModel: ObservableObject {
     @Published var isUpdateDisplayNameLoading: Bool = false
     
+    @Published var isDeletingAccount: Bool = false
     @Published var isPasswordConfirmationForAccountDeletionDialogShowing: Bool = false
+    @Published var isShowingDeleteAccountFailedAlert: Bool = false
     
     @Published var isChangingPasswordLoading: Bool = false
     @Published var isShowingUpdatePasswordConfirmationAlert: Bool = false
@@ -116,6 +118,29 @@ class SettingsViewModel: ObservableObject {
             } catch {
                 self.isResettingJournal = false
                 self.isShowingJournalResetFailedAlert.toggle()
+            }
+        }
+    }
+    
+    func deleteUserAccount(userProfile: UserProfile, password: String, onSuccess: @escaping () -> Void) {
+        guard !userProfile.userId.isEmpty, !userProfile.email.isEmpty, !password.isEmpty else {
+            return
+        }
+        
+        Task {
+            self.isDeletingAccount = true
+            
+            do {
+                let reAuthUser = try await AuthenticationManager.shared.reauthenticateUser(email: userProfile.email, password: password)
+                
+                try await UserManager.shared.deleteUserAccount(userId: reAuthUser.uid)
+                
+                self.isDeletingAccount = false
+                onSuccess()
+                
+            } catch {
+                self.isDeletingAccount = false
+                self.isShowingDeleteAccountFailedAlert.toggle()
             }
         }
     }
