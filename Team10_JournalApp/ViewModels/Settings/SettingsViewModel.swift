@@ -15,6 +15,9 @@ class SettingsViewModel: ObservableObject {
     @Published var isSendingEmailVerificationLoading: Bool = false
     
     @Published var isShowingJournalResetFailedAlert: Bool = false
+    @Published var isShowingUpdateEmailConfirmationAlert: Bool = false
+    @Published var isShowingVerifyEmailSentSuccessAlert: Bool = false
+    @Published var isShowingEmailChangeFailedAlert: Bool = false
     
     func signOut(onSignOut: () -> Void) {
         do {
@@ -53,7 +56,6 @@ class SettingsViewModel: ObservableObject {
             self.isChangingPasswordLoading = true
             
             do {
-//                let reauthenticatedUser = try await AuthenticationManager.shared.signInUser(email: email, password: currPassword)
                 let reauthenticatedUser = try await AuthenticationManager.shared.reauthenticateUser(email: email, password: currPassword)
                 try await AuthenticationManager.shared.updatePassword(newPassword: newPassword)
                 
@@ -66,6 +68,29 @@ class SettingsViewModel: ObservableObject {
             } catch {
                 self.isChangingPasswordLoading = false
                 onFailure()
+            }
+        }
+    }
+    
+    func changeUserEmail(currEmail: String, password: String, newEmail: String) {
+        guard !currEmail.isEmpty, !password.isEmpty, !newEmail.isEmpty else {
+            return
+        }
+        
+        Task {
+            self.isSendingEmailVerificationLoading = true
+            
+            do {
+                
+                _ = try await AuthenticationManager.shared.reauthenticateUser(email: currEmail, password: password)
+                try await AuthenticationManager.shared.updateEmail(newEmail: newEmail)
+                
+                self.isSendingEmailVerificationLoading = false
+                self.isShowingVerifyEmailSentSuccessAlert = true
+                
+            } catch {
+                self.isSendingEmailVerificationLoading = false
+                self.isShowingEmailChangeFailedAlert = true
             }
         }
     }

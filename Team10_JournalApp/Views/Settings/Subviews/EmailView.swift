@@ -127,8 +127,8 @@ struct EmailView: View {
                     
                     // Done button to save changes
                     Button(action: {
-                        print("Email Updated: \(currEmail)")
-                        dismiss()
+                        settingsViewModel.isShowingUpdateEmailConfirmationAlert.toggle()
+                        
                     }) {
                         Text("Done")
                             .font(.system(size: 18, weight: .medium))
@@ -142,6 +142,34 @@ struct EmailView: View {
                             .opacity(isDoneButtonDisabled() ? 0.5 : 1.0)
                     }
                     .disabled(isDoneButtonDisabled())
+                    .alert("Are You Sure?", isPresented: $settingsViewModel.isShowingUpdateEmailConfirmationAlert) {
+                        Button("Yes") {
+                            settingsViewModel.changeUserEmail(currEmail: currEmail, password: password, newEmail: newEmail)
+                        }
+                        Button("No") { }
+                    } message: {
+                        Text("This will send a verification link to \(newEmail) to verify it as your new email. A reset link will be sent to \(currEmail) should you choose to revert this action.")
+                    }
+                    .alert("Email Verification Sent", isPresented: $settingsViewModel.isShowingVerifyEmailSentSuccessAlert) {
+                        Button("Ok") {
+                            dismiss()
+                            settingsViewModel.signOut {
+                                self.appController.loadedUserProfile = nil
+                                self.appController.viewSignUpFlag = false
+                                self.appController.loggedIn = false
+                            }
+                        }
+                    } message: {
+                        Text("You will now be signed out of the app, please sign in after you verify your new email.")
+                    }
+                    .alert("Failed to Change Email", isPresented: $settingsViewModel.isShowingEmailChangeFailedAlert) {
+                        Button("Ok") {}
+                    } message: {
+                        Text("Failed to send a verification email to \(currEmail). Your current credentials are incorrect or there was a network issue.")
+                    }
+
+
+
                     
                     Spacer()
                 }

@@ -8,8 +8,6 @@
 import Foundation
 import FirebaseAuth
 
-
-
 final class AuthenticationManager {
     static let shared = AuthenticationManager()
     private init() { }
@@ -50,7 +48,7 @@ final class AuthenticationManager {
         try Auth.auth().signOut()
     }
     
-    /// Updates email of an already authenticated user
+    /// Updates email of an already authenticated user by sending a email verification link to the new email and a reset link to the current email
     func updateEmail(newEmail: String) async throws {
         guard let user = Auth.auth().currentUser else {
             throw AuthenticationError.authenticatedUserNotFound
