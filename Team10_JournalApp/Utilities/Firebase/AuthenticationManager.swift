@@ -23,6 +23,18 @@ final class AuthenticationManager {
         return AuthDataResultModel(user: user)
     }
     
+    /// Reuthenticate user credentials for an already signed in user
+    func reauthenticateUser(email: String, password: String) async throws -> AuthDataResultModel {
+        guard let user = Auth.auth().currentUser else {
+            throw AuthenticationError.authenticatedUserNotFound
+        }
+        
+        let credential = EmailAuthProvider.credential(withEmail: email, password: password)
+        let reAuthUser = try await user.reauthenticate(with: credential)
+        
+        return AuthDataResultModel(user: reAuthUser.user)
+    }
+    
     /// Signs up a user with the email and password
     func createUser(email: String, password: String) async throws -> AuthDataResultModel {
         let authDataResult = try await Auth.auth().createUser(withEmail: email, password: password)

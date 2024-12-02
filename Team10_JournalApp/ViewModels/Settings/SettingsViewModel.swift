@@ -52,7 +52,8 @@ class SettingsViewModel: ObservableObject {
             self.isChangingPasswordLoading = true
             
             do {
-                let reauthenticatedUser = try await AuthenticationManager.shared.signInUser(email: email, password: currPassword)
+//                let reauthenticatedUser = try await AuthenticationManager.shared.signInUser(email: email, password: currPassword)
+                let reauthenticatedUser = try await AuthenticationManager.shared.reauthenticateUser(email: email, password: currPassword)
                 try await AuthenticationManager.shared.updatePassword(newPassword: newPassword)
                 
                 let reAuthUserProfile = try await UserManager.shared.getUser(userId: reauthenticatedUser.uid)

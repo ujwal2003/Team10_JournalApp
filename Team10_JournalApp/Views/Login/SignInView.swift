@@ -104,7 +104,7 @@ struct SignInView: View {
                         }
                         .buttonStyle(PlainButtonStyle())
                         .disabled(emptyFields)
-                        .alert("User Not Found", isPresented: $viewModel.isShowingSignInFailedAlert) {
+                        .alert("Failed to Sign In", isPresented: $viewModel.isShowingSignInFailedAlert) {
                             Button("Ok") {
                                 viewModel.password = ""
                             }

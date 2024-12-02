@@ -155,7 +155,7 @@ struct PasswordView: View {
                     .alert("Password Change Failed", isPresented: $isShowingPasswordChangeFailedAlert) {
                         Button("Ok") { }
                     } message: {
-                        Text("Failed to change your password. Ypu enetered the incorrect current password or there was a network or server issue, please try again.")
+                        Text("Failed to change your password. You enetered the incorrect current password or there was a network or server issue, please try again.")
                     }
 
                     
