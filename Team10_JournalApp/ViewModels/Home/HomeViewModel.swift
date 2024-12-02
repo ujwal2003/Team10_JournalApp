@@ -29,6 +29,18 @@ class HomeViewModel: ObservableObject {
     @Published var selectedBuildingDate: Date = Date()
     @Published var selectedJournalID: String = ""
     
+    @Published var areNavigationButtonsDisabled: Bool = false
+    
+    func resetToLoadingState() {
+        self.currMap = .LoadingMap
+        self.currCityBlockBuildings = []
+        self.journalDataLoader = .init(sundayID: "", mondayID: "", tuesdayID: "", wednesdayID: "", thursdayID: "", fridayID: "", saturdayID: "")
+        
+        self.selectedBuildingIndex = 0
+        self.selectedBuildingDate = Date()
+        self.selectedJournalID = ""
+    }
+    
     func lazyLoadJournalEntry(buildingDayIndex: Int) {
         let fetchedWeek = CommonUtilities.util.getWeekStartEndDates(offset: self.weekOffset)
         let selectedDayID = DayID.getDayIDByInteger(dayIndex: buildingDayIndex) ?? .Sunday
@@ -43,8 +55,12 @@ class HomeViewModel: ObservableObject {
         self.isGrowthReportShowing.toggle()
     }
     
+    /// For the current week, loads the user's journal map or creates one if it does not exist
     func loadOrCreateCurrentWeekMap(userId: String) async {
         let currWeek = CommonUtilities.util.getWeekStartEndDates()
+        
+        self.areNavigationButtonsDisabled = true
+        self.resetToLoadingState()
         
         let fetchedCityData = try? await CityBlockManager.shared.getCityBlockData(
             userId: userId,
@@ -132,6 +148,74 @@ class HomeViewModel: ObservableObject {
             }
         }
         
+        self.areNavigationButtonsDisabled = false
+        
+    }
+    
+    func loadWeekMapByOffset(userId: String) async {
+        if self.weekOffset == 0 {
+            await self.loadOrCreateCurrentWeekMap(userId: userId)
+            return
+        }
+        
+        let fetchWeek = CommonUtilities.util.getWeekStartEndDates(offset: self.weekOffset)
+        
+        self.areNavigationButtonsDisabled = true
+        self.resetToLoadingState()
+        
+        let fetchedCityData = try? await CityBlockManager.shared.getCityBlockData(
+            userId: userId,
+            weekStartDate: fetchWeek.startDate,
+            weekEndDate: fetchWeek.endDate
+        )
+        
+        if let cityData = fetchedCityData {
+            self.currMap = cityData.cityMap
+            self.journalDataLoader = cityData.journalIDs
+            
+            self.currCityBlockBuildings = [
+                .init(style: .LightBlueTower, onClick: { self.lazyLoadJournalEntry(buildingDayIndex: 0) }),
+                .init(style: .RedTower, onClick: { self.lazyLoadJournalEntry(buildingDayIndex: 1) }),
+                .init(style: .GreenTower, onClick: { self.lazyLoadJournalEntry(buildingDayIndex: 2) }),
+                .init(style: .LightBrownTower, onClick: { self.lazyLoadJournalEntry(buildingDayIndex: 3) }),
+                .init(style: .BrownTower, onClick: { self.lazyLoadJournalEntry(buildingDayIndex: 4) }),
+                .init(style: .GreenTower, onClick: { self.lazyLoadJournalEntry(buildingDayIndex: 5) }),
+                .init(style: .LightGreenTower, onClick: { self.lazyLoadJournalEntry(buildingDayIndex: 6) }),
+            ]
+            
+            let dayIDs = [
+                self.journalDataLoader.sundayID, self.journalDataLoader.mondayID, self.journalDataLoader.tuesdayID,
+                self.journalDataLoader.wednesdayID, self.journalDataLoader.thursdayID, self.journalDataLoader.fridayID,
+                self.journalDataLoader.saturdayID
+            ]
+            
+            for (index, dayId) in dayIDs.enumerated() {
+                if dayId == "" {
+                    self.currCityBlockBuildings[index].style = .BlueRuin
+                }
+            }
+            
+        } else {
+            self.currMap = .NotFoundMap
+        }
+        
+        self.areNavigationButtonsDisabled = false
+    }
+    
+    func navigateToPastWeek(userId: String) {
+        Task {
+            self.weekOffset -= 1
+            print("[HOME WEEK OFFSET]: \(self.weekOffset)")
+            await self.loadWeekMapByOffset(userId: userId)
+        }
+    }
+    
+    func navigateToFutureWeek(userId: String) {
+        Task {
+            self.weekOffset += 1
+            print("[HOME WEEK OFFSET]: \(self.weekOffset)")
+            await self.loadWeekMapByOffset(userId: userId)
+        }
     }
     
 }

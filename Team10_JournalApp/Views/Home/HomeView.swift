@@ -68,10 +68,24 @@ struct HomeView: View {
                     }
                 }
                 
+                let loadedUserProfile = appController.loadedUserProfile
+                
                 BottomNavigationView(
-                    isDisabled: false,
-                    onLeftArrowClick: { print("TODO: Navigate Previous") },
-                    onRightArrowClick: { print("TODO: Navigate Next") },
+                    isDisabled: viewModel.areNavigationButtonsDisabled,
+                    onLeftArrowClick: {
+                        if !self.usePreviewMocks {
+                            if let profile = loadedUserProfile {
+                                viewModel.navigateToPastWeek(userId: profile.userId)
+                            }
+                        }
+                    },
+                    onRightArrowClick: {
+                        if !self.usePreviewMocks {
+                            if let profile = loadedUserProfile {
+                                viewModel.navigateToFutureWeek(userId: profile.userId)
+                            }
+                        }
+                    },
                     currWeek: viewModel.currWeek,
                     numFriends: viewModel.numFriends
                 )
@@ -84,6 +98,8 @@ struct HomeView: View {
                 MockDataManager.mock.loadMockUserJournalsMap(homeViewModel: viewModel)
                 
             } else {
+                viewModel.areNavigationButtonsDisabled = true
+                
                 if appController.loadedUserProfile == nil {
                     let authUserData = appController.certifyAuthStatus()
                     
@@ -102,6 +118,7 @@ struct HomeView: View {
                     await viewModel.loadOrCreateCurrentWeekMap(userId: profile.userId)
                 }
                 
+                viewModel.areNavigationButtonsDisabled = false
             }
         }
 
