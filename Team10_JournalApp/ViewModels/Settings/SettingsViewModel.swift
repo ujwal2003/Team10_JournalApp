@@ -9,6 +9,7 @@ import Foundation
 
 @MainActor
 class SettingsViewModel: ObservableObject {
+    @Published var isUpdateDisplayNameLoading: Bool = false
     
     func signOut(onSignOut: () -> Void) {
         do {
@@ -18,5 +19,7 @@ class SettingsViewModel: ObservableObject {
             print("Failed to sign out with error: \(error)")
         }
     }
+    
+//    func changeDisplayName
     
 }

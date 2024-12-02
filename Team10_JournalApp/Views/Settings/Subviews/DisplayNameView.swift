@@ -27,6 +27,12 @@ struct DisplayNameView: View {
                 }
                 .padding(.vertical)
             } containerContent: {
+                if settingsViewModel.isUpdateDisplayNameLoading {
+                    ProgressBufferView {
+                        Text("Loading...")
+                    }
+                }
+                
                 VStack(spacing: 20) {
                     // Text field for editing the display name
                     ZStack {
@@ -48,6 +54,7 @@ struct DisplayNameView: View {
                             .frame(width: 295, height: 52)
                             .foregroundColor(.black)
                             .submitLabel(.next)
+                            .disabled(settingsViewModel.isUpdateDisplayNameLoading)
                     }
                     .padding(.vertical, 25)
                     
@@ -65,7 +72,9 @@ struct DisplayNameView: View {
                                     .fill(Color(red: 0.09, green: 0.28, blue: 0.39))
                                     .shadow(color: .black.opacity(0.25), radius: 2, x: 0, y: 4)
                             )
+                            .opacity((displayName.isEmpty || settingsViewModel.isUpdateDisplayNameLoading) ? 0.5 : 1.0)
                     }
+                    .disabled(self.displayName.isEmpty || settingsViewModel.isUpdateDisplayNameLoading)
                     
                     Spacer()
                 }
@@ -75,5 +84,8 @@ struct DisplayNameView: View {
 }
 
 #Preview {
-    DisplayNameView(appController: AppViewController(), settingsViewModel: SettingsViewModel())
+    DisplayNameView(
+        appController: AppViewController(),
+        settingsViewModel: SettingsViewModel()
+    )
 }
