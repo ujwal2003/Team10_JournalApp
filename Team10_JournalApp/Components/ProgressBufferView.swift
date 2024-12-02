@@ -8,9 +8,11 @@
 import SwiftUI
 
 struct ProgressBufferView<Content: View>: View {
+    let backgroundColor: Color
     let content: Content
     
-    init(@ViewBuilder content: () -> Content) {
+    init(backgroundColor: Color = Color.gray.opacity(0.18), @ViewBuilder content: () -> Content) {
+        self.backgroundColor = backgroundColor
         self.content = content()
     }
     
@@ -21,7 +23,7 @@ struct ProgressBufferView<Content: View>: View {
         .controlSize(.extraLarge)
         .padding(40)
         .tint(.gray)
-        .background(Color.gray.opacity(0.18))
+        .background(backgroundColor)
         .clipShape(RoundedCorner(radius: 5.0))
     }
 }

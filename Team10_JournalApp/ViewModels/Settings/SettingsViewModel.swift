@@ -11,6 +11,9 @@ import Foundation
 class SettingsViewModel: ObservableObject {
     @Published var isUpdateDisplayNameLoading: Bool = false
     @Published var isChangingPasswordLoading: Bool = false
+    @Published var isResettingJournal: Bool = false
+    
+    @Published var isShowingJournalResetFailedAlert: Bool = false
     
     func signOut(onSignOut: () -> Void) {
         do {
@@ -61,6 +64,23 @@ class SettingsViewModel: ObservableObject {
             } catch {
                 self.isChangingPasswordLoading = false
                 onFailure()
+            }
+        }
+    }
+    
+    func resetUserJournal(userId: String) {
+        Task {
+            self.isResettingJournal = true
+            
+            do {
+                try await CityBlockManager.shared.bulkDeleteAllUserCityBlockData(userId: userId)
+                try await JournalManager.shared.bulkDeleteAllUserJournalEntries(userId: userId)
+                
+                self.isResettingJournal = false
+                
+            } catch {
+                self.isResettingJournal = false
+                self.isShowingJournalResetFailedAlert.toggle()
             }
         }
     }

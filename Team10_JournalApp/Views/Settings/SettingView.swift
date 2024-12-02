@@ -102,10 +102,20 @@ struct SettingView: View {
                                     }
                                     .alert("Reset Journal?", isPresented: $isShowingChangeCredentialsAlert) {
                                         Button("No") { }
-                                        Button("Yes") { }
+                                        Button("Yes") {
+                                            if let profile = appController.loadedUserProfile {
+                                                viewModel.resetUserJournal(userId: profile.userId)
+                                            }
+                                        }
                                     } message: {
                                         Text("Are you sure you want to clear all entries and restart? This action cannot be undone!")
                                     }
+                                    .alert("Failed to Reset", isPresented: $viewModel.isShowingJournalResetFailedAlert) {
+                                        Button("Ok") { }
+                                    } message: {
+                                        Text("Failed to reset journal, this may be due to a network or server issue. Please try again.")
+                                    }
+
                                     
                                     // Sign Out Button with alert
                                     Button(action: {
@@ -186,6 +196,13 @@ struct SettingView: View {
                         }
                     }
                 }
+                
+                if viewModel.isResettingJournal {
+                    ProgressBufferView(backgroundColor: Color(.systemGray4)) {
+                        Text("Please wait...")
+                    }
+                }
+                
             }
         }
     }
