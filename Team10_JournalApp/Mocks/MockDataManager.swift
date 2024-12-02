@@ -29,19 +29,6 @@ class MockDataManager {
         homeViewModel.cityHealthPercentage = 1.0
         homeViewModel.currSentimentWeather = .Sunny
         
-        let dummyText = "Lorem ipsum dolor sit amet, consectetur adipiscing elit"
-        homeViewModel.currWeekJournal = Array(
-            repeating: .init(
-                gratitudeSentiment: .Positive,
-                gratitudeEntry: dummyText,
-                learningSentiment: .Neutral,
-                learningEntry: dummyText,
-                thoughtSentiment: .Negative,
-                thoughtEntry: dummyText
-            ),
-            count: 7
-        )
-        
         homeViewModel.currMap = .Map1
         homeViewModel.currCityBlockBuildings = [
             .init(style: .LightBlueTower, onClick: {
@@ -83,6 +70,15 @@ class MockDataManager {
                       title: "Chill & Chat",
                       description: "Reach out to a friend or loved one for a chat at a coffee shop")
         ]
+    }
+    
+    func loadMockJournalBuildingView(homeViewModel: HomeViewModel) -> JournalEntryBuildingsView {
+        JournalEntryBuildingsView(
+            usePreviewMocks: true,
+            building: homeViewModel.currCityBlockBuildings[homeViewModel.selectedBuildingIndex].style,
+            date: homeViewModel.selectedBuildingDate,
+            journalID: homeViewModel.selectedJournalID
+        )
     }
     
     func loadMockFriendJournalsMap(checkInViewModel: FriendCheckInViewModel) {
@@ -132,6 +128,21 @@ class MockDataManager {
                 checkInViewModel.isGrowthReportShowing.toggle()
             })
         ]
+    }
+    
+    func getMockJournalEntry() -> JournalEntry {
+        let entry: JournalEntry = .init(
+            userId: "",
+            dateCreated: Date(),
+            gratitudeEntry: "Lorem ipsum dolor",
+            gratitudeSentiment: Sentiment.Positive.rawValue,
+            learningEntry: "Lorem ipsum dolor",
+            learningSentiment: Sentiment.Neutral.rawValue,
+            thoughtEntry: "Lorem ipsum dolor",
+            thoughtSentiment: Sentiment.Negative.rawValue
+        )
+        
+        return entry
     }
     
 }

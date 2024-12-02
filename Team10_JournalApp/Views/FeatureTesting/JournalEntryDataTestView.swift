@@ -100,7 +100,7 @@ struct JournalEntryDataTestView: View {
                             let searchDate = getDateWithOffset(offset: dateOffset)
                             
                             print("fetching for date: \(searchDate)")
-                            let fetchedEntry = try await JournalManager.shared.getJournalEntry(userId: userProfile.userId, date: searchDate)
+                            let fetchedEntry = try await JournalManager.shared.getJournalEntryFromDateQuery(userId: userProfile.userId, date: searchDate)
                             
                             DispatchQueue.main.async {
                                 self.displayJournalEntry = fetchedEntry

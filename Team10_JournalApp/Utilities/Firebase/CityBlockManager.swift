@@ -43,9 +43,11 @@ final class CityBlockManager {
         try await cityBlockMapDocument(userId: userId, weekStartDate: weekStartDate, weekEndDate: weekEndDate).getDocument(as: CityBlockData.self)
     }
     
-    func addJournalToCityBlockMap(userId: String, weekStartDate: Date, weekEndDate: Date, journalId: String) async throws {
+    func addJournalToCityBlockMap(userId: String, weekStartDate: Date, weekEndDate: Date, dayID: DayID, journalId: String) async throws {
+        let fieldPath = "\(CityBlockData.CodingKeys.journalIDs.rawValue).\(dayID.rawValue)"
+        
         let data: [String: Any] = [
-            CityBlockData.CodingKeys.journalIDs.rawValue: FieldValue.arrayUnion([journalId])
+            fieldPath: journalId
         ]
         
         try await cityBlockMapDocument(userId: userId, weekStartDate: weekStartDate, weekEndDate: weekEndDate).updateData(data)

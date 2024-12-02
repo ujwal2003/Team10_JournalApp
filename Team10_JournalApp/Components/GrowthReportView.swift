@@ -47,3 +47,15 @@ struct GrowthReportView: View {
         }
     }
 }
+
+#Preview {
+    GeometryReader { geometry in
+        GrowthReportView(
+            geometry: geometry,
+            title: "Title",
+            text: "Lorem ipsum dolor.",
+            sentiment: .Neutral
+        )
+        .padding(.vertical)
+    }
+}

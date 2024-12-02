@@ -119,8 +119,8 @@ struct CityBlockDataTestView: View {
                                 userId: userProfile.userId,
                                 weekStartDate: currWeek.startDate,
                                 weekEndDate: currWeek.endDate,
-                                mapName: "Map1",
-                                journalIDs: []
+                                mapName: "Map_1",
+                                journalIDs: .init(sundayID: "", mondayID: "", tuesdayID: "", wednesdayID: "", thursdayID: "", fridayID: "", saturdayID: "")
                             )
                             
                             try await CityBlockManager.shared.createNewCityBlockMap(cityBlockData: newCityData)
@@ -178,14 +178,16 @@ struct CityBlockDataTestView: View {
                     do {
                         if let userProfile = loadedUserProfile {
                             let searchDate = getDateWithOffset(offset: dateOffset)
+                            let searchDay = Calendar.current.component(.weekday, from: searchDate)
                             
-                            let fetchedEntry = try await JournalManager.shared.getJournalEntry(userId: userProfile.userId, date: searchDate)
+                            let fetchedEntry = try await JournalManager.shared.getJournalEntryFromDateQuery(userId: userProfile.userId, date: searchDate)
                             print("Fetched journal for date: \(searchDate)")
                             
                             try await CityBlockManager.shared.addJournalToCityBlockMap(
                                 userId: userProfile.userId,
                                 weekStartDate: currWeek.startDate,
                                 weekEndDate: currWeek.endDate,
+                                dayID: DayID.getDayIDByInteger(dayIndex: searchDay - 1)!,
                                 journalId: fetchedEntry.journalId!
                             )
                             

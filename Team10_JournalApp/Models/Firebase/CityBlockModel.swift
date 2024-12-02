@@ -8,13 +8,73 @@
 import Foundation
 import FirebaseFirestore
 
+enum DayID: String {
+    case Sunday = "sundayID"
+    case Monday = "mondayID"
+    case Tuesday = "tuesdayID"
+    case Wednesday = "wednesdayID"
+    case Thursday = "thursdayID"
+    case Friday = "fridayID"
+    case Saturday = "saturdayID"
+    
+    /// Returns day ID based on an integer representation of the days of week.
+    /// Where there are N=7 integers, with Sunday being 0.
+    static func getDayIDByInteger(dayIndex: Int) -> DayID? {
+        switch dayIndex {
+            case 0: return .Sunday
+            case 1: return .Monday
+            case 2: return .Tuesday
+            case 3: return .Wednesday
+            case 4: return .Thursday
+            case 5: return .Friday
+            case 6: return .Saturday
+            default: return nil
+        }
+    }
+    
+    /// Returns integer representation of DayID.
+    /// Where there are N=7 integers, with Sunday being 0.
+    var dayInteger: Int {
+        switch self {
+            case .Sunday:
+                return 0
+            case .Monday:
+                return 1
+            case .Tuesday:
+                return 2
+            case .Wednesday:
+                return 3
+            case .Thursday:
+                return 4
+            case .Friday:
+                return 5
+            case .Saturday:
+                return 6
+        }
+    }
+}
+
+struct JournalDaysIDs: Codable {
+    let sundayID: String
+    let mondayID: String
+    let tuesdayID: String
+    let wednesdayID: String
+    let thursdayID: String
+    let fridayID: String
+    let saturdayID: String
+}
+
 struct CityBlockData: Codable {
     @DocumentID var cityBlockId: String?
     let userId: String
     let weekStartDate: Date
     let weekEndDate: Date
     let mapName: String
-    let journalIDs: [String]
+    let journalIDs: JournalDaysIDs
+    
+    var cityMap: Map {
+        Map(rawValue: mapName) ?? .NotFoundMap
+    }
     
     init(
         cityBlockId: String? = nil,
@@ -22,7 +82,7 @@ struct CityBlockData: Codable {
         weekStartDate: Date,
         weekEndDate: Date,
         mapName: String,
-        journalIDs: [String]
+        journalIDs: JournalDaysIDs
     ) {
         self.cityBlockId = cityBlockId
         self.userId = userId
@@ -49,7 +109,7 @@ struct CityBlockData: Codable {
         self.weekStartDate = try container.decode(Date.self, forKey: .weekStartDate)
         self.weekEndDate = try container.decode(Date.self, forKey: .weekEndDate)
         self.mapName = try container.decode(String.self, forKey: .mapName)
-        self.journalIDs = try container.decode([String].self, forKey: .journalIDs)
+        self.journalIDs = try container.decode(JournalDaysIDs.self, forKey: .journalIDs)
     }
     
     func encode(to encoder: any Encoder) throws {

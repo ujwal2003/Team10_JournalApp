@@ -7,13 +7,14 @@
 
 import SwiftUI
 
-enum Sentiment {
-    case Positive
-    case Fair
-    case Neutral
-    case Concerning
-    case Negative
-    case Error
+enum Sentiment: String {
+    case Positive = "Positive"
+    case Fair = "Fair"
+    case Neutral = "Neutral"
+    case Concerning = "Concerning"
+    case Negative = "Negative"
+    case Error = "Error"
+    case Loading = "Loading"
     
     var textView: Text {
         switch self {
@@ -52,7 +53,12 @@ enum Sentiment {
                             .font(.system(size: 16))
                             .fontWeight(.medium)
                             .foregroundStyle(Color.black)
-                            .background(.red) as! Text
+            
+            case .Loading:
+                return Text("Loading")
+                            .font(.system(size: 16))
+                            .fontWeight(.medium)
+                            .foregroundStyle(Color.black)
         }
     }
     
@@ -75,6 +81,9 @@ enum Sentiment {
             
             case .Error:
                 return "This is an error."
+            
+            case .Loading:
+                return "Loading..."
         }
     }
     
@@ -92,6 +101,8 @@ enum Sentiment {
                 return .Stormy
             case .Error:
                 return .Error
+            case .Loading:
+                return .NoData
         }
     }
 }

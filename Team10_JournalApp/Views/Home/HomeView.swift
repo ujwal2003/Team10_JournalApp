@@ -57,13 +57,35 @@ struct HomeView: View {
                     buildings: viewModel.currCityBlockBuildings
                 )
                 .sheet(isPresented: $viewModel.isGrowthReportShowing) {
-                    viewModel.getJournalBuildingView()
+                    if usePreviewMocks {
+                        MockDataManager.mock.loadMockJournalBuildingView(homeViewModel: viewModel)
+                    } else {
+                        JournalEntryBuildingsView(
+                            building: viewModel.currCityBlockBuildings[viewModel.selectedBuildingIndex].style,
+                            date: viewModel.selectedBuildingDate,
+                            journalID: viewModel.selectedJournalID
+                        )
+                    }
                 }
                 
+                let loadedUserProfile = appController.loadedUserProfile
+                
                 BottomNavigationView(
-                    isDisabled: false,
-                    onLeftArrowClick: { print("TODO: Navigate Previous") },
-                    onRightArrowClick: { print("TODO: Navigate Next") },
+                    isDisabled: viewModel.areNavigationButtonsDisabled,
+                    onLeftArrowClick: {
+                        if !self.usePreviewMocks {
+                            if let profile = loadedUserProfile {
+                                viewModel.navigateToPastWeek(userId: profile.userId)
+                            }
+                        }
+                    },
+                    onRightArrowClick: {
+                        if !self.usePreviewMocks {
+                            if let profile = loadedUserProfile {
+                                viewModel.navigateToFutureWeek(userId: profile.userId)
+                            }
+                        }
+                    },
                     currWeek: viewModel.currWeek,
                     numFriends: viewModel.numFriends
                 )
@@ -73,8 +95,10 @@ struct HomeView: View {
         .task {
             if self.usePreviewMocks {
                 MockDataManager.mock.loadMockUserProfile(appController: appController)
+                MockDataManager.mock.loadMockUserJournalsMap(homeViewModel: viewModel)
                 
             } else {
+                viewModel.areNavigationButtonsDisabled = true
                 
                 if appController.loadedUserProfile == nil {
                     let authUserData = appController.certifyAuthStatus()
@@ -85,11 +109,20 @@ struct HomeView: View {
                     }
                 }
                 
+                viewModel.cityHealthPercentage = 1.0
+                viewModel.currSentimentWeather = .NoData
+                viewModel.recommendedActions = []
+                viewModel.currWeek = CommonUtilities.util.getWeekRange(offset: viewModel.weekOffset)
+                
+                if let profile = appController.loadedUserProfile {
+                    await viewModel.loadOrCreateCurrentWeekMap(userId: profile.userId)
+                    
+                    let userNumFriends = try? await FriendsManager.shared.getNumberOfFriends(userId: profile.userId)
+                    viewModel.numFriends = userNumFriends ?? 0
+                }
+                
+                viewModel.areNavigationButtonsDisabled = false
             }
-            
-            //FIXME: use stuff from DB here
-            MockDataManager.mock.loadMockUserJournalsMap(homeViewModel: viewModel)
-            
         }
 
     }
