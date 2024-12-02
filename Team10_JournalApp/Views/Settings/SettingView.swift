@@ -66,7 +66,7 @@ struct SettingView: View {
                                     // Email Button with navigation
                                     SettingButtonWithAccountDetailView(
                                         buttonText: "Email",
-                                        accountDetail: "johndoe@email.com"
+                                        accountDetail: appController.loadedUserProfile?.email ?? "[none]"
                                     )
                                     .background(
                                         NavigationLink(
