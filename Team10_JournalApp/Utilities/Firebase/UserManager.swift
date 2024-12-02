@@ -27,7 +27,7 @@ final class UserManager {
     }
     
     /// Updates the user's email on their profile.
-    /// This does not update authentication, see: ` AuthenticationManager.shared.updateEmail(newEmail: String)`
+    /// This does not update authentication, see: `AuthenticationManager.shared.updateEmail(newEmail: String)`
     /// Update authentication email prior to updating profile email.
     func updateUserProfileEmail(userId: String, newEmail: String) async throws {
         let data: [String: Any] = [

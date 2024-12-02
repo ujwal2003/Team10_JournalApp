@@ -11,6 +11,8 @@ import Foundation
 class SettingsViewModel: ObservableObject {
     @Published var isUpdateDisplayNameLoading: Bool = false
     
+    @Published var isPasswordConfirmationForAccountDeletionDialogShowing: Bool = false
+    
     @Published var isChangingPasswordLoading: Bool = false
     @Published var isShowingUpdatePasswordConfirmationAlert: Bool = false
     @Published var isShowingPasswordChangeSuccessAlert: Bool = false
