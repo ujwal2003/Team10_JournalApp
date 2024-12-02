@@ -53,9 +53,15 @@ struct SettingView: View {
                                     // Display Name Button with navigation
                                     SettingButtonWithAccountDetailView(
                                         buttonText: "Display Name",
-                                        accountDetail: "JohnDoe"
+                                        accountDetail: appController.loadedUserProfile?.displayName ?? "[none]"
                                     )
-                                    .background(NavigationLink("", destination: DisplayNameView()).opacity(0))
+                                    .background(
+                                        NavigationLink(
+                                            "",
+                                            destination: DisplayNameView(appController: appController, settingsViewModel: viewModel)
+                                        )
+                                        .opacity(0)
+                                    )
                                     
                                     // Email Button with navigation
                                     SettingButtonWithAccountDetailView(
@@ -153,7 +159,6 @@ struct SettingView: View {
                                             isToggleOn: $isLocationShared
                                         )
                                     }
-                                    .frame(width: 370, height: 49)
                                     
                                     // Custom Location Button
                                     ZStack {

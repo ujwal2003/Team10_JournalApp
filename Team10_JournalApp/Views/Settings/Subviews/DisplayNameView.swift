@@ -8,6 +8,9 @@
 import SwiftUI
 
 struct DisplayNameView: View {
+    @ObservedObject var appController: AppViewController
+    @ObservedObject var settingsViewModel: SettingsViewModel
+    
     @State private var displayName: String = ""
     @Environment(\.dismiss) private var dismiss
 
@@ -37,7 +40,8 @@ struct DisplayNameView: View {
                                     .stroke(Color(red: 0.61, green: 0.75, blue: 0.78).opacity(0.4), lineWidth: 1)
                             )
                         
-                        TextField("JohnDoe", text: $displayName)
+                        let currDisplayName = appController.loadedUserProfile?.displayName ?? "ERROR"
+                        TextField(currDisplayName, text: $displayName)
                             .textInputAutocapitalization(.never)
                             .autocorrectionDisabled()
                             .padding(.horizontal, 5)
@@ -71,5 +75,5 @@ struct DisplayNameView: View {
 }
 
 #Preview {
-    DisplayNameView()
+    DisplayNameView(appController: AppViewController(), settingsViewModel: SettingsViewModel())
 }
