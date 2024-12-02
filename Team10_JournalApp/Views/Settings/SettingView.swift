@@ -68,7 +68,13 @@ struct SettingView: View {
                                         buttonText: "Email",
                                         accountDetail: "johndoe@email.com"
                                     )
-                                    .background(NavigationLink("", destination: EmailView()).opacity(0))
+                                    .background(
+                                        NavigationLink(
+                                            "",
+                                            destination: EmailView(appController: appController, settingsViewModel: viewModel)
+                                        )
+                                        .opacity(0)
+                                    )
                                     
                                     // Password Button with navigation
                                     SettingButtonWithAccountDetailView(

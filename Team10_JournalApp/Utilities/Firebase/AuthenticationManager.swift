@@ -50,6 +50,15 @@ final class AuthenticationManager {
         try Auth.auth().signOut()
     }
     
+    /// Updates email of an already authenticated user
+    func updateEmail(newEmail: String) async throws {
+        guard let user = Auth.auth().currentUser else {
+            throw AuthenticationError.authenticatedUserNotFound
+        }
+        
+        try await user.sendEmailVerification(beforeUpdatingEmail: newEmail)
+    }
+    
     /// Sends a password reset link to the user email
     func resetPassword(email: String) async throws {
         try await Auth.auth().sendPasswordReset(withEmail: email)
