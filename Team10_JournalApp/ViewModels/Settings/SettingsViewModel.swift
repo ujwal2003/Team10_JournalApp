@@ -10,6 +10,7 @@ import Foundation
 @MainActor
 class SettingsViewModel: ObservableObject {
     @Published var isUpdateDisplayNameLoading: Bool = false
+    @Published var isChangingPasswordLoading: Bool = false
     
     func signOut(onSignOut: () -> Void) {
         do {
@@ -34,6 +35,31 @@ class SettingsViewModel: ObservableObject {
                 onSuccess()
             } catch {
                 self.isUpdateDisplayNameLoading = false
+                onFailure()
+            }
+        }
+    }
+    
+    func changeUserPassword(email: String, currPassword: String, newPassword: String, onSuccess: @escaping (UserProfile) -> Void, onFailure: @escaping () -> Void) {
+        guard !email.isEmpty, !currPassword.isEmpty, !newPassword.isEmpty else {
+            return
+        }
+        
+        Task {
+            self.isChangingPasswordLoading = true
+            
+            do {
+                let reauthenticatedUser = try await AuthenticationManager.shared.signInUser(email: email, password: currPassword)
+                try await AuthenticationManager.shared.updatePassword(newPassword: newPassword)
+                
+                let reAuthUserProfile = try await UserManager.shared.getUser(userId: reauthenticatedUser.uid)
+                
+                self.isChangingPasswordLoading = false
+                
+                onSuccess(reAuthUserProfile)
+                
+            } catch {
+                self.isChangingPasswordLoading = false
                 onFailure()
             }
         }

@@ -75,7 +75,12 @@ struct SettingView: View {
                                         buttonText: "Password",
                                         accountDetail: "Change Password"
                                     )
-                                    .background(NavigationLink("", destination: PasswordView()).opacity(0))
+                                    .background(
+                                        NavigationLink(
+                                            "",
+                                            destination: PasswordView(appController: appController, settingsViewModel: viewModel)
+                                        ).opacity(0)
+                                    )
                                 }
                                 .listRowSeparator(.hidden)
                                 .padding(.top, -10)
