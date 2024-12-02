@@ -116,6 +116,9 @@ struct HomeView: View {
                 
                 if let profile = appController.loadedUserProfile {
                     await viewModel.loadOrCreateCurrentWeekMap(userId: profile.userId)
+                    
+                    let userNumFriends = try? await FriendsManager.shared.getNumberOfFriends(userId: profile.userId)
+                    viewModel.numFriends = userNumFriends ?? 0
                 }
                 
                 viewModel.areNavigationButtonsDisabled = false
