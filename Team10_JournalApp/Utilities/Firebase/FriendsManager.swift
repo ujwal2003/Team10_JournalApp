@@ -41,6 +41,11 @@ final class FriendsManager {
         try await userFriendDocument(userId: userId, friendId: friendId).updateData(data)
     }
     
+    func getUserFriendsSubCollectionQuerySnapshot(userId: String) async throws -> QuerySnapshot {
+        let querySnapshot = try await userFriendsCollection(userId: userId).getDocuments()
+        return querySnapshot
+    }
+    
     func getNumberOfFriends(userId: String) async throws -> Int {
         let query = userFriendsCollection(userId: userId)
             .whereField("user_friend_status", isEqualTo: FriendStatus.friend.rawValue)

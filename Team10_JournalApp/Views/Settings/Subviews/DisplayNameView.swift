@@ -8,7 +8,11 @@
 import SwiftUI
 
 struct DisplayNameView: View {
+    @ObservedObject var appController: AppViewController
+    @ObservedObject var settingsViewModel: SettingsViewModel
+    
     @State private var displayName: String = ""
+    @State private var isShowingChangeNameFailedAlert: Bool = false
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {
@@ -24,6 +28,12 @@ struct DisplayNameView: View {
                 }
                 .padding(.vertical)
             } containerContent: {
+                if settingsViewModel.isUpdateDisplayNameLoading {
+                    ProgressBufferView {
+                        Text("Loading...")
+                    }
+                }
+                
                 VStack(spacing: 20) {
                     // Text field for editing the display name
                     ZStack {
@@ -37,20 +47,40 @@ struct DisplayNameView: View {
                                     .stroke(Color(red: 0.61, green: 0.75, blue: 0.78).opacity(0.4), lineWidth: 1)
                             )
                         
-                        TextField("JohnDoe", text: $displayName)
+                        let currDisplayName = appController.loadedUserProfile?.displayName ?? "ERROR"
+                        TextField(currDisplayName, text: $displayName)
                             .textInputAutocapitalization(.never)
                             .autocorrectionDisabled()
                             .padding(.horizontal, 5)
                             .frame(width: 295, height: 52)
                             .foregroundColor(.black)
                             .submitLabel(.next)
+                            .disabled(settingsViewModel.isUpdateDisplayNameLoading)
                     }
                     .padding(.vertical, 25)
                     
                     // Done button to save changes
                     Button(action: {
-                        print("Display Name Updated: \(displayName)")
-                        dismiss()
+                        if let profile = appController.loadedUserProfile {
+                            settingsViewModel.changeDisplayName(userId: profile.userId, newName: displayName) {
+                                let updatedProfile: UserProfile = .init(
+                                    userId: profile.userId,
+                                    email: profile.email,
+                                    displayName: displayName,
+                                    dateCreated: profile.dateCreated,
+                                    photoURL: profile.photoURL
+                                )
+                                
+                                self.appController.loadedUserProfile = updatedProfile
+                                print("Succesfully updated name to \(displayName)")
+                                dismiss()
+                                
+                            } onFailure: {
+                                self.displayName = ""
+                                self.isShowingChangeNameFailedAlert.toggle()
+                            }
+
+                        }
                     }) {
                         Text("Done")
                             .font(.system(size: 18, weight: .medium))
@@ -61,7 +91,15 @@ struct DisplayNameView: View {
                                     .fill(Color(red: 0.09, green: 0.28, blue: 0.39))
                                     .shadow(color: .black.opacity(0.25), radius: 2, x: 0, y: 4)
                             )
+                            .opacity((displayName.isEmpty || settingsViewModel.isUpdateDisplayNameLoading) ? 0.5 : 1.0)
                     }
+                    .disabled(self.displayName.isEmpty || settingsViewModel.isUpdateDisplayNameLoading)
+                    .alert("Rename Failed", isPresented: $isShowingChangeNameFailedAlert) {
+                        Button("Ok") { }
+                    } message: {
+                        Text("Failed to change your display name. This may possibly be due to a network or server issue, please try again.")
+                    }
+
                     
                     Spacer()
                 }
@@ -71,5 +109,8 @@ struct DisplayNameView: View {
 }
 
 #Preview {
-    DisplayNameView()
+    DisplayNameView(
+        appController: AppViewController(),
+        settingsViewModel: SettingsViewModel()
+    )
 }

@@ -16,7 +16,7 @@ struct SettingButtonView: View {
             // Button background with shadow
             Rectangle()
                 .foregroundColor(.clear)
-                .frame(width: 370, height: 49)
+                .frame(height: 50)
                 .background(Color.rgb(221, 237, 240))
                 .cornerRadius(15)
                 .shadow(color: .black.opacity(0.25), radius: 2, x: 0, y: 4)
@@ -37,6 +37,6 @@ struct SettingButtonView: View {
             }
             .padding(.horizontal, 20)
         }
-        .frame(width: 370, height: 49)
+        .frame(maxWidth: .infinity, maxHeight: 50)
     }
 }

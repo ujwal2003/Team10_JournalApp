@@ -8,8 +8,6 @@
 import Foundation
 import FirebaseAuth
 
-
-
 final class AuthenticationManager {
     static let shared = AuthenticationManager()
     private init() { }
@@ -21,6 +19,18 @@ final class AuthenticationManager {
         }
         
         return AuthDataResultModel(user: user)
+    }
+    
+    /// Reuthenticate user credentials for an already signed in user
+    func reauthenticateUser(email: String, password: String) async throws -> AuthDataResultModel {
+        guard let user = Auth.auth().currentUser else {
+            throw AuthenticationError.authenticatedUserNotFound
+        }
+        
+        let credential = EmailAuthProvider.credential(withEmail: email, password: password)
+        let reAuthUser = try await user.reauthenticate(with: credential)
+        
+        return AuthDataResultModel(user: reAuthUser.user)
     }
     
     /// Signs up a user with the email and password
@@ -36,6 +46,15 @@ final class AuthenticationManager {
     
     func signOutUser() throws {
         try Auth.auth().signOut()
+    }
+    
+    /// Updates email of an already authenticated user by sending a email verification link to the new email and a reset link to the current email
+    func updateEmail(newEmail: String) async throws {
+        guard let user = Auth.auth().currentUser else {
+            throw AuthenticationError.authenticatedUserNotFound
+        }
+        
+        try await user.sendEmailVerification(beforeUpdatingEmail: newEmail)
     }
     
     /// Sends a password reset link to the user email

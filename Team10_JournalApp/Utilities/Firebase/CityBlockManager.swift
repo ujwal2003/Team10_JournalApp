@@ -52,4 +52,22 @@ final class CityBlockManager {
         
         try await cityBlockMapDocument(userId: userId, weekStartDate: weekStartDate, weekEndDate: weekEndDate).updateData(data)
     }
+    
+    func getAllUserCityBlockDataQuery(userId: String) -> Query {
+        let query = cityCollection.whereField("user_id", isEqualTo: userId)
+        return query
+    }
+    
+    func bulkDeleteAllUserCityBlockData(userId: String) async throws {
+        let querySnapshot = try await getAllUserCityBlockDataQuery(userId: userId).getDocuments()
+        
+        let batch = Firestore.firestore().batch()
+        
+        for document in querySnapshot.documents {
+            batch.deleteDocument(document.reference)
+        }
+        
+        try await batch.commit()
+        print("[DB]: Succesfully deleted all city block data for user \(userId)")
+    }
 }

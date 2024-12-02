@@ -20,11 +20,16 @@ struct UserProfile: Codable {
     init(authUser: AuthDataResultModel) {
         self.userId = authUser.uid
         self.email = authUser.email
-        self.displayName = authUser.email
         self.dateCreated = Date()
         self.photoURL = authUser.photoUrl
         self.locLati = 29.718922
         self.locLongi = -95.339162
+        
+        if let defaultDisplayName = authUser.email.components(separatedBy: "@").first {
+            self.displayName = defaultDisplayName
+        } else {
+            self.displayName = authUser.email
+        }
     }
     
     init(userId: String, email: String, displayName: String, dateCreated: Date, photoURL: String?, locLati: Double = 29.718922, locLongi: Double = -95.339162) {
