@@ -12,7 +12,7 @@ struct FeatureTestingView: View {
     
     @State private var selectedTestTab: TestingTab = .JournalEntry
     enum TestingTab: String {
-        case JournalEntry, CityBlockData, SentimentTest, FriendsTest
+        case JournalEntry, CityBlockData, SentimentTest, FriendsTest, LocalStorageTest
     }
     
     var body: some View {
@@ -29,6 +29,8 @@ struct FeatureTestingView: View {
                         SentimentAnalysisTestView()
                     case .FriendsTest:
                         FriendsTestView(loadedUserProfile: loadedUserProfile)
+                    case .LocalStorageTest:
+                        Text("WIP")
                 }
             }
             .toolbar {
@@ -38,6 +40,7 @@ struct FeatureTestingView: View {
                         Text(TestingTab.CityBlockData.rawValue).tag(TestingTab.CityBlockData)
                         Text(TestingTab.SentimentTest.rawValue).tag(TestingTab.SentimentTest)
                         Text(TestingTab.FriendsTest.rawValue).tag(TestingTab.FriendsTest)
+                        Text(TestingTab.LocalStorageTest.rawValue).tag(TestingTab.LocalStorageTest)
                     }
                     .pickerStyle(.segmented)
                 }

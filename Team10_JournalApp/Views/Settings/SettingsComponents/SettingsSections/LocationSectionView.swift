@@ -38,6 +38,10 @@ struct LocationSectionView: View {
                     CustomLocationButtonView(isLocationShared: $isLocationShared)
                 }
             }
+            .onChange(of: isLocationShared) { oldValue, newValue in
+                print("old: \(oldValue), new: \(newValue)")
+            }
+            
         }
         .listRowSeparator(.hidden)
         .padding(.top, -10)
@@ -45,5 +49,14 @@ struct LocationSectionView: View {
 }
 
 #Preview {
-    LocationSectionView(isLocationShared: .constant(false))
+    @Previewable @State var previewLocationShared: Bool = false
+    
+    NavigationStack {
+        List {
+            LocationSectionView(isLocationShared: $previewLocationShared)
+        }
+        .listStyle(PlainListStyle())
+        .background(Color.clear)
+        .listRowSpacing(0)
+    }
 }
