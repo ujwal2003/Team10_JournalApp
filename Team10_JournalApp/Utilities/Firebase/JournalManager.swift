@@ -61,4 +61,22 @@ final class JournalManager {
         
         try await journalEntryQueriedDocument(userId: userId, date: date).updateData(data)
     }
+    
+    func getAllUserJournalEntriesQuery(userId: String) -> Query {
+        let query = journalCollection.whereField("user_id", isEqualTo: userId)
+        return query
+    }
+    
+    func bulkDeleteAllUserJournalEntries(userId: String) async throws {
+        let querySnapshot = try await getAllUserJournalEntriesQuery(userId: userId).getDocuments()
+        
+        let batch = Firestore.firestore().batch()
+        
+        for document in querySnapshot.documents {
+            batch.deleteDocument(document.reference)
+        }
+        
+        try await batch.commit()
+        print("[DB]: Succesfully deleted all journal entries for user \(userId)")
+    }
 }
