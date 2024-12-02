@@ -20,6 +20,10 @@ struct EmailView: View {
     func anyFieldsEmpty() -> Bool {
         return currEmail.isEmpty || password.isEmpty || newEmail.isEmpty
     }
+    
+    func isDoneButtonDisabled() -> Bool {
+        return anyFieldsEmpty() || settingsViewModel.isSendingEmailVerificationLoading
+    }
 
     var body: some View {
         NavigationStack {
@@ -36,75 +40,90 @@ struct EmailView: View {
                         .font(.system(size: 16.0))
                         .padding(.horizontal, 40.0)
                 }
-//                .padding(.vertical)
+                .padding(.top)
             } containerContent: {
                 VStack(spacing: 20) {
-                    // Text field for the current email
                     ZStack {
-                        Rectangle()
-                            .foregroundColor(.clear)
-                            .frame(width: 315, height: 52)
-                            .background(Color(red: 0.87, green: 0.95, blue: 0.99).opacity(0.5))
-                            .cornerRadius(100)
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 100)
-                                    .stroke(Color(red: 0.61, green: 0.75, blue: 0.78).opacity(0.4), lineWidth: 1)
-                            )
+                        // Text Fields
+                        VStack {
+                            // Text field for the current email
+                            ZStack {
+                                Rectangle()
+                                    .foregroundColor(.clear)
+                                    .frame(width: 315, height: 52)
+                                    .background(Color(red: 0.87, green: 0.95, blue: 0.99).opacity(0.5))
+                                    .cornerRadius(100)
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 100)
+                                            .stroke(Color(red: 0.61, green: 0.75, blue: 0.78).opacity(0.4), lineWidth: 1)
+                                    )
+                                
+                                TextField("Current Email Address", text: $currEmail)
+                                    .keyboardType(.emailAddress)
+                                    .textInputAutocapitalization(.never)
+                                    .autocorrectionDisabled()
+                                    .padding(.horizontal, 5)
+                                    .frame(width: 295, height: 52)
+                                    .foregroundColor(.black)
+                                    .submitLabel(.next)
+                                    .disabled(settingsViewModel.isSendingEmailVerificationLoading)
+                            }
+                            .padding(.top, 25)
+                            
+                            // Text field for the password
+                            ZStack {
+                                Rectangle()
+                                    .foregroundColor(.clear)
+                                    .frame(width: 315, height: 52)
+                                    .background(Color(red: 0.87, green: 0.95, blue: 0.99).opacity(0.5))
+                                    .cornerRadius(100)
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 100)
+                                            .stroke(Color(red: 0.61, green: 0.75, blue: 0.78).opacity(0.4), lineWidth: 1)
+                                    )
+                                
+                                SecureField("Password", text: $password)
+                                    .textInputAutocapitalization(.never)
+                                    .autocorrectionDisabled()
+                                    .padding(.horizontal, 5)
+                                    .frame(width: 295, height: 52)
+                                    .foregroundColor(.black)
+                                    .submitLabel(.next)
+                                    .disabled(settingsViewModel.isSendingEmailVerificationLoading)
+                            }
+                            .padding(.vertical, 10)
+                            
+                            // Text field for the new email
+                            ZStack {
+                                Rectangle()
+                                    .foregroundColor(.clear)
+                                    .frame(width: 315, height: 52)
+                                    .background(Color(red: 0.87, green: 0.95, blue: 0.99).opacity(0.5))
+                                    .cornerRadius(100)
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 100)
+                                            .stroke(Color(red: 0.61, green: 0.75, blue: 0.78).opacity(0.4), lineWidth: 1)
+                                    )
+                                
+                                TextField("New Email Address", text: $newEmail)
+                                    .keyboardType(.emailAddress)
+                                    .textInputAutocapitalization(.never)
+                                    .autocorrectionDisabled()
+                                    .padding(.horizontal, 5)
+                                    .frame(width: 295, height: 52)
+                                    .foregroundColor(.black)
+                                    .submitLabel(.next)
+                                    .disabled(settingsViewModel.isSendingEmailVerificationLoading)
+                            }
+                            .padding(.bottom, 25)
+                        }
                         
-                        TextField("Current Email Address", text: $currEmail)
-                            .keyboardType(.emailAddress)
-                            .textInputAutocapitalization(.never)
-                            .autocorrectionDisabled()
-                            .padding(.horizontal, 5)
-                            .frame(width: 295, height: 52)
-                            .foregroundColor(.black)
-                            .submitLabel(.next)
+                        if settingsViewModel.isSendingEmailVerificationLoading {
+                            ProgressBufferView(backgroundColor: Color(.systemGray5).opacity(0.85)) {
+                                Text("Please wait...")
+                            }
+                        }
                     }
-                    .padding(.top, 25)
-                    
-                    // Text field for the password
-                    ZStack {
-                        Rectangle()
-                            .foregroundColor(.clear)
-                            .frame(width: 315, height: 52)
-                            .background(Color(red: 0.87, green: 0.95, blue: 0.99).opacity(0.5))
-                            .cornerRadius(100)
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 100)
-                                    .stroke(Color(red: 0.61, green: 0.75, blue: 0.78).opacity(0.4), lineWidth: 1)
-                            )
-                        
-                        SecureField("Password", text: $password)
-                            .textInputAutocapitalization(.never)
-                            .autocorrectionDisabled()
-                            .padding(.horizontal, 5)
-                            .frame(width: 295, height: 52)
-                            .foregroundColor(.black)
-                            .submitLabel(.next)
-                    }
-                    
-                    // Text field for the new email
-                    ZStack {
-                        Rectangle()
-                            .foregroundColor(.clear)
-                            .frame(width: 315, height: 52)
-                            .background(Color(red: 0.87, green: 0.95, blue: 0.99).opacity(0.5))
-                            .cornerRadius(100)
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 100)
-                                    .stroke(Color(red: 0.61, green: 0.75, blue: 0.78).opacity(0.4), lineWidth: 1)
-                            )
-                        
-                        TextField("New Email Address", text: $newEmail)
-                            .keyboardType(.emailAddress)
-                            .textInputAutocapitalization(.never)
-                            .autocorrectionDisabled()
-                            .padding(.horizontal, 5)
-                            .frame(width: 295, height: 52)
-                            .foregroundColor(.black)
-                            .submitLabel(.next)
-                    }
-                    .padding(.bottom, 25)
                     
                     // Done button to save changes
                     Button(action: {
@@ -120,9 +139,9 @@ struct EmailView: View {
                                     .fill(Color(red: 0.09, green: 0.28, blue: 0.39))
                                     .shadow(color: .black.opacity(0.25), radius: 2, x: 0, y: 4)
                             )
-                            .opacity(anyFieldsEmpty() ? 0.5 : 1.0)
+                            .opacity(isDoneButtonDisabled() ? 0.5 : 1.0)
                     }
-                    .disabled(anyFieldsEmpty())
+                    .disabled(isDoneButtonDisabled())
                     
                     Spacer()
                 }

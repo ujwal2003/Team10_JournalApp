@@ -12,6 +12,7 @@ class SettingsViewModel: ObservableObject {
     @Published var isUpdateDisplayNameLoading: Bool = false
     @Published var isChangingPasswordLoading: Bool = false
     @Published var isResettingJournal: Bool = false
+    @Published var isSendingEmailVerificationLoading: Bool = false
     
     @Published var isShowingJournalResetFailedAlert: Bool = false
     
