@@ -26,6 +26,17 @@ final class UserManager {
         try userDocument(userId: user.userId).setData(from: user, merge: false)
     }
     
+    /// Updates the user's email on their profile.
+    /// This does not update authentication, see: ` AuthenticationManager.shared.updateEmail(newEmail: String)`
+    /// Update authentication email prior to updating profile email.
+    func updateUserProfileEmail(userId: String, newEmail: String) async throws {
+        let data: [String: Any] = [
+            UserProfile.CodingKeys.email.rawValue : newEmail
+        ]
+        
+        try await userDocument(userId: userId).updateData(data)
+    }
+    
     func updateUserDisplayName(userId: String, displayName: String) async throws {
         let data: [String: Any] = [
             UserProfile.CodingKeys.displayName.rawValue : displayName

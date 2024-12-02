@@ -86,8 +86,10 @@ class SettingsViewModel: ObservableObject {
             
             do {
                 
-                _ = try await AuthenticationManager.shared.reauthenticateUser(email: currEmail, password: password)
+                let reAuthUser = try await AuthenticationManager.shared.reauthenticateUser(email: currEmail, password: password)
+                
                 try await AuthenticationManager.shared.updateEmail(newEmail: newEmail)
+                try await UserManager.shared.updateUserProfileEmail(userId: reAuthUser.uid, newEmail: newEmail)
                 
                 self.isSendingEmailVerificationLoading = false
                 self.isShowingVerifyEmailSentSuccessAlert = true
