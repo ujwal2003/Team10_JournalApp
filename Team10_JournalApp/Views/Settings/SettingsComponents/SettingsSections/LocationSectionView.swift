@@ -33,7 +33,15 @@ struct LocationSectionView: View {
                 if !isLocationShared {
                     // Navigate to CustomLocationView when toggle is off
                     CustomLocationButtonView(appController: appController, isLocationShared: $isLocationShared)
-                        .background(NavigationLink("", destination: CustomLocationView()).opacity(0))
+                        .background(
+                            NavigationLink(
+                                "",
+                                destination:
+                                    CustomLocationView(appController: appController)
+                            )
+                            .opacity(0)
+                        )
+                    
                 } else {
                     // Static button when toggle is on
                     CustomLocationButtonView(appController: appController, isLocationShared: $isLocationShared)
