@@ -12,7 +12,7 @@ struct CustomLocationView: View {
     @State var usePreviewMocks: Bool = false
     @ObservedObject var appController: AppViewController
     
-    @State private var location: String = "Houston, TX, USA" // Current user location
+    @State private var location: String = "" // Current user location
     
     @State private var region: MKCoordinateRegion
     @State private var annotations: [Annotation] = []
@@ -38,26 +38,51 @@ struct CustomLocationView: View {
                 .padding()
             
             // Input field for entering location
-            ZStack {
-                Rectangle()
-                    .foregroundColor(.clear)
-                    .frame(width: 366, height: 52)
-                    .background(Color(red: 0.87, green: 0.95, blue: 0.99).opacity(0.5))
-                    .cornerRadius(100)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 100)
-                            .stroke(Color(red: 0.61, green: 0.75, blue: 0.78).opacity(0.4), lineWidth: 1)
-                    )
+            HStack {
+                ZStack {
+                    Rectangle()
+                        .foregroundColor(.clear)
+                        .frame(height: 52)
+                        .background(Color(red: 0.87, green: 0.95, blue: 0.99).opacity(0.5))
+                        .cornerRadius(100)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 100)
+                                .stroke(Color(red: 0.61, green: 0.75, blue: 0.78).opacity(0.4), lineWidth: 1)
+                        )
+                    
+                    TextField("Enter Location", text: $location)
+                        .textInputAutocapitalization(.never)
+                        .autocorrectionDisabled()
+                        .padding(.leading, 15)
+                        .frame(height: 52)
+                        .submitLabel(.next)
+                }
                 
-                TextField("Enter Location", text: $location)
-                    .textInputAutocapitalization(.never)
-                    .autocorrectionDisabled()
-                    .padding(.horizontal, 5)
-                    .frame(width: 346, height: 52)
-                    .submitLabel(.next)
+                Button {
+                    CommonUtilities.util.searchForPlace(query: location) { coordinate in
+                        region.center = coordinate
+                        region.span = MKCoordinateSpan(latitudeDelta: 2, longitudeDelta: 2)
+                    }
+                    
+                } label: {
+                    Image(systemName: "magnifyingglass")
+                }
+                .buttonStyle(
+                    BubbleButtonStyle(
+                        backgroundColor: Color.hex("#164863"),
+                        textColor: .white,
+                        radius: 22,
+                        shadowRadius: 2
+                    )
+                )
+                .disabled(location.isEmpty)
+                .opacity(location.isEmpty ? 0.5 : 1.0)
+
             }
+            .padding()
             
             // Display selected location
+//            Rectangle()
             MapView(region: $region, annotations: $annotations)
                 .frame(width: 366, height: 486)
                 .foregroundColor(Color(red: 0.87, green: 0.95, blue: 0.99).opacity(0.5))
@@ -70,7 +95,7 @@ struct CustomLocationView: View {
             Text("Selected Location:")
                 .font(.system(size: 24))
             
-            Text(location) // Current location display
+            Text("Result Location") // Current location display
                 .font(.system(size: 26))
                 .fontWeight(.heavy)
             

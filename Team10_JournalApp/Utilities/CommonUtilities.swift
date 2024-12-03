@@ -8,6 +8,7 @@
 import Foundation
 import SwiftUI
 import CoreLocation
+import MapKit
 
 final class CommonUtilities {
     static let util = CommonUtilities()
@@ -91,6 +92,7 @@ final class CommonUtilities {
         }
     }
     
+    /// Returns ``CLPlacemark`` from latitude and longitude coordinates
     func decodePlaceFromCoordinates(latitude: Double, longitude: Double) async throws -> CLPlacemark? {
         let placemarks = try await CLGeocoder().reverseGeocodeLocation(CLLocation(latitude: latitude, longitude: longitude))
         
@@ -99,6 +101,25 @@ final class CommonUtilities {
         }
         
         return place
+    }
+    
+    func searchForPlace(query: String, completion: @escaping (_ coordinate: CLLocationCoordinate2D) -> Void) {
+        let searchRequest = MKLocalSearch.Request()
+        searchRequest.naturalLanguageQuery = query
+        
+        let search = MKLocalSearch(request: searchRequest)
+        search.start { response, error in
+            guard let response = response, error == nil else {
+                print("[MAP ERROR]: Search failed ; \(error?.localizedDescription ?? "Unknown Error")")
+                return
+            }
+            
+            if let firstMapItem = response.mapItems.first {
+                let coordinate = firstMapItem.placemark.coordinate
+                
+                completion(coordinate)
+            }
+        }
     }
     
 }
