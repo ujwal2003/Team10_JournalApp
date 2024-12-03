@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftUI
+import CoreLocation
 
 final class CommonUtilities {
     static let util = CommonUtilities()
@@ -89,4 +90,15 @@ final class CommonUtilities {
                 return weekJournals.saturdayID
         }
     }
+    
+    func decodePlaceFromCoordinates(latitude: Double, longitude: Double) async throws -> CLPlacemark? {
+        let placemarks = try await CLGeocoder().reverseGeocodeLocation(CLLocation(latitude: latitude, longitude: longitude))
+        
+        guard let place = placemarks.first else {
+            return nil
+        }
+        
+        return place
+    }
+    
 }

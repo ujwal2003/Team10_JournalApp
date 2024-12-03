@@ -32,11 +32,11 @@ struct LocationSectionView: View {
             ZStack {
                 if !isLocationShared {
                     // Navigate to CustomLocationView when toggle is off
-                    CustomLocationButtonView(isLocationShared: $isLocationShared)
+                    CustomLocationButtonView(appController: appController, isLocationShared: $isLocationShared)
                         .background(NavigationLink("", destination: CustomLocationView()).opacity(0))
                 } else {
                     // Static button when toggle is on
-                    CustomLocationButtonView(isLocationShared: $isLocationShared)
+                    CustomLocationButtonView(appController: appController, isLocationShared: $isLocationShared)
                 }
             }
             .onChange(of: isLocationShared) { oldValue, newValue in
