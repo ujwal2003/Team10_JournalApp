@@ -38,7 +38,8 @@ struct JournalEntrySection: View {
                         .frame(maxWidth: .infinity, minHeight: textFieldHeight, maxHeight: textFieldHeight, alignment: .topLeading)
                         .scrollContentBackground(.hidden)
                         .background(
-                            Color(red: 0.87, green: 0.95, blue: 0.99)
+//                            Color(red: 0.87, green: 0.95, blue: 0.99)
+                            Color.hex("#EEF7FF")
                         )
                         .overlay {
                             RoundedRectangle(cornerRadius: 5)
