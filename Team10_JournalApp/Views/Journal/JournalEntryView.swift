@@ -9,7 +9,10 @@ import SwiftUI
 import Foundation
 
 struct JournalEntryView: View {
+    @State var usePreviewMocks: Bool = false
+    
     @ObservedObject var appController: AppViewController
+    @ObservedObject var viewModel = JournalEntryViewModel()
     
     @State private var gratefulEntry: String = ""
     @State private var learnEntry: String = ""
@@ -53,6 +56,21 @@ struct JournalEntryView: View {
                                 .foregroundColor(.blue)
                                 .padding(.trailing, 40.0)
                         }
+                        .onChange(of: isEditing) { oldValue, newValue in
+                            let clickedDone = newValue == false
+                            
+                            if clickedDone && !usePreviewMocks {
+                                if let profile = appController.loadedUserProfile {
+                                    viewModel.saveJournal(
+                                        userId: profile.userId,
+                                        gratitudeEntry: self.gratefulEntry,
+                                        learningEntry: self.learnEntry,
+                                        thoughtDump: self.thoughtEntry
+                                    )
+                                }
+                            }
+                        }
+                        
                     }
                 }
                 .padding(.vertical)
@@ -90,6 +108,27 @@ struct JournalEntryView: View {
                 } message: {
                     Text("You need to save your journal before going anywhere! Hit the 'Done' button at the top to save your journal.")
                 }
+                .alert("Error Encountered", isPresented: $viewModel.isShowingSaveFailedAlert) {
+                    Button("Keep Editing") {
+                        self.isEditing = true
+                        self.appController.isJournalInEditMode = true
+                    }
+                    
+                    Button("Cancel", role: .cancel) {
+                        self.isEditing = false
+                        self.appController.isJournalInEditMode = false
+                    }
+                    
+                } message: {
+                    Text("An error was encountered saving your journal, this may be due to a network issue. You may try again or cancel the operation (this will not save your entry to the database).")
+                }
+
+                
+                if viewModel.isSaveJournalLoading {
+                    ProgressBufferView(backgroundColor: Color(.systemGray5).opacity(0.90)) {
+                        Text("Please wait..")
+                    }
+                }
                 
             }
         }
@@ -98,6 +137,6 @@ struct JournalEntryView: View {
 
 #Preview {
     AppTabMockContainerView(previewTab: .Journal) {
-        JournalEntryView(appController: AppViewController())
+        JournalEntryView(usePreviewMocks: true, appController: AppViewController())
     }
 }
