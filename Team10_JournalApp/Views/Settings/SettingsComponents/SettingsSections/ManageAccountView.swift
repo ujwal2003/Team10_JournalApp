@@ -37,6 +37,7 @@ struct ManageAccountView: View {
                 Button("Yes") {
                     if let profile = appController.loadedUserProfile {
                         settingsViewModel.resetUserJournal(userId: profile.userId)
+                        appController.savedIdToCityBlock = false
                     }
                 }
             } message: {
