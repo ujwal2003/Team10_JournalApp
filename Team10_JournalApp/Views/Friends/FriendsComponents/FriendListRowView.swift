@@ -103,11 +103,6 @@ struct FriendListRowView: View {
         .background(Color.rgb(221, 237, 240))
         .clipShape(RoundedCorner(radius: 15))
         .shadow(color: .black.opacity(hasShadow ? 0.25 : 0.0), radius: 2, x: 0, y: 4)
-        .overlay(
-            RoundedRectangle(cornerRadius: 15)
-                .inset(by: 1)
-                .stroke(Color(red: 0.26, green: 0.49, blue: 0.62).opacity(0.6), lineWidth: 1)
-        )
         .listRowSeparator(.hidden)
         .listRowInsets(EdgeInsets())
         .padding([.leading, .bottom, .trailing])
