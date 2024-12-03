@@ -43,7 +43,6 @@ struct JournalEntryView: View {
                         Text(currentDate)
                             .font(.system(size: 18.0).weight(.medium))
                             .frame(maxWidth: .infinity, alignment: .leading)
-                            .padding(.horizontal, 40.0)
                             .foregroundStyle(Color.black)
                         
                         Button(action: {
@@ -54,7 +53,6 @@ struct JournalEntryView: View {
                                 .font(.system(size: 18.0))
                                 .fontWeight(.bold)
                                 .foregroundColor(.blue)
-                                .padding(.trailing, 40.0)
                         }
                         .onChange(of: isEditing) { oldValue, newValue in
                             let clickedDone = newValue == false
@@ -80,6 +78,7 @@ struct JournalEntryView: View {
                         }
                         
                     }
+                    .padding(.horizontal, 40.0)
                 }
                 .padding(.vertical)
             } containerContent: {
