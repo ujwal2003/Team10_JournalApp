@@ -102,6 +102,18 @@ struct JournalEntryView: View {
                     }
                     .padding(.horizontal, 20)
                     .padding(.bottom, 80)
+                    .onFirstAppear {
+                        if !usePreviewMocks {
+                            if let profile = self.appController.loadedUserProfile {
+                                viewModel.loadTodayJournal(userId: profile.userId) { journalEntry in
+                                    self.gratefulEntry = journalEntry.gratitudeEntry
+                                    self.learnEntry = journalEntry.learningEntry
+                                    self.thoughtEntry = journalEntry.thoughtEntry
+                                }
+                            }
+                        }
+                    }
+                    
                 }
                 .alert("You Are Still Editing!", isPresented: $appController.isShowingJournalInEditModeAlert) {
                     Button("Ok") { }

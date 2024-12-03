@@ -52,9 +52,31 @@ class JournalEntryViewModel: ObservableObject {
                     self.isShowingSaveFailedAlert.toggle()
                     return
                 }
+                
+            } else {
+                print("Succesfully updated journal")
             }
             
             self.isSaveJournalLoading = false
+        }
+    }
+    
+    func loadTodayJournal(userId: String, onSuccess: @escaping (_ journalEntry: JournalEntry) -> Void) {
+        Task {
+            self.isSaveJournalLoading = true
+            
+            do {
+                let fetchedEntry = try await JournalManager.shared.getJournalEntryFromDateQuery(userId: userId, date: Date())
+                
+                print("fetched journal entry for today")
+                
+                self.isSaveJournalLoading = false
+                onSuccess(fetchedEntry)
+                
+            } catch {
+                self.isSaveJournalLoading = false
+                print("no journal entry to fetch")
+            }
         }
     }
     
