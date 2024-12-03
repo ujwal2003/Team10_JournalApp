@@ -30,7 +30,7 @@ struct FeatureTestingView: View {
                     case .FriendsTest:
                         FriendsTestView(loadedUserProfile: loadedUserProfile)
                     case .LocalStorageTest:
-                        Text("WIP")
+                        LocalStorageTestView(loadedUserProfile: loadedUserProfile)
                 }
             }
             .toolbar {
