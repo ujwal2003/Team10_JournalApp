@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct LocationSectionView: View {
+    @ObservedObject var appController: AppViewController
     @Binding var isLocationShared: Bool
     
     var body: some View {
@@ -39,7 +40,10 @@ struct LocationSectionView: View {
                 }
             }
             .onChange(of: isLocationShared) { oldValue, newValue in
-                print("old: \(oldValue), new: \(newValue)")
+                let uid = appController.loadedUserProfile?.userId ?? "NIL"
+                let settingKey = CommonUtilities.util.getSavedUserUseLocationSettingKey(userId: uid)
+                
+                UserDefaults.standard.set(newValue, forKey: settingKey)
             }
             
         }
@@ -53,7 +57,7 @@ struct LocationSectionView: View {
     
     NavigationStack {
         List {
-            LocationSectionView(isLocationShared: $previewLocationShared)
+            LocationSectionView(appController: AppViewController(), isLocationShared: $previewLocationShared)
         }
         .listStyle(PlainListStyle())
         .background(Color.clear)
