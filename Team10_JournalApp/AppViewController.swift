@@ -17,6 +17,7 @@ class AppViewController: ObservableObject {
     
     @Published var isJournalInEditMode: Bool = false
     @Published var isShowingJournalInEditModeAlert: Bool = false
+    @Published var savedIdToCityBlock: Bool = false
     
     @discardableResult
     func certifyAuthStatus(redirectToSignInIfNoAuth: Bool = false) -> AuthDataResultModel? {

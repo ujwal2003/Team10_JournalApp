@@ -66,7 +66,15 @@ struct JournalEntryView: View {
                                         gratitudeEntry: self.gratefulEntry,
                                         learningEntry: self.learnEntry,
                                         thoughtDump: self.thoughtEntry
-                                    )
+                                    ) {
+                                        
+                                        if self.appController.savedIdToCityBlock == false {
+                                            viewModel.saveJournalIDToCityBlock(userId: profile.userId) {
+                                                self.appController.savedIdToCityBlock = true
+                                            }
+                                        }
+                                        
+                                    }
                                 }
                             }
                         }

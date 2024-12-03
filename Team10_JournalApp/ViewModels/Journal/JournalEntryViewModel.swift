@@ -22,7 +22,7 @@ class JournalEntryViewModel: ObservableObject {
         }
     }
     
-    func saveJournal(userId: String, gratitudeEntry: String, learningEntry: String, thoughtDump: String) {
+    func saveJournal(userId: String, gratitudeEntry: String, learningEntry: String, thoughtDump: String, onSuccess: @escaping () -> Void) {
         Task {
             self.isSaveJournalLoading = true
             
@@ -58,6 +58,7 @@ class JournalEntryViewModel: ObservableObject {
             }
             
             self.isSaveJournalLoading = false
+            onSuccess()
         }
     }
     
@@ -76,6 +77,40 @@ class JournalEntryViewModel: ObservableObject {
             } catch {
                 self.isSaveJournalLoading = false
                 print("no journal entry to fetch")
+            }
+        }
+    }
+    
+    func saveJournalIDToCityBlock(userId: String, onSuccess: @escaping () -> Void) {
+        Task {
+            self.isSaveJournalLoading = true
+            
+            do {
+                let todaysEntry = try await JournalManager.shared.getJournalEntryFromDateQuery(userId: userId, date: Date())
+                
+                if let journalId = todaysEntry.journalId {
+                    let currWeek = CommonUtilities.util.getWeekStartEndDates()
+                    
+                    let todayIndex = Calendar.current.component(.weekday, from: Date()) - 1
+                    let day = DayID.getDayIDByInteger(dayIndex: todayIndex) ?? .Sunday
+                    
+                    try await CityBlockManager.shared.addJournalToCityBlockMap(
+                        userId: userId,
+                        weekStartDate: currWeek.startDate,
+                        weekEndDate: currWeek.endDate,
+                        dayID: day,
+                        journalId: journalId
+                    )
+                    
+                    print("Succesfully loaded journal id into currentcity block")
+                    self.isSaveJournalLoading = false
+                    
+                    onSuccess()
+                }
+                
+            } catch {
+                self.isSaveJournalLoading = false
+                print("Failed to update city block data.")
             }
         }
     }
