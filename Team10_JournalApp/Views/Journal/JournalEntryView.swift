@@ -13,11 +13,12 @@ struct JournalEntryView: View {
     @State private var gratefulEntry: String = ""
     @State private var learnEntry: String = ""
     @State private var thoughtEntry: String = ""
+    @State private var isEditing: Bool = false
     @State private var showAlert: Bool = false
 
     var currentDate: String {
         let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "EEEE, MMMM d, yyyy" // Example: Monday, October 21, 2024
+        dateFormatter.dateFormat = "EEEE, MMMM d, yyyy"
         return dateFormatter.string(from: Date())
     }
 
@@ -36,63 +37,52 @@ struct JournalEntryView: View {
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .padding(.horizontal, 40.0)
                         .foregroundStyle(Color.black)
-                    
-                    Text(currentDate)
-                        .font(.system(size: 20.0).weight(.medium))
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .padding(.horizontal, 40.0)
-                        .foregroundStyle(Color.black)
+                    HStack {
+                        Text(currentDate)
+                            .font(.system(size: 18.0).weight(.medium))
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding(.horizontal, 40.0)
+                            .foregroundStyle(Color.black)
+                        
+                        Button(action: {
+                            isEditing.toggle()
+                            focusedField = nil
+                        }) {
+                            Text(isEditing ? "Done" : "Edit")
+                                .font(.system(size: 18.0))
+                                .fontWeight(.bold)
+                                .foregroundColor(.blue)
+                                .padding(.trailing, 40.0)
+                        }
+                        
+                    }
                 }
                 .padding(.vertical)
             } containerContent: {
                 // Main content
                 ScrollView {
-                    
-                    VStack(spacing: 10) {
-                        VStack(spacing: 91) {
-                            Button(action: {
-                                showAlert = true
-                            }) {
-                                ZStack {
-                                    Rectangle()
-                                        .foregroundColor(.clear)
-                                        .frame(width: 315, height: 52)
-                                        .background(Color(red: 0.09, green: 0.28, blue: 0.39))
-                                        .cornerRadius(100)
-                                        .shadow(color: .black.opacity(0.25), radius: 2, x: 0, y: 4)
-                                    
-                                    Text("Edit")
-                                        .font(.system(size: 18, weight: .medium))
-                                        .foregroundColor(.white)
-                                }
-                                .padding(.top, 22)
-                            }
-                            .alert(isPresented: $showAlert) {
-                                Alert(
-                                    title: Text("Journal Saved"),
-                                    message: Text("Your journal entry has been successfully saved."),
-                                    dismissButton: .default(Text("OK"))
-                                )
-                            }
-                        }
-                        .navigationBarBackButtonHidden(true)
+                    VStack(spacing: 40) {
                         
                         journalEntrySection(
                             title: "What are you grateful for?",
                             text: $gratefulEntry,
-                            field: .gratitude
+                            field: .gratitude,
+                            isEditable: isEditing
                         )
+                        .padding(.top, 20)
                         
                         journalEntrySection(
                             title: "What did you learn today?",
                             text: $learnEntry,
-                            field: .learning
+                            field: .learning,
+                            isEditable: isEditing
                         )
                         
                         journalEntrySection(
                             title: "Thought dump for the day",
                             text: $thoughtEntry,
-                            field: .thoughts
+                            field: .thoughts,
+                            isEditable: isEditing
                         )
                     }
                     .padding(.horizontal, 20)
@@ -107,7 +97,7 @@ struct JournalEntryView: View {
     
     // Helper to create a journal entry section
     @ViewBuilder
-    private func journalEntrySection(title: String, text: Binding<String>, field: JournalEntryField) -> some View {
+    private func journalEntrySection(title: String, text: Binding<String>, field: JournalEntryField, isEditable: Bool) -> some View {
         VStack(alignment: .leading, spacing: 10) {
             Text(title)
                 .font(
@@ -116,25 +106,22 @@ struct JournalEntryView: View {
                 )
                 .foregroundColor(Constants.LabelsPrimary)
                 .frame(maxWidth: .infinity, alignment: .center)
-                .padding(.top, 20)
-                .padding(.bottom, 10)
+                .padding(.vertical, 5)
             
             ZStack(alignment: .topLeading) {
-                // Prefill text (placeholder)
                 if text.wrappedValue.isEmpty {
                     Text("This entry is empty.")
-                        .foregroundColor(.gray)
+                        .foregroundColor(Color.gray.opacity(0.7))
                         .padding(.horizontal, 5)
                         .padding(.vertical, 8)
                 }
                 
-                // TextEditor
                 TextEditor(text: text)
                     .autocapitalization(.none)
                     .scrollContentBackground(.hidden)
                     .frame(maxWidth: .infinity, minHeight: 111, maxHeight: 111)
                     .background(
-                        Color(red: 0.87, green: 0.95, blue: 0.99) // Light blue background
+                        Color(red: 0.87, green: 0.95, blue: 0.99)
                             .cornerRadius(5)
                     )
                     .overlay(
@@ -143,14 +130,12 @@ struct JournalEntryView: View {
                             .stroke(Color(red: 0.26, green: 0.49, blue: 0.62).opacity(0.4), lineWidth: 1)
                     )
                     .focused($focusedField, equals: field)
-                    .padding(.horizontal, 5) // Match the padding of placeholder text
+                    .disabled(!isEditable)
             }
         }
     }
-
 }
 
 #Preview {
     JournalEntryView()
 }
-
