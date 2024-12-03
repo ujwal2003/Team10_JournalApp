@@ -22,6 +22,19 @@ final class UserManager {
         try await userDocument(userId: userId).getDocument(as: UserProfile.self)
     }
     
+    func getUserByEmailSearch(email: String) async throws -> UserProfile {
+        let query = userCollection.whereField("email", isEqualTo: email)
+        
+        let querySnapshot = try await query.getDocuments()
+        guard let document = querySnapshot.documents.first else {
+            throw FirestoreDataError.emailNotFound(email: email)
+        }
+        
+        let data = try document.data(as: UserProfile.self)
+        
+        return data
+    }
+    
     func createNewUser(user: UserProfile) async throws {
         try userDocument(userId: user.userId).setData(from: user, merge: false)
     }
