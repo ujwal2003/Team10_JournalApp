@@ -34,6 +34,8 @@ class SignUpViewModel: ObservableObject {
                 let newUser = UserProfile(authUser: userData)
                 try await UserManager.shared.createNewUser(user: newUser)
                 
+                UserDefaults.standard.set(false, forKey: CommonUtilities.util.getSavedUserUseLocationSettingKey(userId: newUser.userId))
+                
                 print(newUser)
                 onSignUp(newUser)
                 
