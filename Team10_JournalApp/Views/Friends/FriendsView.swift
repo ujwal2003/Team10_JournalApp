@@ -92,9 +92,27 @@ struct FriendsView: View {
                         ) { userFriend, changeType in
                             
                             if changeType == .added {
-                                viewModel.lazyLoadUserFriend(userFriend: userFriend)
+                                viewModel.lazyLoadUserFriendData(userFriendStat: userFriend, status: .friend)
                             }
+                            
                         }
+                    }
+                }
+            }
+            .onChange(of: viewModel.selectedContent) { oldValue, newValue in
+                if !usePreviewMocks {
+                    FriendsManager.shared.removeAllUserFriendsListener()
+                    
+                    if let profile = appController.loadedUserProfile {
+                        FriendsManager.shared.addListenerForUserFriendsWithStatus(
+                            userId: profile.userId,
+                            status: newValue.status, triggeredOn: [.added, .removed, .modified]) { userFriendData, changeType in
+                                
+                                if changeType == .added {
+                                    viewModel.lazyLoadUserFriendData(userFriendStat: userFriendData, status: newValue.status)
+                                }
+                                
+                            }
                     }
                 }
             }

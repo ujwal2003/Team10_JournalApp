@@ -33,7 +33,7 @@ enum FriendSelectionContent {
     }
 }
 
-struct DBUserInfo {
+struct DBUserInfo: Hashable {
     let userID: String
     let email: String
     let displayName: String
@@ -44,9 +44,9 @@ class FriendsViewModel: ObservableObject {
     @Published var selectedContent: FriendSelectionContent = .Friends
     @Published var searchQuery: String = ""
     
-    @Published var friends: [DBUserInfo] = []
-    @Published var friendRequests: [DBUserInfo] = []
-    @Published var friendInvites: [DBUserInfo] = []
+    @Published var friends: Set<DBUserInfo> = []
+    @Published var friendRequests: Set<DBUserInfo> = []
+    @Published var friendInvites: Set<DBUserInfo> = []
     
     @Published var selectedFriendMap: Map = .LoadingMap
     @Published var selectedFriendBuildings: [BuildingConfig] = []
@@ -69,7 +69,7 @@ class FriendsViewModel: ObservableObject {
         }
     }
     
-    func getFilteredFriends() -> [DBUserInfo] {
+    func getFilteredFriends() -> Set<DBUserInfo> {
         guard !searchQuery.isEmpty else { return friends }
         
         return friends.filter { friend in
@@ -77,7 +77,7 @@ class FriendsViewModel: ObservableObject {
         }
     }
     
-    func getFilteredRequests() -> [DBUserInfo] {
+    func getFilteredRequests() -> Set<DBUserInfo> {
         guard !searchQuery.isEmpty else { return friendRequests }
         
         return friendRequests.filter { request in
@@ -85,7 +85,7 @@ class FriendsViewModel: ObservableObject {
         }
     }
     
-    func getFilteredInvitations() -> [DBUserInfo] {
+    func getFilteredInvitations() -> Set<DBUserInfo> {
         guard !searchQuery.isEmpty else { return friendInvites }
         
         return friendInvites.filter { invite in
@@ -100,29 +100,14 @@ class FriendsViewModel: ObservableObject {
     }
     
     func deleteFriend(at offsets: IndexSet) {
-        for offset in offsets {
-            let itemToDelete = friends[offset]
-            
-            Task {
-                do {
-                    try await removeFriend(friend: itemToDelete)
-                    
-                    DispatchQueue.main.async {
-                        self.friends.remove(atOffsets: offsets)
-                    }
-                } catch {
-                    print("Failed to delete \(itemToDelete): \(error)")
-                    //TODO: show alert if failed to delete friend
-                }
-            }
-        }
+        
     }
     
     func getContentList() -> AnyView {
         switch self.selectedContent {
             case .Friends:
                 return AnyView(
-                    ForEach(self.getFilteredFriends(), id: \.userID) { friendProfileInfo in
+                    ForEach(Array(self.getFilteredFriends()), id: \.userID) { friendProfileInfo in
                         FriendListRowView(
                             itemName: friendProfileInfo.displayName,
                             itemContent: .checkIn
@@ -140,7 +125,7 @@ class FriendsViewModel: ObservableObject {
             
             case .Requests:
                 return AnyView(
-                    ForEach(self.getFilteredRequests(), id: \.userID) { requestProfileInfo in
+                    ForEach(Array(self.getFilteredRequests()), id: \.userID) { requestProfileInfo in
                         FriendListRowView(
                             itemName: requestProfileInfo.displayName,
                             itemContent: .requestButtons(
@@ -157,7 +142,7 @@ class FriendsViewModel: ObservableObject {
             
             case .Invitations:
                 return AnyView(
-                    ForEach(self.getFilteredInvitations(), id: \.userID) { inviteProfileInfo in
+                    ForEach(Array(self.getFilteredInvitations()), id: \.userID) { inviteProfileInfo in
                         FriendListRowView(
                             itemName: inviteProfileInfo.displayName,
                             itemContent: .inviteRescindButton(
@@ -172,15 +157,25 @@ class FriendsViewModel: ObservableObject {
     }
     
     // MARK: - DB Stuff
-    func lazyLoadUserFriend(userFriend: UserFriendStatus) {
+    func lazyLoadUserFriendData(userFriendStat: UserFriendStatus, status: FriendStatus) {
         Task {
             self.isDataLoading = true
             
-            let fetchUserFromDB = try? await UserManager.shared.getUser(userId: userFriend.friendUserId)
+            let fetchUserFromDB = try? await UserManager.shared.getUser(userId: userFriendStat.friendUserId)
             
             if let fetchedUser = fetchUserFromDB {
-                let friend = DBUserInfo(userID: fetchedUser.userId, email: fetchedUser.email, displayName: fetchedUser.displayName)
-                self.friends.append(friend)
+                let friendDBUser = DBUserInfo(userID: fetchedUser.userId, email: fetchedUser.email, displayName: fetchedUser.displayName)
+                
+                switch status {
+                    case .friend:
+                    self.friends.insert(friendDBUser)
+                    case .incomingRequest:
+                        self.friendRequests.insert(friendDBUser)
+                    case .invited:
+                        self.friendInvites.insert(friendDBUser)
+                    case .unknown:
+                        break
+                }
             }
             
             self.isDataLoading = false
