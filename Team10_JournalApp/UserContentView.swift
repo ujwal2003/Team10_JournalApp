@@ -30,7 +30,7 @@ struct UserContentView: View {
                 }
                 
                 Tab("Friends", systemImage: "person.3", value: .Friends) {
-                    FriendsView()
+                    FriendsView(appController: appController)
                 }
                 
                 Tab("Settings", systemImage: "gear", value: .Settings) {

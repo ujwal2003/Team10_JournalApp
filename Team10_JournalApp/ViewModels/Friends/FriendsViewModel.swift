@@ -20,6 +20,17 @@ enum FriendSelectionContent {
             case .Invitations: return "Your Invites"
         }
     }
+    
+    var status: FriendStatus {
+        switch self {
+            case .Friends:
+                return .friend
+            case .Requests:
+                return .incomingRequest
+            case .Invitations:
+                return .invited
+        }
+    }
 }
 
 struct DBUserInfo {
@@ -47,6 +58,8 @@ class FriendsViewModel: ObservableObject {
     @Published var isAddFriendSheetVisible: Bool = false
     @Published var cityInviteFailedAlert: Bool = false
     @Published var isMapLoading: Bool = true
+    
+    @Published var isDataLoading: Bool = false
     
     func isSelectedContentListEmpty() -> Bool {
         switch self.selectedContent {
@@ -155,6 +168,22 @@ class FriendsViewModel: ObservableObject {
                         )
                     }
                 )
+        }
+    }
+    
+    // MARK: - DB Stuff
+    func lazyLoadUserFriend(userFriend: UserFriendStatus) {
+        Task {
+            self.isDataLoading = true
+            
+            let fetchUserFromDB = try? await UserManager.shared.getUser(userId: userFriend.friendUserId)
+            
+            if let fetchedUser = fetchUserFromDB {
+                let friend = DBUserInfo(userID: fetchedUser.userId, email: fetchedUser.email, displayName: fetchedUser.displayName)
+                self.friends.append(friend)
+            }
+            
+            self.isDataLoading = false
         }
     }
     

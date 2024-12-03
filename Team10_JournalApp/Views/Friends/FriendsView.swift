@@ -8,7 +8,11 @@
 import SwiftUI
 
 struct FriendsView: View {
+    @State var usePreviewMocks: Bool = false
+    
+    @ObservedObject var appController: AppViewController
     @StateObject var viewModel = FriendsViewModel()
+    
     @Environment(\.editMode) var editMode
     
     @State private var isEditing = false
@@ -67,32 +71,37 @@ struct FriendsView: View {
                     .environment(\.editMode, isEditing ? .constant(.active) : .constant(.inactive))
                     
                 }
+                
+                if viewModel.isDataLoading {
+                    ProgressBufferView {
+                        Text("Loading...")
+                    }
+                }
+                
             }
-            .task {
-                // FIXME: use actual db stuff here
-                viewModel.friends = [
-                    .init(
-                        userID: "rweiuruiwueriw8927381ia",
-                          email: "test",
-                        displayName: "test"
-                    )
-                ]
-                
-                viewModel.friendRequests = [
-                    .init(
-                        userID: "sdsdfsdfdsf987983467538",
-                          email: "test",
-                        displayName: "test"
-                    )
-                ]
-                
-                viewModel.friendInvites = [
-                    .init(
-                        userID: "wegriuweguqaegr83427652983",
-                          email: "test",
-                        displayName: "test"
-                    )
-                ]
+            .onFirstAppear {
+                // load friends on first appearance
+                if !usePreviewMocks {
+                    FriendsManager.shared.removeAllUserFriendsListener()
+                    
+                    if let profile = appController.loadedUserProfile {
+                        FriendsManager.shared.addListenerForUserFriendsWithStatus(
+                            userId: profile.userId,
+                            status: FriendStatus.friend,
+                            triggeredOn: [.added, .removed]
+                        ) { userFriend, changeType in
+                            
+                            if changeType == .added {
+                                viewModel.lazyLoadUserFriend(userFriend: userFriend)
+                            }
+                        }
+                    }
+                }
+            }
+            .onDisappear {
+                if !usePreviewMocks {
+                    FriendsManager.shared.removeAllUserFriendsListener()
+                }
             }
             
         }
@@ -101,6 +110,6 @@ struct FriendsView: View {
 
 #Preview {
     AppTabMockContainerView(previewTab: .Friends) {
-        FriendsView()
+        FriendsView(appController: AppViewController())
     }
 }
