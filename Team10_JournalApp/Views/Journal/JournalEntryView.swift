@@ -88,5 +88,7 @@ struct JournalEntryView: View {
 }
 
 #Preview {
-    JournalEntryView()
+    AppTabMockContainerView(previewTab: .Journal) {
+        JournalEntryView()
+    }
 }

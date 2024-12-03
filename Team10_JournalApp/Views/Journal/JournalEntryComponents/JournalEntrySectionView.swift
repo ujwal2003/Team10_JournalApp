@@ -12,6 +12,10 @@ struct JournalEntrySection: View {
     @Binding var text: String
     let isEditable: Bool
     @FocusState private var focusedField: Bool // Tracks focus state of the text field
+    
+    var textFieldHeight: CGFloat {
+        return CommonUtilities.util.isIphone16ProMaxPortrait ? 145 : 125
+    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
@@ -25,26 +29,48 @@ struct JournalEntrySection: View {
                 .frame(maxWidth: .infinity, alignment: .center)
                 .padding(.vertical, 5)
             
-            // Text field for user input
-            TextField(
-                isEditable ? "Type your response here..." : "This entry is empty.",
-                text: $text,
-                axis: .vertical
-            )
-            .autocapitalization(.none)
-            .lineLimit(nil)
-            .frame(maxWidth: .infinity, minHeight: 111, maxHeight: 111, alignment: .topLeading)
-            .background(
-                Color(red: 0.87, green: 0.95, blue: 0.99)
-                    .cornerRadius(5)
-            )
-            .overlay(
-                RoundedRectangle(cornerRadius: 5)
-                    .inset(by: 0.5)
-                    .stroke(Color(red: 0.26, green: 0.49, blue: 0.62).opacity(0.4), lineWidth: 1)
-            )
-            .focused($focusedField) // Tracks whether the text field is active
-            .disabled(!isEditable)
+            // Text editor for user input
+            ZStack(alignment: .topLeading) {
+                if isEditable {
+                    TextEditor(text: $text)
+                        .textInputAutocapitalization(.never)
+                        .padding(.horizontal, 2)
+                        .frame(maxWidth: .infinity, minHeight: textFieldHeight, maxHeight: textFieldHeight, alignment: .topLeading)
+                        .scrollContentBackground(.hidden)
+                        .background(
+                            Color(red: 0.87, green: 0.95, blue: 0.99)
+                        )
+                        .overlay {
+                            RoundedRectangle(cornerRadius: 5)
+                                .inset(by: 0.5)
+                                .stroke(Color(red: 0.26, green: 0.49, blue: 0.62).opacity(0.4), lineWidth: 1)
+                        }
+                        .focused($focusedField)
+                    
+                } else {
+                    ScrollView {
+                        Text(text)
+                            .padding(8)
+                    }
+                    .frame(maxWidth: .infinity, minHeight: textFieldHeight, maxHeight: textFieldHeight, alignment: .topLeading)
+                    .background(
+                        Color(red: 0.87, green: 0.95, blue: 0.99)
+                    )
+                    .overlay {
+                        RoundedRectangle(cornerRadius: 5)
+                            .inset(by: 0.5)
+                            .stroke(Color(red: 0.26, green: 0.49, blue: 0.62).opacity(0.4), lineWidth: 1)
+                    }
+                }
+                
+                if text.isEmpty {
+                    Text(isEditable ? "Type your response here..." : "This entry is empty")
+                        .foregroundStyle(Color.gray)
+                        .padding(8)
+                        .allowsHitTesting(false)
+                }
+            }
+            
         }
     }
 }
