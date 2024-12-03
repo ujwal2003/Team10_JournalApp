@@ -9,6 +9,8 @@ import SwiftUI
 import Foundation
 
 struct JournalEntryView: View {
+    @ObservedObject var appController: AppViewController
+    
     @State private var gratefulEntry: String = ""
     @State private var learnEntry: String = ""
     @State private var thoughtEntry: String = ""
@@ -43,6 +45,7 @@ struct JournalEntryView: View {
                         
                         Button(action: {
                             isEditing.toggle()
+                            self.appController.isJournalInEditMode.toggle()
                         }) {
                             Text(isEditing ? "Done" : "Edit")
                                 .font(.system(size: 18.0))
@@ -82,6 +85,12 @@ struct JournalEntryView: View {
                     .padding(.horizontal, 20)
                     .padding(.bottom, 80)
                 }
+                .alert("You Are Still Editing!", isPresented: $appController.isShowingJournalInEditModeAlert) {
+                    Button("Ok") { }
+                } message: {
+                    Text("You need to save your journal before going anywhere! Hit the 'Done' button at the top to save your journal.")
+                }
+                
             }
         }
     }
@@ -89,6 +98,6 @@ struct JournalEntryView: View {
 
 #Preview {
     AppTabMockContainerView(previewTab: .Journal) {
-        JournalEntryView()
+        JournalEntryView(appController: AppViewController())
     }
 }

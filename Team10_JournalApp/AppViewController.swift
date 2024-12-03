@@ -15,6 +15,9 @@ class AppViewController: ObservableObject {
     
     @Published var loadedUserProfile: UserProfile?
     
+    @Published var isJournalInEditMode: Bool = false
+    @Published var isShowingJournalInEditModeAlert: Bool = false
+    
     @discardableResult
     func certifyAuthStatus(redirectToSignInIfNoAuth: Bool = false) -> AuthDataResultModel? {
         let authUser = try? AuthenticationManager.shared.getAuthenticatedUser()
