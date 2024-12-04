@@ -210,6 +210,8 @@ class HomeViewModel: ObservableObject {
         Task {
             self.weekOffset -= 1
             print("[HOME WEEK OFFSET]: \(self.weekOffset)")
+            
+            self.currWeek = CommonUtilities.util.getWeekRange(offset: self.weekOffset)
             await self.loadWeekMapByOffset(userId: userId)
         }
     }
@@ -218,6 +220,8 @@ class HomeViewModel: ObservableObject {
         Task {
             self.weekOffset += 1
             print("[HOME WEEK OFFSET]: \(self.weekOffset)")
+            
+            self.currWeek = CommonUtilities.util.getWeekRange(offset: self.weekOffset)
             await self.loadWeekMapByOffset(userId: userId)
         }
     }
@@ -318,9 +322,14 @@ class HomeViewModel: ObservableObject {
         }
         
         if let userStartDate = fetchUserStartDate {
-            if userStartDate >= prevWeek.startDate && userStartDate <= currWeek.startDate {
+            if userStartDate >= currWeek.startDate && userStartDate <= currWeek.startDate {
+                healthPercentage += 0.65
+                
+            } else if userStartDate >= prevWeek.startDate && userStartDate <= currWeek.startDate {
                 healthPercentage += 0.15
             }
+        } else {
+            healthPercentage = 1.0
         }
         
         let clampedPercentage = min(max(healthPercentage, 0.0), 1.0)
