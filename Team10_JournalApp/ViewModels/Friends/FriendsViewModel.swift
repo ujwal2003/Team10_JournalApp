@@ -62,6 +62,7 @@ class FriendsViewModel: ObservableObject {
     
     @Published var cityInviteFailedAlert: Bool = false
     @Published var isCityInviteRevokeFailedAlertShowing: Bool = false
+    @Published var isAcceptFriendInviteFailedAlertShowing: Bool = false
     
     @Published var isDataLoading: Bool = false
     
@@ -149,7 +150,7 @@ class FriendsViewModel: ObservableObject {
                             itemName: requestProfileInfo.displayName,
                             itemContent: .requestButtons(
                                 onAccept: {
-                                    
+                                    self.acceptFriendRequest(incomingReqUserId: requestProfileInfo.userID)
                                 },
                                 onReject: {
                                     
@@ -239,6 +240,25 @@ class FriendsViewModel: ObservableObject {
             } catch {
                 self.isDataLoading = false
                 self.isCityInviteRevokeFailedAlertShowing.toggle()
+            }
+        }
+    }
+    
+    func acceptFriendRequest(incomingReqUserId: String) {
+        Task {
+            self.isDataLoading = true
+            
+            do {
+                if let profile = self.currUserProfile {
+                    try await FriendsManager.shared.updateUserFriendStatus(userId: profile.userId, friendId: incomingReqUserId, status: .friend)
+                    try await FriendsManager.shared.updateUserFriendStatus(userId: incomingReqUserId, friendId: profile.userId, status: .friend)
+                }
+                
+                self.isDataLoading = false
+                
+            } catch {
+                self.isDataLoading = false
+                self.isAcceptFriendInviteFailedAlertShowing.toggle()
             }
         }
     }

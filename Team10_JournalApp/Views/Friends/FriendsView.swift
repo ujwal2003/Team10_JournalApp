@@ -69,6 +69,11 @@ struct FriendsView: View {
                     }
                     .listStyle(.plain)
                     .environment(\.editMode, isEditing ? .constant(.active) : .constant(.inactive))
+                    .alert("Failed to Accept", isPresented: $viewModel.isAcceptFriendInviteFailedAlertShowing, actions: {
+                        Button("Ok") { }
+                    }, message: {
+                        Text("The accept could not be accepted due to an error. This may likely be a network or server issue, please try again.")
+                    })
                     .alert("Failed to Revoke Invite", isPresented: $viewModel.isCityInviteRevokeFailedAlertShowing) {
                         Button("Ok") { }
                         
@@ -122,6 +127,11 @@ struct FriendsView: View {
                                 }
                                 
                                 else if changeType == .removed {
+                                    viewModel.removeDBUserByID(uid: userFriendData.friendUserId, status: .invited)
+                                    viewModel.removeDBUserByID(uid: userFriendData.friendUserId, status: .incomingRequest)
+                                }
+                                
+                                else if changeType == .modified {
                                     viewModel.removeDBUserByID(uid: userFriendData.friendUserId, status: .invited)
                                     viewModel.removeDBUserByID(uid: userFriendData.friendUserId, status: .incomingRequest)
                                 }
