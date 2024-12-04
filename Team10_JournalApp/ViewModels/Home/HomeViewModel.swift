@@ -120,13 +120,15 @@ class HomeViewModel: ObservableObject {
             }
             
         } else { // create new city map
+            let util = CommonUtilities.util
+            
             let emptyJournals: JournalDaysIDs = .init(sundayID: "", mondayID: "", tuesdayID: "", wednesdayID: "", thursdayID: "", fridayID: "", saturdayID: "")
             
             let newCityMap = CityBlockData(
                 userId: userId,
                 weekStartDate: currWeek.startDate,
                 weekEndDate: currWeek.endDate,
-                mapName: Map.Map4.rawValue,
+                mapName: util.getMapStyle().rawValue,
                 journalIDs: emptyJournals
             )
             

@@ -169,4 +169,21 @@ final class CommonUtilities {
         return count
     }
     
+    func getMapStyle() -> Map {
+        let calendar = Calendar.current
+        let month = calendar.component(.month, from: Date())
+        
+        if month % 2 == 0 {
+            let maps: [Map] = [.Map2, .Map4]
+            let idx = Int.random(in: 0 ..< maps.count)
+            
+            return maps[idx]
+        } else {
+            let maps: [Map] = [.Map1, .Map3]
+            let idx = Int.random(in: 0 ..< maps.count)
+            
+            return maps[idx]
+        }
+    }
+    
 }
