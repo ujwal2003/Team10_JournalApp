@@ -50,13 +50,6 @@ class FriendsViewModel: ObservableObject {
     @Published var friendRequests: Set<DBUserInfo> = []
     @Published var friendInvites: Set<DBUserInfo> = []
     
-    @Published var selectedFriendMap: Map = .LoadingMap
-    @Published var selectedFriendBuildings: [BuildingConfig] = []
-    @Published var selectedFriendJournals: [GrowthReport] = []
-    
-    @Published var selectedFriendJournalWeek: String = "Loading..."
-    @Published var selectedFriendWeather: JournalWeather = .NoData
-    
     @Published var isAddFriendSheetVisible: Bool = false
     @Published var isMapLoading: Bool = true
     
