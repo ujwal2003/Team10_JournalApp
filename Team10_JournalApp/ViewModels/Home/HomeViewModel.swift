@@ -218,4 +218,108 @@ class HomeViewModel: ObservableObject {
         }
     }
     
+    func getActionsBasedOnSentiment(sentiment: Sentiment) -> [RecommendedAction] {
+        let util = CommonUtilities.util
+        
+        switch sentiment {
+        case .Positive:
+            let creativeSpace = util.getRandomEnumValues(from: CreativeSpaces.self, count: 1)[0]
+            let enjoyableExperience = util.getRandomEnumValues(from: EnjoyableExperiences.self, count: 1)[0]
+            let interactiveVenue = util.getRandomEnumValues(from: InteractiveVenues.self, count: 1)[0]
+            let sereneEnvironment = util.getRandomEnumValues(from: SereneEnvironments.self, count: 1)[0]
+            let foodPlace = util.getRandomEnumValues(from: FoodPlaces.self, count: 1)[0]
+            
+            return [
+                creativeSpace.mapActionSearch, enjoyableExperience.mapActionSearch, interactiveVenue.mapActionSearch,
+                sereneEnvironment.mapActionSearch, foodPlace.mapActionSearch
+            ]
+            
+        case .Fair:
+            let creativeSpaces = util.getRandomEnumValues(from: CreativeSpaces.self, count: 2)
+            let enjoyableExperience = util.getRandomEnumValues(from: EnjoyableExperiences.self, count: 1)[0]
+            let interactiveVenue = util.getRandomEnumValues(from: InteractiveVenues.self, count: 1)[0]
+            
+            return [
+                creativeSpaces[0].mapActionSearch, enjoyableExperience.mapActionSearch,
+                interactiveVenue.mapActionSearch, creativeSpaces[1].mapActionSearch
+            ]
+            
+        case .Neutral:
+            let sereneEnvironments = util.getRandomEnumValues(from: SereneEnvironments.self, count: 3)
+            let interactiveVenue = util.getRandomEnumValues(from: InteractiveVenues.self, count: 1)[0]
+            
+            return [
+                sereneEnvironments[0].mapActionSearch, sereneEnvironments[1].mapActionSearch,
+                interactiveVenue.mapActionSearch, sereneEnvironments[2].mapActionSearch
+            ]
+            
+        case .Concerning:
+            let interactiveVenues = util.getRandomEnumValues(from: InteractiveVenues.self, count: 2)
+            let sereneEnvironments = util.getRandomEnumValues(from: SereneEnvironments.self, count: 2)
+            
+            return [
+                interactiveVenues[0].mapActionSearch, sereneEnvironments[0].mapActionSearch,
+                interactiveVenues[1].mapActionSearch, sereneEnvironments[1].mapActionSearch
+            ]
+            
+        case .Negative:
+            let foodPlaces = util.getRandomEnumValues(from: FoodPlaces.self, count: 2)
+            
+            return [
+                EnjoyableExperiences.Parks.mapActionSearch, EnjoyableExperiences.Cafes.mapActionSearch, SereneEnvironments.Trails.mapActionSearch,
+                foodPlaces[0].mapActionSearch, foodPlaces[1].mapActionSearch
+            ]
+            
+        default:
+            return []
+        }
+    }
+    
+    func computeCityHealth(userId: String) async {
+        let expectedCityCount = 2
+        
+        let prevWeek = CommonUtilities.util.getWeekStartEndDates(offset: -1)
+        let currWeek = CommonUtilities.util.getWeekStartEndDates(offset: 0)
+        
+        let fetchCitiesCount = try? await CityBlockManager.shared.getCountOfCitiesForDateRange(
+            userId: userId,
+            searchStartDate: prevWeek.startDate,
+            searchEndDate: currWeek.endDate
+        )
+        
+        let fetchSkippedJournalsCount = try? await CityBlockManager.shared.getCountOfSkippedEntriesFromCitiesOnDateRange(
+            userId: userId,
+            searchStartDate: prevWeek.startDate,
+            searchEndDate: currWeek.endDate
+        )
+        
+        let fetchUserStartDate = try? await CityBlockManager.shared.getEarliestStartDate(userId: userId)
+        
+        var healthPercentage = 1.0
+        
+        if let citiesCount = fetchCitiesCount {
+            if citiesCount < expectedCityCount {
+                healthPercentage -= 0.35
+            }
+            
+            if let journalsSkippedCount = fetchSkippedJournalsCount {
+                healthPercentage -= (Double(journalsSkippedCount) * 0.02)
+                
+            } else {
+                healthPercentage -= 0.5
+            }
+            
+        } else {
+            healthPercentage -= 0.5
+        }
+        
+        if let userStartDate = fetchUserStartDate {
+            if userStartDate >= prevWeek.startDate && userStartDate <= currWeek.startDate {
+                healthPercentage += 0.15
+            }
+        }
+        
+        let clampedPercentage = min(max(healthPercentage, 0.0), 1.0)
+        self.cityHealthPercentage = clampedPercentage
+    }
 }

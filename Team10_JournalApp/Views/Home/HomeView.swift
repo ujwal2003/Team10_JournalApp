@@ -49,7 +49,10 @@ struct HomeView: View {
                     onClick: { viewModel.isRecommendedActionsShowing.toggle() }
                 )
                 .sheet(isPresented: $viewModel.isRecommendedActionsShowing) {
-                    ReccomendedActionsView(overallSentiment: .Negative, actions: viewModel.recommendedActions)
+                    ReccomendedActionsView(
+                        overallSentiment: Sentiment.getSentimentFromJournalWeather(mappedWeather: viewModel.currSentimentWeather),
+                        actions: viewModel.recommendedActions
+                    )
                 }
                 
                 UserJournalCityBlockView(
@@ -109,7 +112,6 @@ struct HomeView: View {
                     }
                 }
                 
-                viewModel.cityHealthPercentage = 1.0
                 
                 viewModel.currWeek = CommonUtilities.util.getWeekRange(offset: viewModel.weekOffset)
                 
@@ -117,7 +119,9 @@ struct HomeView: View {
                     let todayOverallSentiment = await CommonUtilities.util.getComputedSentimentForToday(userId: profile.userId)
                     
                     viewModel.currSentimentWeather = todayOverallSentiment.mappedWeather
-                    viewModel.recommendedActions = []
+                    viewModel.recommendedActions = viewModel.getActionsBasedOnSentiment(sentiment: todayOverallSentiment)
+                    
+                    await viewModel.computeCityHealth(userId: profile.userId)
                     
                     await viewModel.loadOrCreateCurrentWeekMap(userId: profile.userId)
                     

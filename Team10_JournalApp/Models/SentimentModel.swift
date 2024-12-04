@@ -105,4 +105,23 @@ enum Sentiment: String {
                 return .NoData
         }
     }
+    
+    static func getSentimentFromJournalWeather(mappedWeather: JournalWeather) -> Sentiment {
+        switch mappedWeather {
+            case .Sunny:
+                return .Positive
+            case .Cloudy:
+                return .Fair
+            case .Drizzle:
+                return .Neutral
+            case .Rain:
+                return .Concerning
+            case .Stormy:
+                return .Negative
+            case .NoData:
+                return .Loading
+            case .Error:
+                return .Error
+        }
+    }
 }

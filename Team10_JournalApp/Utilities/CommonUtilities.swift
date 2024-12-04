@@ -146,4 +146,27 @@ final class CommonUtilities {
         }
     }
     
+    /// Returns a specified number of cases from a specified enum randomly
+    func getRandomEnumValues<T: CaseIterable>(from enumType: T.Type, count: Int) -> [T] where T: Hashable {
+        guard count <= T.allCases.count else {
+            fatalError("Requested count exceeds the number of cases in the enum.")
+        }
+        
+        let allCases = Array(enumType.allCases).shuffled()
+        return Array(allCases.prefix(count))
+    }
+    
+    func countEmptyStringsInStruct<T>(in instance: T) -> Int {
+        let mirror = Mirror(reflecting: instance)
+        
+        var count = 0
+        for child in mirror.children {
+            if let value = child.value as? String, value.isEmpty {
+                count += 1
+            }
+        }
+        
+        return count
+    }
+    
 }

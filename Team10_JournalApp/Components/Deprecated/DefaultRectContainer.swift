@@ -111,13 +111,13 @@ struct DefaultRectContainer<Content: View>: View {
     }
 }
 
-
-#Preview {
-    DefaultRectContainer(title: .init(text: "Title", fontSize: 40.0),
-                         subtitle: .init(text: "Insert subtitle here", fontSize: 20.0)) {
-        Text("hi")
-            .foregroundStyle(Color.black)
-            .font(.largeTitle)
-        
-    }
-}
+//
+//#Preview {
+//    DefaultRectContainer(title: .init(text: "Title", fontSize: 40.0),
+//                         subtitle: .init(text: "Insert subtitle here", fontSize: 20.0)) {
+//        Text("hi")
+//            .foregroundStyle(Color.black)
+//            .font(.largeTitle)
+//        
+//    }
+//}
