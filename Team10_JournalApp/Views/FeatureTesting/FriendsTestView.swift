@@ -114,7 +114,7 @@ struct FriendsTestView: View {
                 FriendsManager.shared.addListenerForUserFriendsWithStatus(
                     userId: userProfile.userId,
                     status: .friend,
-                    triggeredOn: [.added, .modified, .removed]) { userFriendStatus in
+                    triggeredOn: [.added, .modified, .removed]) { userFriendStatus, diffType in
                         print(userFriendStatus)
                     }
             }
