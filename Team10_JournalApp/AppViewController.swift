@@ -34,4 +34,14 @@ class AppViewController: ObservableObject {
         return authUser
     }
     
+    func getComputedSentimentWeatherForToday(userId: String) async {
+        let fetchedEntry = try? await JournalManager.shared.getJournalEntryFromDateQuery(userId: userId, date: Date())
+        
+        if let entry = fetchedEntry {
+            
+        } else {
+            
+        }
+    }
+    
 }
