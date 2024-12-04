@@ -275,4 +275,51 @@ class HomeViewModel: ObservableObject {
         }
     }
     
+    func computeCityHealth(userId: String) async {
+        let expectedCityCount = 2
+        
+        let prevWeek = CommonUtilities.util.getWeekStartEndDates(offset: -1)
+        let currWeek = CommonUtilities.util.getWeekStartEndDates(offset: 0)
+        
+        let fetchCitiesCount = try? await CityBlockManager.shared.getCountOfCitiesForDateRange(
+            userId: userId,
+            searchStartDate: prevWeek.startDate,
+            searchEndDate: currWeek.endDate
+        )
+        
+        let fetchSkippedJournalsCount = try? await CityBlockManager.shared.getCountOfSkippedEntriesFromCitiesOnDateRange(
+            userId: userId,
+            searchStartDate: prevWeek.startDate,
+            searchEndDate: currWeek.endDate
+        )
+        
+        let fetchUserStartDate = try? await CityBlockManager.shared.getEarliestStartDate(userId: userId)
+        
+        var healthPercentage = 1.0
+        
+        if let citiesCount = fetchCitiesCount {
+            if citiesCount < expectedCityCount {
+                healthPercentage -= 0.35
+            }
+            
+            if let journalsSkippedCount = fetchSkippedJournalsCount {
+                healthPercentage -= (Double(journalsSkippedCount) * 0.02)
+                
+            } else {
+                healthPercentage -= 0.5
+            }
+            
+        } else {
+            healthPercentage -= 0.5
+        }
+        
+        if let userStartDate = fetchUserStartDate {
+            if userStartDate >= prevWeek.startDate && userStartDate <= currWeek.startDate {
+                healthPercentage += 0.15
+            }
+        }
+        
+        let clampedPercentage = min(max(healthPercentage, 0.0), 1.0)
+        self.cityHealthPercentage = clampedPercentage
+    }
 }

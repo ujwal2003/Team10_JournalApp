@@ -12,6 +12,7 @@ enum FirestoreDataError: Error {
     case cityBlockMapNotFound(userID: String, startDate: Date, endDate: Date)
     case userFriendNotFound(userID: String, friendID: String)
     case emailNotFound(email: String)
+    case earliestStartDateNotFound(userID: String)
 }
 
 extension FirestoreDataError: LocalizedError {
@@ -28,6 +29,9 @@ extension FirestoreDataError: LocalizedError {
             
             case .emailNotFound(let email):
                 return "Could not find user for the email \(email)"
+            
+            case .earliestStartDateNotFound(let userID):
+                return "Could not find earliest start date for user \(userID)"
         }
     }
 }

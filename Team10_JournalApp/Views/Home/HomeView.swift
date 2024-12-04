@@ -112,7 +112,6 @@ struct HomeView: View {
                     }
                 }
                 
-                viewModel.cityHealthPercentage = 1.0
                 
                 viewModel.currWeek = CommonUtilities.util.getWeekRange(offset: viewModel.weekOffset)
                 
@@ -121,6 +120,8 @@ struct HomeView: View {
                     
                     viewModel.currSentimentWeather = todayOverallSentiment.mappedWeather
                     viewModel.recommendedActions = viewModel.getActionsBasedOnSentiment(sentiment: todayOverallSentiment)
+                    
+                    await viewModel.computeCityHealth(userId: profile.userId)
                     
                     await viewModel.loadOrCreateCurrentWeekMap(userId: profile.userId)
                     

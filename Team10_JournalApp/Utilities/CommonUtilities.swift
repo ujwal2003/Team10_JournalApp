@@ -156,4 +156,17 @@ final class CommonUtilities {
         return Array(allCases.prefix(count))
     }
     
+    func countEmptyStringsInStruct<T>(in instance: T) -> Int {
+        let mirror = Mirror(reflecting: instance)
+        
+        var count = 0
+        for child in mirror.children {
+            if let value = child.value as? String, value.isEmpty {
+                count += 1
+            }
+        }
+        
+        return count
+    }
+    
 }
