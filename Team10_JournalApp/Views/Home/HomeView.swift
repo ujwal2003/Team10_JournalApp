@@ -110,11 +110,15 @@ struct HomeView: View {
                 }
                 
                 viewModel.cityHealthPercentage = 1.0
-                viewModel.currSentimentWeather = .NoData
-                viewModel.recommendedActions = []
+                
                 viewModel.currWeek = CommonUtilities.util.getWeekRange(offset: viewModel.weekOffset)
                 
                 if let profile = appController.loadedUserProfile {
+                    let todayOverallSentiment = await appController.getComputedSentimentForToday(userId: profile.userId)
+                    
+                    viewModel.currSentimentWeather = todayOverallSentiment.mappedWeather
+                    viewModel.recommendedActions = []
+                    
                     await viewModel.loadOrCreateCurrentWeekMap(userId: profile.userId)
                     
                     let userNumFriends = try? await FriendsManager.shared.getNumberOfFriends(userId: profile.userId)

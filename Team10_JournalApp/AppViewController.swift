@@ -34,13 +34,26 @@ class AppViewController: ObservableObject {
         return authUser
     }
     
-    func getComputedSentimentWeatherForToday(userId: String) async {
+    func getComputedSentimentForToday(userId: String) async -> Sentiment {
         let fetchedEntry = try? await JournalManager.shared.getJournalEntryFromDateQuery(userId: userId, date: Date())
         
         if let entry = fetchedEntry {
+            let gratitudeScore = SentimentAnalyzer.shared.analyzeSentiment(text: entry.gratitudeEntry)
+            let learningScore = SentimentAnalyzer.shared.analyzeSentiment(text: entry.learningEntry)
+            let thougthDumpScore = SentimentAnalyzer.shared.analyzeSentiment(text: entry.thoughtEntry)
+            
+            let overallScore = SentimentAnalyzer.shared.calculateOverallSentimentScore(
+                gratitudeScore: gratitudeScore,
+                thoughtDumpScore: thougthDumpScore,
+                learningScore: learningScore
+            )
+            
+            let overallSentiment = SentimentAnalyzer.shared.getMappedSentimentLabelFromScore(sentimentScore: overallScore)
+            
+            return overallSentiment
             
         } else {
-            
+            return .Loading
         }
     }
     
