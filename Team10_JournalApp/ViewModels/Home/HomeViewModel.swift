@@ -57,7 +57,8 @@ class HomeViewModel: ObservableObject {
     
     /// For the current week, loads the user's journal map or creates one if it does not exist
     func loadOrCreateCurrentWeekMap(userId: String) async {
-        let currWeek = CommonUtilities.util.getWeekStartEndDates()
+        let util = CommonUtilities.util
+        let currWeek = util.getWeekStartEndDates()
         
         self.areNavigationButtonsDisabled = true
         self.resetToLoadingState()
@@ -68,7 +69,7 @@ class HomeViewModel: ObservableObject {
             weekEndDate: currWeek.endDate
         )
         
-        let todayDate = CommonUtilities.util.getDateByOffset(offset: 0)
+        let todayDate = util.getDateByOffset(offset: 0)
         let todayIndex = Calendar.current.component(.weekday, from: todayDate) - 1
         
         if let cityData = fetchedCityData {
@@ -76,25 +77,25 @@ class HomeViewModel: ObservableObject {
             self.journalDataLoader = cityData.journalIDs
             
             self.currCityBlockBuildings = [
-                .init(style: .LightBlueTower, onClick: {
+                .init(style: util.towers[0], onClick: {
                     self.lazyLoadJournalEntry(buildingDayIndex: 0)
                 }),
-                .init(style: .RedTower, onClick: {
+                .init(style: util.towers[1], onClick: {
                     self.lazyLoadJournalEntry(buildingDayIndex: 1)
                 }),
-                .init(style: .GreenTower, onClick: {
+                .init(style: util.towers[2], onClick: {
                     self.lazyLoadJournalEntry(buildingDayIndex: 2)
                 }),
-                .init(style: .LightBrownTower, onClick: {
+                .init(style: util.towers[3], onClick: {
                     self.lazyLoadJournalEntry(buildingDayIndex: 3)
                 }),
-                .init(style: .BrownTower, onClick: {
+                .init(style: util.towers[4], onClick: {
                     self.lazyLoadJournalEntry(buildingDayIndex: 4)
                 }),
-                .init(style: .LightGreenTower, onClick: {
+                .init(style: util.towers[5], onClick: {
                     self.lazyLoadJournalEntry(buildingDayIndex: 5)
                 }),
-                .init(style: .GreenTower, onClick: {
+                .init(style: util.towers[6], onClick: {
                     self.lazyLoadJournalEntry(buildingDayIndex: 6)
                 })
             ]
@@ -105,13 +106,14 @@ class HomeViewModel: ObservableObject {
                 self.journalDataLoader.saturdayID
             ]
             
+            // no journals saved for these dates
             for (index, dayId) in dayIDs.enumerated() {
                 if dayId == "" {
                     if index == todayIndex { // Today should be construction
-                        self.currCityBlockBuildings[index].style = .YellowConstruction
+                        self.currCityBlockBuildings[index].style = util.getBuildingStyle(.Construction)
                         
                     } else if index < todayIndex { // Skipped days should be ruins
-                        self.currCityBlockBuildings[index].style = .RedRuin
+                        self.currCityBlockBuildings[index].style = util.ruins[index]
                         
                     } else { // Future days should be scaffolding
                         self.currCityBlockBuildings[index].style = .Scaffolding
@@ -120,8 +122,6 @@ class HomeViewModel: ObservableObject {
             }
             
         } else { // create new city map
-            let util = CommonUtilities.util
-            
             let emptyJournals: JournalDaysIDs = .init(sundayID: "", mondayID: "", tuesdayID: "", wednesdayID: "", thursdayID: "", fridayID: "", saturdayID: "")
             
             let newCityMap = CityBlockData(
@@ -145,7 +145,7 @@ class HomeViewModel: ObservableObject {
             
             for index in 0..<7 {
                 if index == todayIndex {
-                    self.currCityBlockBuildings[index].style = .PurpleConstruction
+                    self.currCityBlockBuildings[index].style = util.constructions[index]
                 }
             }
         }
@@ -160,7 +160,8 @@ class HomeViewModel: ObservableObject {
             return
         }
         
-        let fetchWeek = CommonUtilities.util.getWeekStartEndDates(offset: self.weekOffset)
+        let util = CommonUtilities.util
+        let fetchWeek = util.getWeekStartEndDates(offset: self.weekOffset)
         
         self.areNavigationButtonsDisabled = true
         self.resetToLoadingState()
@@ -176,13 +177,13 @@ class HomeViewModel: ObservableObject {
             self.journalDataLoader = cityData.journalIDs
             
             self.currCityBlockBuildings = [
-                .init(style: .LightBlueTower, onClick: { self.lazyLoadJournalEntry(buildingDayIndex: 0) }),
-                .init(style: .RedTower, onClick: { self.lazyLoadJournalEntry(buildingDayIndex: 1) }),
-                .init(style: .GreenTower, onClick: { self.lazyLoadJournalEntry(buildingDayIndex: 2) }),
-                .init(style: .LightBrownTower, onClick: { self.lazyLoadJournalEntry(buildingDayIndex: 3) }),
-                .init(style: .BrownTower, onClick: { self.lazyLoadJournalEntry(buildingDayIndex: 4) }),
-                .init(style: .GreenTower, onClick: { self.lazyLoadJournalEntry(buildingDayIndex: 5) }),
-                .init(style: .LightGreenTower, onClick: { self.lazyLoadJournalEntry(buildingDayIndex: 6) }),
+                .init(style: util.towers[6], onClick: { self.lazyLoadJournalEntry(buildingDayIndex: 0) }),
+                .init(style: util.towers[5], onClick: { self.lazyLoadJournalEntry(buildingDayIndex: 1) }),
+                .init(style: util.towers[4], onClick: { self.lazyLoadJournalEntry(buildingDayIndex: 2) }),
+                .init(style: util.towers[3], onClick: { self.lazyLoadJournalEntry(buildingDayIndex: 3) }),
+                .init(style: util.towers[2], onClick: { self.lazyLoadJournalEntry(buildingDayIndex: 4) }),
+                .init(style: util.towers[1], onClick: { self.lazyLoadJournalEntry(buildingDayIndex: 5) }),
+                .init(style: util.towers[0], onClick: { self.lazyLoadJournalEntry(buildingDayIndex: 6) }),
             ]
             
             let dayIDs = [
@@ -191,9 +192,10 @@ class HomeViewModel: ObservableObject {
                 self.journalDataLoader.saturdayID
             ]
             
+            // skipped days are ruins
             for (index, dayId) in dayIDs.enumerated() {
                 if dayId == "" {
-                    self.currCityBlockBuildings[index].style = .BlueRuin
+                    self.currCityBlockBuildings[index].style = util.ruins[(dayIDs.count - 1) - index]
                 }
             }
             
