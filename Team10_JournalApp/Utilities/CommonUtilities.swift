@@ -16,6 +16,21 @@ final class CommonUtilities {
     
     let isIphone16ProMaxPortrait: Bool = UIScreen.main.bounds.height == 956.0
     
+    let constructions: [Building] = [
+        .RedConstruction, .BlueConstruction, .BrownConstruction, .GreenConstruction,
+        .PurpleConstruction, .YellowConstruction, .DarkRedConstruction
+    ]
+    
+    let ruins: [Building] = [
+        .BlueRuin, .BrownRuin, .DarkRedRuin, .GreenRuin,
+        .PurpleRuin, .RedRuin, .YellowRuin
+    ]
+    
+    let towers: [Building] = [
+        .GreenTower, .RedTower, .BlueTower, .LightGreenTower,
+        .BrownTower, .LightBlueTower, .BrownTower
+    ]
+    
     func getSavedUserUseLocationSettingKey(userId: String) -> String {
         return "CatchUp_useCurrLocation_\(userId)"
     }
@@ -167,6 +182,38 @@ final class CommonUtilities {
         }
         
         return count
+    }
+    
+    func getMapStyle() -> Map {
+        let calendar = Calendar.current
+        let month = calendar.component(.month, from: Date())
+        
+        if month % 2 == 0 {
+            let maps: [Map] = [.Map2, .Map4]
+            let idx = Int.random(in: 0 ..< maps.count)
+            
+            return maps[idx]
+        } else {
+            let maps: [Map] = [.Map1, .Map3]
+            let idx = Int.random(in: 0 ..< maps.count)
+            
+            return maps[idx]
+        }
+    }
+    
+    func getBuildingStyle(_ category: BuildingCategory, date: Date = Date()) -> Building {
+        let dayIdx = Calendar.current.component(.weekday, from: date) - 1
+        
+        switch category {
+            case .Building:
+                return towers[dayIdx]
+            
+            case .Construction:
+                return constructions[dayIdx]
+            
+            case .Ruin:
+                return ruins[dayIdx]
+        }
     }
     
 }
