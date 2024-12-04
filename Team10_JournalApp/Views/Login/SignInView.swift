@@ -28,7 +28,7 @@ struct SignInView: View {
 
         NavigationStack {
             AppLayoutContainer(height: 10.0) {
-                // Title content
+                // Title content: Displays "Hello!" and subtitle
                 VStack(alignment: .leading, spacing: 10) {
                     Text("Hello!")
                         .font(.system(size: 40.0).weight(.heavy))
@@ -46,26 +46,25 @@ struct SignInView: View {
                     .isLandscape(device: .iPhone) ? 10 : 65)
 
             } containerContent: {
-                // Use ScrollView only for horizontal (landscape) orientation
+                // Container content with ScrollView in horizontal orientation
                 Group {
                     if orientation.isLandscape(device: .iPhone) || orientation.isLandscape(device: .iPhonePlusOrMax) || orientation.isLandscape(device: .iPadFull) {
                         ScrollView {
                             mainContent
                                 .padding(.top, 20)
                         }
-                        .scrollIndicators(.never)
+                        .scrollIndicators(.never) // Hides the scroll indicators
                     } else {
                         mainContent
                     }
                 }
                 .onTapGesture {
-                    focusedField = nil
+                    focusedField = nil // Dismisses the keyboard on tap
                 }
-
-
             }
         }
         .onSubmit {
+            // Handles keyboard navigation between fields
             switch focusedField {
                 case .username:
                     focusedField = .password
@@ -78,8 +77,9 @@ struct SignInView: View {
     /// Main content for the container
     private var mainContent: some View {
         VStack {
-            // MARK: Username and password inputs
+            // Username and password input fields
             Grid(horizontalSpacing: 10, verticalSpacing: 21) {
+                // Email input field
                 GridRow {
                     ZStack {
                         Rectangle()
@@ -104,6 +104,7 @@ struct SignInView: View {
                     }
                 }
 
+                // Password input field
                 GridRow {
                     ZStack {
                         Rectangle()
@@ -134,6 +135,7 @@ struct SignInView: View {
                 .isLandscape(device: .iPhone) ? 20 : 91) {
                 let emptyFields = viewModel.email.isEmpty || viewModel.password.isEmpty
 
+                // Sign In button
                 Button(action: {
                     viewModel.signIn { userProfile in
                         self.appController.loadedUserProfile = userProfile
@@ -160,6 +162,7 @@ struct SignInView: View {
                     Text("The account '\(viewModel.email)' was not found. The credentials are incorrect or the account does not exist.")
                 }
 
+                // Sign Up button
                 Button(action: {
                     self.appController.viewSignUpFlag = true
                 }) {
