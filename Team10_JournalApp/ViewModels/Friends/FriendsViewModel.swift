@@ -62,7 +62,8 @@ class FriendsViewModel: ObservableObject {
     
     @Published var cityInviteFailedAlert: Bool = false
     @Published var isCityInviteRevokeFailedAlertShowing: Bool = false
-    @Published var isAcceptFriendInviteFailedAlertShowing: Bool = false
+    @Published var isAcceptFriendRequestFailedAlertShowing: Bool = false
+    @Published var isRejectFriendRequestFailedAlertShowing: Bool = false
     
     @Published var isDataLoading: Bool = false
     
@@ -153,7 +154,7 @@ class FriendsViewModel: ObservableObject {
                                     self.acceptFriendRequest(incomingReqUserId: requestProfileInfo.userID)
                                 },
                                 onReject: {
-                                    
+                                    self.rejectFriendRequest(incomingRequestId: requestProfileInfo.userID)
                                 }
                             )
                         )
@@ -258,7 +259,26 @@ class FriendsViewModel: ObservableObject {
                 
             } catch {
                 self.isDataLoading = false
-                self.isAcceptFriendInviteFailedAlertShowing.toggle()
+                self.isAcceptFriendRequestFailedAlertShowing.toggle()
+            }
+        }
+    }
+    
+    func rejectFriendRequest(incomingRequestId: String) {
+        Task {
+            self.isDataLoading = true
+            
+            do {
+                if let profile = self.currUserProfile {
+                    try await FriendsManager.shared.removeUserFriendWithStatus(userId: profile.userId, friendId: incomingRequestId, status: .incomingRequest)
+                    try await FriendsManager.shared.removeUserFriendWithStatus(userId: incomingRequestId, friendId: profile.userId, status: .invited)
+                }
+                
+                self.isDataLoading = false
+                
+            } catch {
+                self.isDataLoading = false
+                self.isRejectFriendRequestFailedAlertShowing.toggle()
             }
         }
     }

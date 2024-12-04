@@ -69,10 +69,17 @@ struct FriendsView: View {
                     }
                     .listStyle(.plain)
                     .environment(\.editMode, isEditing ? .constant(.active) : .constant(.inactive))
-                    .alert("Failed to Accept", isPresented: $viewModel.isAcceptFriendInviteFailedAlertShowing, actions: {
+                    .alert("Failed to Accept", isPresented: $viewModel.isAcceptFriendRequestFailedAlertShowing, actions: {
                         Button("Ok") { }
+                        
                     }, message: {
-                        Text("The accept could not be accepted due to an error. This may likely be a network or server issue, please try again.")
+                        Text("The request could not be accepted due to an error. This may likely be a network or server issue, please try again.")
+                    })
+                    .alert("Failed to Reject", isPresented: $viewModel.isRejectFriendRequestFailedAlertShowing, actions: {
+                        Button("Ok") { }
+                        
+                    }, message: {
+                        Text("The request could not be rejected due to an error. This may likely be a network or server issue, please try again.")
                     })
                     .alert("Failed to Revoke Invite", isPresented: $viewModel.isCityInviteRevokeFailedAlertShowing) {
                         Button("Ok") { }
