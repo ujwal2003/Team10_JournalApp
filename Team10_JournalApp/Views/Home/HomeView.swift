@@ -114,7 +114,7 @@ struct HomeView: View {
                 viewModel.currWeek = CommonUtilities.util.getWeekRange(offset: viewModel.weekOffset)
                 
                 if let profile = appController.loadedUserProfile {
-                    let todayOverallSentiment = await appController.getComputedSentimentForToday(userId: profile.userId)
+                    let todayOverallSentiment = await CommonUtilities.util.getComputedSentimentForToday(userId: profile.userId)
                     
                     viewModel.currSentimentWeather = todayOverallSentiment.mappedWeather
                     viewModel.recommendedActions = []

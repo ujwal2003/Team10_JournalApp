@@ -75,7 +75,9 @@ struct FriendCheckInView: View {
                 MockDataManager.mock.loadMockFriendJournalsMap(checkInViewModel: viewModel)
                 
             } else {
-                viewModel.friendSentimentWeather = .NoData
+                let todayOverallFriendSentiment = await CommonUtilities.util.getComputedSentimentForToday(userId: friendDBInfo.userID)
+                
+                viewModel.friendSentimentWeather = todayOverallFriendSentiment.mappedWeather
                 await viewModel.loadFriendCurrentWeekMap(friendUserId: friendDBInfo.userID)
             }
         }
