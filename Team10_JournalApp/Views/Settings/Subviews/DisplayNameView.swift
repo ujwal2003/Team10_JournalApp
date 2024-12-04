@@ -10,6 +10,8 @@ import SwiftUI
 struct DisplayNameView: View {
     @ObservedObject var appController: AppViewController
     @ObservedObject var settingsViewModel: SettingsViewModel
+    @Environment(\.verticalSizeClass) var heightSizeClass: UserInterfaceSizeClass?
+    @Environment(\.horizontalSizeClass) var widthSizeClass: UserInterfaceSizeClass?
     
     @State private var displayName: String = ""
     @State private var isShowingChangeNameFailedAlert: Bool = false
@@ -26,7 +28,8 @@ struct DisplayNameView: View {
                         .padding(.horizontal, 40.0)
                         .foregroundStyle(Color.black)
                 }
-                .padding(.vertical)
+                .padding(.vertical, DeviceOrientation(widthSizeClass: widthSizeClass, heightSizeClass: heightSizeClass)
+                    .isLandscape(device: .iPhone) ? 5 : 25)
             } containerContent: {
                 if settingsViewModel.isUpdateDisplayNameLoading {
                     ProgressBufferView {
