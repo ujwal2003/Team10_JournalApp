@@ -146,4 +146,14 @@ final class CommonUtilities {
         }
     }
     
+    /// Returns a specified number of cases from a specified enum randomly
+    func getRandomEnumValues<T: CaseIterable>(from enumType: T.Type, count: Int) -> [T] where T: Hashable {
+        guard count <= T.allCases.count else {
+            fatalError("Requested count exceeds the number of cases in the enum.")
+        }
+        
+        let allCases = Array(enumType.allCases).shuffled()
+        return Array(allCases.prefix(count))
+    }
+    
 }

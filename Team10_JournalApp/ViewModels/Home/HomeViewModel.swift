@@ -218,4 +218,61 @@ class HomeViewModel: ObservableObject {
         }
     }
     
+    func getActionsBasedOnSentiment(sentiment: Sentiment) -> [RecommendedAction] {
+        let util = CommonUtilities.util
+        
+        switch sentiment {
+        case .Positive:
+            let creativeSpace = util.getRandomEnumValues(from: CreativeSpaces.self, count: 1)[0]
+            let enjoyableExperience = util.getRandomEnumValues(from: EnjoyableExperiences.self, count: 1)[0]
+            let interactiveVenue = util.getRandomEnumValues(from: InteractiveVenues.self, count: 1)[0]
+            let sereneEnvironment = util.getRandomEnumValues(from: SereneEnvironments.self, count: 1)[0]
+            let foodPlace = util.getRandomEnumValues(from: FoodPlaces.self, count: 1)[0]
+            
+            return [
+                creativeSpace.mapActionSearch, enjoyableExperience.mapActionSearch, interactiveVenue.mapActionSearch,
+                sereneEnvironment.mapActionSearch, foodPlace.mapActionSearch
+            ]
+            
+        case .Fair:
+            let creativeSpaces = util.getRandomEnumValues(from: CreativeSpaces.self, count: 2)
+            let enjoyableExperience = util.getRandomEnumValues(from: EnjoyableExperiences.self, count: 1)[0]
+            let interactiveVenue = util.getRandomEnumValues(from: InteractiveVenues.self, count: 1)[0]
+            
+            return [
+                creativeSpaces[0].mapActionSearch, enjoyableExperience.mapActionSearch,
+                interactiveVenue.mapActionSearch, creativeSpaces[1].mapActionSearch
+            ]
+            
+        case .Neutral:
+            let sereneEnvironments = util.getRandomEnumValues(from: SereneEnvironments.self, count: 3)
+            let interactiveVenue = util.getRandomEnumValues(from: InteractiveVenues.self, count: 1)[0]
+            
+            return [
+                sereneEnvironments[0].mapActionSearch, sereneEnvironments[1].mapActionSearch,
+                interactiveVenue.mapActionSearch, sereneEnvironments[2].mapActionSearch
+            ]
+            
+        case .Concerning:
+            let interactiveVenues = util.getRandomEnumValues(from: InteractiveVenues.self, count: 2)
+            let sereneEnvironments = util.getRandomEnumValues(from: SereneEnvironments.self, count: 2)
+            
+            return [
+                interactiveVenues[0].mapActionSearch, sereneEnvironments[0].mapActionSearch,
+                interactiveVenues[1].mapActionSearch, sereneEnvironments[1].mapActionSearch
+            ]
+            
+        case .Negative:
+            let foodPlaces = util.getRandomEnumValues(from: FoodPlaces.self, count: 2)
+            
+            return [
+                EnjoyableExperiences.Parks.mapActionSearch, EnjoyableExperiences.Cafes.mapActionSearch, SereneEnvironments.Trails.mapActionSearch,
+                foodPlaces[0].mapActionSearch, foodPlaces[1].mapActionSearch
+            ]
+            
+        default:
+            return []
+        }
+    }
+    
 }

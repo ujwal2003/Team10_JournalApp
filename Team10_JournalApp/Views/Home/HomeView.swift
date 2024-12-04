@@ -49,7 +49,10 @@ struct HomeView: View {
                     onClick: { viewModel.isRecommendedActionsShowing.toggle() }
                 )
                 .sheet(isPresented: $viewModel.isRecommendedActionsShowing) {
-                    ReccomendedActionsView(overallSentiment: .Negative, actions: viewModel.recommendedActions)
+                    ReccomendedActionsView(
+                        overallSentiment: Sentiment.getSentimentFromJournalWeather(mappedWeather: viewModel.currSentimentWeather),
+                        actions: viewModel.recommendedActions
+                    )
                 }
                 
                 UserJournalCityBlockView(
@@ -117,7 +120,7 @@ struct HomeView: View {
                     let todayOverallSentiment = await CommonUtilities.util.getComputedSentimentForToday(userId: profile.userId)
                     
                     viewModel.currSentimentWeather = todayOverallSentiment.mappedWeather
-                    viewModel.recommendedActions = []
+                    viewModel.recommendedActions = viewModel.getActionsBasedOnSentiment(sentiment: todayOverallSentiment)
                     
                     await viewModel.loadOrCreateCurrentWeekMap(userId: profile.userId)
                     

@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum CreativeSpaces: String {
+enum CreativeSpaces: String, CaseIterable {
     case ArtStudios = "Art Studios"
     case Makerspaces = "Makerspaces"
     case ScenicViews = "Scenic Views"
@@ -30,7 +30,7 @@ enum CreativeSpaces: String {
     }
 }
 
-enum EnjoyableExperiences: String {
+enum EnjoyableExperiences: String, CaseIterable {
     case Parks = "Parks & Gardens"
     case ThemeParks = "Theme Parks"
     case Museums = "Museums"
@@ -53,7 +53,7 @@ enum EnjoyableExperiences: String {
     }
 }
 
-enum InteractiveVenues: String {
+enum InteractiveVenues: String, CaseIterable {
     case EscapeRooms = "Escape Rooms"
     case CookingClasses = "Cooking Classes"
     case DanceStudios = "Dance Studios"
@@ -79,7 +79,7 @@ enum InteractiveVenues: String {
     }
 }
 
-enum SereneEnvironments: String {
+enum SereneEnvironments: String, CaseIterable {
     case Trails = "Nature Trails"
     case Hiking = "Hiking Trails"
     case Beaches = "Beaches"
@@ -102,12 +102,12 @@ enum SereneEnvironments: String {
     }
 }
 
-enum FoodPlaces: String {
+enum FoodPlaces: String, CaseIterable {
     case IceCream = "Ice Cream"
     case FrozenYogurt = "Frozen Yogurt"
     case Bakery = "Bakery"
     
-    var mapActionSearc: RecommendedAction {
+    var mapActionSearch: RecommendedAction {
         switch self {
         case .IceCream:
             return .init(searchQuery: "Ice Cream", title: self.rawValue, description: "Consider eating ice cream and trying out new or favorite flavors.")
