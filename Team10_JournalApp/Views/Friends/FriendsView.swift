@@ -69,6 +69,13 @@ struct FriendsView: View {
                     }
                     .listStyle(.plain)
                     .environment(\.editMode, isEditing ? .constant(.active) : .constant(.inactive))
+                    .alert("Failed to Revoke Invite", isPresented: $viewModel.isCityInviteRevokeFailedAlertShowing) {
+                        Button("Ok") { }
+                        
+                    } message: {
+                        Text("The invite could not be revoked due to an error. This may likely be a network or server issue, please try again.")
+                    }
+
                     
                 }
                 
@@ -85,6 +92,8 @@ struct FriendsView: View {
                     FriendsManager.shared.removeAllUserFriendsListener()
                     
                     if let profile = appController.loadedUserProfile {
+                        viewModel.currUserProfile = profile
+                        
                         FriendsManager.shared.addListenerForUserFriendsWithStatus(
                             userId: profile.userId,
                             status: FriendStatus.friend,
@@ -110,6 +119,11 @@ struct FriendsView: View {
                                 
                                 if changeType == .added {
                                     viewModel.lazyLoadUserFriendData(userFriendStat: userFriendData, status: newValue.status)
+                                }
+                                
+                                else if changeType == .removed {
+                                    viewModel.removeDBUserByID(uid: userFriendData.friendUserId, status: .invited)
+                                    viewModel.removeDBUserByID(uid: userFriendData.friendUserId, status: .incomingRequest)
                                 }
                                 
                             }

@@ -41,6 +41,8 @@ struct DBUserInfo: Hashable {
 
 @MainActor
 class FriendsViewModel: ObservableObject {
+    @Published var currUserProfile: UserProfile? = nil
+    
     @Published var selectedContent: FriendSelectionContent = .Friends
     @Published var searchQuery: String = ""
     
@@ -56,8 +58,10 @@ class FriendsViewModel: ObservableObject {
     @Published var selectedFriendWeather: JournalWeather = .NoData
     
     @Published var isAddFriendSheetVisible: Bool = false
-    @Published var cityInviteFailedAlert: Bool = false
     @Published var isMapLoading: Bool = true
+    
+    @Published var cityInviteFailedAlert: Bool = false
+    @Published var isCityInviteRevokeFailedAlertShowing: Bool = false
     
     @Published var isDataLoading: Bool = false
     
@@ -90,6 +94,21 @@ class FriendsViewModel: ObservableObject {
         
         return friendInvites.filter { invite in
             return invite.displayName.lowercased().contains(searchQuery.lowercased())
+        }
+    }
+    
+    func removeDBUserByID(uid: String, status: FriendStatus) {
+        if status == .friend {
+            
+        } else if status == .invited {
+            if let objToRemove = self.friendInvites.first(where: { $0.userID == uid }) {
+                self.friendInvites.remove(objToRemove)
+            }
+            
+        } else if status == .incomingRequest {
+            if let objToRemove = self.friendRequests.first(where: { $0.userID == uid }) {
+                self.friendRequests.remove(objToRemove)
+            }
         }
     }
     
@@ -147,7 +166,7 @@ class FriendsViewModel: ObservableObject {
                             itemName: inviteProfileInfo.displayName,
                             itemContent: .inviteRescindButton(
                                 onRevoke: {
-                                    
+                                    self.revokeFriendInvite(invitedUserId: inviteProfileInfo.userID)
                                 }
                             )
                         )
@@ -201,6 +220,25 @@ class FriendsViewModel: ObservableObject {
             } catch {
                 print("Failed to invite \(potentialFriendEmail)")
                 onFailure()
+            }
+        }
+    }
+    
+    func revokeFriendInvite(invitedUserId: String) {
+        Task {
+            self.isDataLoading = true
+            
+            do {
+                if let profile = self.currUserProfile {
+                    try await FriendsManager.shared.removeUserFriendWithStatus(userId: profile.userId, friendId: invitedUserId, status: .invited)
+                    try await FriendsManager.shared.removeUserFriendWithStatus(userId: invitedUserId, friendId: profile.userId, status: .incomingRequest)
+                }
+                
+                self.isDataLoading = false
+                
+            } catch {
+                self.isDataLoading = false
+                self.isCityInviteRevokeFailedAlertShowing.toggle()
             }
         }
     }
