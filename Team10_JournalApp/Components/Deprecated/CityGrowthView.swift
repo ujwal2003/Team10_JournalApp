@@ -101,15 +101,15 @@ struct CityGrowthView: View {
     }
 }
 
-#Preview {
-    @Previewable @State var preivewText = "Lorem ipsum dolor sit amet, consectetur adipiscing elit"
-    
-    CityGrowthView(headlineTitle: "Today's City Growth",
-                   buildingType: .Building,
-                   growthReport: GrowthReport(gratitudeSentiment: .Positive,
-                                              gratitudeEntry: preivewText,
-                                              learningSentiment: .Neutral,
-                                              learningEntry: preivewText,
-                                              thoughtSentiment: .Negative,
-                                              thoughtEntry: preivewText))
-}
+//#Preview {
+//    @Previewable @State var preivewText = "Lorem ipsum dolor sit amet, consectetur adipiscing elit"
+//    
+//    CityGrowthView(headlineTitle: "Today's City Growth",
+//                   buildingType: .Building,
+//                   growthReport: GrowthReport(gratitudeSentiment: .Positive,
+//                                              gratitudeEntry: preivewText,
+//                                              learningSentiment: .Neutral,
+//                                              learningEntry: preivewText,
+//                                              thoughtSentiment: .Negative,
+//                                              thoughtEntry: preivewText))
+//}
