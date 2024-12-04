@@ -81,6 +81,12 @@ struct FriendsView: View {
                     }, message: {
                         Text("The request could not be rejected due to an error. This may likely be a network or server issue, please try again.")
                     })
+                    .alert("Failed to Remove", isPresented: $viewModel.isRemoveFriendFailedAlertShowing, actions: {
+                        Button("Ok") { }
+                        
+                    }, message: {
+                        Text("Failed to remove friend due to an error. This may likely be a network of server issue, please try again.")
+                    })
                     .alert("Failed to Revoke Invite", isPresented: $viewModel.isCityInviteRevokeFailedAlertShowing) {
                         Button("Ok") { }
                         

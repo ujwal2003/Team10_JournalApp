@@ -64,6 +64,7 @@ class FriendsViewModel: ObservableObject {
     @Published var isCityInviteRevokeFailedAlertShowing: Bool = false
     @Published var isAcceptFriendRequestFailedAlertShowing: Bool = false
     @Published var isRejectFriendRequestFailedAlertShowing: Bool = false
+    @Published var isRemoveFriendFailedAlertShowing: Bool = false
     
     @Published var isDataLoading: Bool = false
     
@@ -114,16 +115,6 @@ class FriendsViewModel: ObservableObject {
         }
     }
     
-    //FIXME: - actually delete from db
-    func removeFriend(friend: DBUserInfo) async throws {
-        try await Task.sleep(nanoseconds: 1_000_000_000) // 1 second delay
-        print("\(friend.displayName) deleted from database")
-    }
-    
-    func deleteFriend(at offsets: IndexSet) {
-        
-    }
-    
     func getContentList() -> AnyView {
         switch self.selectedContent {
             case .Friends:
@@ -141,7 +132,14 @@ class FriendsViewModel: ObservableObject {
                         )
                         .listRowBackground(Color.clear)
                     }
-                    .onDelete(perform: self.deleteFriend(at:))
+                    .onDelete(perform: { indices in
+                        for index in indices {
+                            let itemToDelete = Array(self.getFilteredFriends())[index]
+                            
+                            print("attempting to remove: \(itemToDelete)")
+                            self.removeFriend(friendDBObj: itemToDelete)
+                        }
+                    })
                 )
             
             case .Requests:
@@ -279,6 +277,27 @@ class FriendsViewModel: ObservableObject {
             } catch {
                 self.isDataLoading = false
                 self.isRejectFriendRequestFailedAlertShowing.toggle()
+            }
+        }
+    }
+    
+    func removeFriend(friendDBObj: DBUserInfo) {
+        Task {
+            self.isDataLoading = true
+            
+            do {
+                if let profile = currUserProfile {
+                    try await FriendsManager.shared.removeUserFriendWithStatus(userId: profile.userId, friendId: friendDBObj.userID, status: .friend)
+                    try await FriendsManager.shared.removeUserFriendWithStatus(userId: friendDBObj.userID, friendId: profile.userId, status: .friend)
+                }
+                
+                self.friends.remove(friendDBObj)
+                self.isDataLoading = false
+                
+            } catch {
+                self.friends.insert(friendDBObj)
+                self.isDataLoading = false
+                self.isRemoveFriendFailedAlertShowing.toggle()
             }
         }
     }
