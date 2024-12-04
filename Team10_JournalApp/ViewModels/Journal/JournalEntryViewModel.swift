@@ -26,13 +26,21 @@ class JournalEntryViewModel: ObservableObject {
         Task {
             self.isSaveJournalLoading = true
             
+            let gratitudeSentimentScore = SentimentAnalyzer.shared.analyzeSentiment(text: gratitudeEntry)
+            let learningSentimentScore = SentimentAnalyzer.shared.analyzeSentiment(text: learningEntry)
+            let thoughtDumpSentimentScore = SentimentAnalyzer.shared.analyzeSentiment(text: thoughtDump)
+            
+            let gratitudeSentiment = SentimentAnalyzer.shared.getMappedSentimentLabelFromScore(sentimentScore: gratitudeSentimentScore)
+            let learningSentiment = SentimentAnalyzer.shared.getMappedSentimentLabelFromScore(sentimentScore: learningSentimentScore)
+            let thoughtDumpSentiment = SentimentAnalyzer.shared.getMappedSentimentLabelFromScore(sentimentScore: thoughtDumpSentimentScore)
+            
             let content = JournalContent(
                 gratitudeEntry: gratitudeEntry,
-                gratitudeSentiment: Sentiment.Neutral.rawValue,
+                gratitudeSentiment: gratitudeSentiment.rawValue,
                 learningEntry: learningEntry,
-                learningSentiment: Sentiment.Neutral.rawValue,
+                learningSentiment: learningSentiment.rawValue,
                 thoughtEntry: thoughtDump,
-                thoughtSentiment: Sentiment.Neutral.rawValue
+                thoughtSentiment: thoughtDumpSentiment.rawValue
             )
             
             let succesfullyUpdated = await tryUpdatingTodaysJournalEntry(userId: userId, journalContent: content)
