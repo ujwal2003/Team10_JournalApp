@@ -182,4 +182,27 @@ class FriendsViewModel: ObservableObject {
         }
     }
     
+    func sendFriendInvite(userId: String, potentialFriendEmail: String, onSuccess: @escaping () -> Void, onFailure: @escaping () -> Void) {
+        guard !userId.isEmpty, !potentialFriendEmail.isEmpty else {
+            return
+        }
+        
+        Task {
+            do {
+                let potentialFriend = try await UserManager.shared.getUserByEmailSearch(email: potentialFriendEmail)
+                
+                try await FriendsManager.shared.addUserNewFriendWithStatus(userId: userId, friendId: potentialFriend.userId, status: .invited)
+                try await FriendsManager.shared.addUserNewFriendWithStatus(userId: potentialFriend.userId, friendId: userId, status: .incomingRequest)
+                
+                print("Succesfully invited \(potentialFriendEmail) to be a friend")
+                
+                onSuccess()
+                
+            } catch {
+                print("Failed to invite \(potentialFriendEmail)")
+                onFailure()
+            }
+        }
+    }
+    
 }

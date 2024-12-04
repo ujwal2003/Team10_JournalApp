@@ -8,12 +8,18 @@
 import SwiftUI
 
 struct AddFriendView: View {
+    @ObservedObject var appController: AppViewController
+    @ObservedObject var friendsViewModel: FriendsViewModel
+    
     @State var searchUserEmail: String = ""
     
     @Environment(\.dismiss) var dismiss
+    
     @State private var showAlert = false
+    @State private var searchLoading = false
+    
     private var sendButtonDisabled: Bool {
-        searchUserEmail.isEmpty
+        searchUserEmail.isEmpty || searchLoading
     }
     
     var body: some View {
@@ -48,10 +54,23 @@ struct AddFriendView: View {
                 )
                 .padding()
                 .autocorrectionDisabled()
+                .textInputAutocapitalization(.never)
+                .keyboardType(.emailAddress)
             
             Button(action: {
-                // TODO: search for email add send friend request
-                
+                if let profile = appController.loadedUserProfile {
+                    self.searchLoading = true
+                    
+                    friendsViewModel.sendFriendInvite(userId: profile.userId, potentialFriendEmail: searchUserEmail) {
+                        self.searchUserEmail = ""
+                        self.searchLoading = false
+                        dismiss()
+                        
+                    } onFailure: {
+                        self.searchLoading = false
+                        self.showAlert.toggle()
+                    }
+                }
             }) {
                 Text("Send Invite")
                     .font(.system(size: 18))
@@ -68,17 +87,27 @@ struct AddFriendView: View {
             .alert(isPresented: $showAlert) {
                 Alert(
                     title: Text("Invite Failed"),
-                    message: Text("Could not find username \(searchUserEmail) or there was a connection error"),
+                    message: Text("Error inviting the user '\(searchUserEmail)' They are already invited, do not exist, or there was a network error."),
                     dismissButton: .default(
                         Text("OK"),
                         action: {
-                            // TODO: do something when username could not be found
+                            self.searchUserEmail = ""
                         }
                     )
                 )
             }
             
+            if searchLoading {
+                ProgressBufferView {
+                    Text("Searching..")
+                }
+            }
+            
             Spacer()
         }
     }
+}
+
+#Preview {
+    AddFriendView(appController: AppViewController(), friendsViewModel: FriendsViewModel())
 }

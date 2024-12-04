@@ -51,7 +51,7 @@ struct FriendsView: View {
                         onAddIconClick: { viewModel.isAddFriendSheetVisible.toggle() }
                     )
                     .sheet(isPresented: $viewModel.isAddFriendSheetVisible) {
-                        AddFriendView()
+                        AddFriendView(appController: appController, friendsViewModel: viewModel)
                     }
                     
                     List {
