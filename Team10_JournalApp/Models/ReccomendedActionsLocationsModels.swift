@@ -101,3 +101,20 @@ enum SereneEnvironments: String {
         }
     }
 }
+
+enum FoodPlaces: String {
+    case IceCream = "Ice Cream"
+    case FrozenYogurt = "Frozen Yogurt"
+    case Bakery = "Bakery"
+    
+    var mapActionSearc: RecommendedAction {
+        switch self {
+        case .IceCream:
+            return .init(searchQuery: "Ice Cream", title: self.rawValue, description: "Consider eating ice cream and trying out new or favorite flavors.")
+        case .FrozenYogurt:
+            return .init(searchQuery: "Frozen Yogurt", title: self.rawValue, description: "Try out something at a frozen yogurt place.")
+        case .Bakery:
+            return .init(searchQuery: "Bakery", title: self.rawValue, description: "Get something nice to eat at a local bakery.")
+        }
+    }
+}
