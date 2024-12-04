@@ -42,7 +42,7 @@ struct FriendsTestView: View {
                     .font(.headline)
                     .multilineTextAlignment(.center)
             }
-            .buttonStyle(TestButtonStyle(backgroundColor: Color.blue, textColor: Color.white))
+            .buttonStyle(BubbleButtonStyle(backgroundColor: Color.blue, textColor: Color.white))
             .padding()
             
             Button {
@@ -64,7 +64,7 @@ struct FriendsTestView: View {
                     .font(.headline)
                     .multilineTextAlignment(.center)
             }
-            .buttonStyle(TestButtonStyle(backgroundColor: Color.mint, textColor: Color.white))
+            .buttonStyle(BubbleButtonStyle(backgroundColor: Color.mint, textColor: Color.white))
             .padding()
             
             Button {
@@ -86,7 +86,7 @@ struct FriendsTestView: View {
                     .font(.headline)
                     .multilineTextAlignment(.center)
             }
-            .buttonStyle(TestButtonStyle(backgroundColor: Color.red, textColor: Color.white))
+            .buttonStyle(BubbleButtonStyle(backgroundColor: Color.red, textColor: Color.white))
             .padding()
             
             Button {
@@ -105,7 +105,7 @@ struct FriendsTestView: View {
                     .font(.headline)
                     .multilineTextAlignment(.center)
             }
-            .buttonStyle(TestButtonStyle(backgroundColor: Color.cyan, textColor: Color.white))
+            .buttonStyle(BubbleButtonStyle(backgroundColor: Color.cyan, textColor: Color.white))
             .padding()
 
         }
@@ -114,7 +114,7 @@ struct FriendsTestView: View {
                 FriendsManager.shared.addListenerForUserFriendsWithStatus(
                     userId: userProfile.userId,
                     status: .friend,
-                    triggeredOn: [.added, .modified, .removed]) { userFriendStatus in
+                    triggeredOn: [.added, .modified, .removed]) { userFriendStatus, diffType in
                         print(userFriendStatus)
                     }
             }

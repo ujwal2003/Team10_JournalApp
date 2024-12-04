@@ -8,9 +8,11 @@
 import SwiftUI
 
 struct CustomLocationButtonView: View {
+    @ObservedObject var appController: AppViewController
+    
     @Binding var isLocationShared: Bool // Toggle state for sharing location
-    var defaultLocation: String = "Houston, TX" // Default location
-    var currentLocation: String = "Houston, TX, USA" // Current location when sharing is on
+    @State var defaultLocation: String = "[City], [State]" // Default location
+    @State var currentLocation: String = "Houston, TX, USA" // FIXME: Current location when sharing is on
 
     var body: some View {
         ZStack {
@@ -49,5 +51,15 @@ struct CustomLocationButtonView: View {
             .padding(.horizontal, 20)
         }
         .frame(maxWidth: .infinity, maxHeight: 50)
+        .task {
+            if let profile = appController.loadedUserProfile {
+                let decodedPlace = try? await CommonUtilities.util.decodePlaceFromCoordinates(latitude: profile.locLati, longitude: profile.locLongi)
+                
+                if let place = decodedPlace {
+                    self.defaultLocation = "\(place.locality ?? "City"), \(place.administrativeArea ?? "State")"
+                }
+            }
+        }
+        
     }
 }

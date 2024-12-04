@@ -64,7 +64,7 @@ struct JournalEntryDataTestView: View {
             } label: {
                 Text("Create New Journal Entry for user").font(.headline)
             }
-            .buttonStyle(TestButtonStyle(backgroundColor: Color.blue, textColor: Color.white))
+            .buttonStyle(BubbleButtonStyle(backgroundColor: Color.blue, textColor: Color.white))
             
             // MARK: - Update today's journal entry
             Button {
@@ -90,7 +90,7 @@ struct JournalEntryDataTestView: View {
             } label: {
                 Text("Update today's journal entry for user").font(.headline)
             }
-            .buttonStyle(TestButtonStyle(backgroundColor: Color.cyan, textColor: Color.white))
+            .buttonStyle(BubbleButtonStyle(backgroundColor: Color.cyan, textColor: Color.white))
             
             // MARK: - Get journal by date
             Button {
@@ -116,7 +116,7 @@ struct JournalEntryDataTestView: View {
             } label: {
                 Text("Get entry for date (offset): \(dateOffset)").font(.headline)
             }
-            .buttonStyle(TestButtonStyle(backgroundColor: Color.mint, textColor: Color.white))
+            .buttonStyle(BubbleButtonStyle(backgroundColor: Color.mint, textColor: Color.white))
 
             HStack {
                 Button {
@@ -128,7 +128,7 @@ struct JournalEntryDataTestView: View {
                 } label: {
                     Text("+").font(.headline)
                 }
-                .buttonStyle(TestButtonStyle(backgroundColor: Color.green, textColor: Color.white))
+                .buttonStyle(BubbleButtonStyle(backgroundColor: Color.green, textColor: Color.white))
                 
                 Text("Date Offset: \(dateOffset)")
                     .padding()
@@ -142,7 +142,7 @@ struct JournalEntryDataTestView: View {
                 } label: {
                     Text("-").font(.headline)
                 }
-                .buttonStyle(TestButtonStyle(backgroundColor: Color.red, textColor: Color.white))
+                .buttonStyle(BubbleButtonStyle(backgroundColor: Color.red, textColor: Color.white))
             }
             
             if let entry = displayJournalEntry {

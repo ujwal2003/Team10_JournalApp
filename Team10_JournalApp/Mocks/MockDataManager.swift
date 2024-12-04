@@ -85,18 +85,18 @@ class MockDataManager {
         checkInViewModel.friendCityMap = .Map3
         checkInViewModel.friendSentimentWeather = .Drizzle
         
-        let dummyText = "Lorem ipsum dolor sit amet, consectetur adipiscing elit"
-        checkInViewModel.friendCurrWeekJournal = Array(
-            repeating: .init(
-                gratitudeSentiment: .Positive,
-                gratitudeEntry: dummyText,
-                learningSentiment: .Neutral,
-                learningEntry: dummyText,
-                thoughtSentiment: .Negative,
-                thoughtEntry: dummyText
-            ),
-            count: 7
-        )
+//        let dummyText = "Lorem ipsum dolor sit amet, consectetur adipiscing elit"
+//        checkInViewModel.friendCurrWeekJournal = Array(
+//            repeating: .init(
+//                gratitudeSentiment: .Positive,
+//                gratitudeEntry: dummyText,
+//                learningSentiment: .Neutral,
+//                learningEntry: dummyText,
+//                thoughtSentiment: .Negative,
+//                thoughtEntry: dummyText
+//            ),
+//            count: 7
+//        )
         
         checkInViewModel.friendCityBlockBuildings =  [
             .init(style: .LightBlueTower, onClick: {

@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct LocationSectionView: View {
+    @ObservedObject var appController: AppViewController
     @Binding var isLocationShared: Bool
     
     var body: some View {
@@ -31,13 +32,28 @@ struct LocationSectionView: View {
             ZStack {
                 if !isLocationShared {
                     // Navigate to CustomLocationView when toggle is off
-                    CustomLocationButtonView(isLocationShared: $isLocationShared)
-                        .background(NavigationLink("", destination: CustomLocationView()).opacity(0))
+                    CustomLocationButtonView(appController: appController, isLocationShared: $isLocationShared)
+                        .background(
+                            NavigationLink(
+                                "",
+                                destination:
+                                    CustomLocationView(appController: appController)
+                            )
+                            .opacity(0)
+                        )
+                    
                 } else {
                     // Static button when toggle is on
-                    CustomLocationButtonView(isLocationShared: $isLocationShared)
+                    CustomLocationButtonView(appController: appController, isLocationShared: $isLocationShared)
                 }
             }
+            .onChange(of: isLocationShared) { oldValue, newValue in
+                let uid = appController.loadedUserProfile?.userId ?? "NIL"
+                let settingKey = CommonUtilities.util.getSavedUserUseLocationSettingKey(userId: uid)
+                
+                UserDefaults.standard.set(newValue, forKey: settingKey)
+            }
+            
         }
         .listRowSeparator(.hidden)
         .padding(.top, -10)
@@ -45,5 +61,14 @@ struct LocationSectionView: View {
 }
 
 #Preview {
-    LocationSectionView(isLocationShared: .constant(false))
+    @Previewable @State var previewLocationShared: Bool = false
+    
+    NavigationStack {
+        List {
+            LocationSectionView(appController: AppViewController(), isLocationShared: $previewLocationShared)
+        }
+        .listStyle(PlainListStyle())
+        .background(Color.clear)
+        .listRowSpacing(0)
+    }
 }

@@ -8,7 +8,11 @@
 import SwiftUI
 
 struct FriendsView: View {
+    @State var usePreviewMocks: Bool = false
+    
+    @ObservedObject var appController: AppViewController
     @StateObject var viewModel = FriendsViewModel()
+    
     @Environment(\.editMode) var editMode
     
     @State private var isEditing = false
@@ -47,7 +51,7 @@ struct FriendsView: View {
                         onAddIconClick: { viewModel.isAddFriendSheetVisible.toggle() }
                     )
                     .sheet(isPresented: $viewModel.isAddFriendSheetVisible) {
-                        AddFriendView()
+                        AddFriendView(appController: appController, friendsViewModel: viewModel)
                     }
                     
                     List {
@@ -65,34 +69,94 @@ struct FriendsView: View {
                     }
                     .listStyle(.plain)
                     .environment(\.editMode, isEditing ? .constant(.active) : .constant(.inactive))
+                    .alert("Failed to Accept", isPresented: $viewModel.isAcceptFriendRequestFailedAlertShowing, actions: {
+                        Button("Ok") { }
+                        
+                    }, message: {
+                        Text("The request could not be accepted due to an error. This may likely be a network or server issue, please try again.")
+                    })
+                    .alert("Failed to Reject", isPresented: $viewModel.isRejectFriendRequestFailedAlertShowing, actions: {
+                        Button("Ok") { }
+                        
+                    }, message: {
+                        Text("The request could not be rejected due to an error. This may likely be a network or server issue, please try again.")
+                    })
+                    .alert("Failed to Remove", isPresented: $viewModel.isRemoveFriendFailedAlertShowing, actions: {
+                        Button("Ok") { }
+                        
+                    }, message: {
+                        Text("Failed to remove friend due to an error. This may likely be a network of server issue, please try again.")
+                    })
+                    .alert("Failed to Revoke Invite", isPresented: $viewModel.isCityInviteRevokeFailedAlertShowing) {
+                        Button("Ok") { }
+                        
+                    } message: {
+                        Text("The invite could not be revoked due to an error. This may likely be a network or server issue, please try again.")
+                    }
+
                     
                 }
+                
+                if viewModel.isDataLoading {
+                    ProgressBufferView {
+                        Text("Loading...")
+                    }
+                }
+                
             }
-            .task {
-                // FIXME: use actual db stuff here
-                viewModel.friends = [
-                    .init(
-                        userID: "rweiuruiwueriw8927381ia",
-                          email: "test",
-                        displayName: "test"
-                    )
-                ]
-                
-                viewModel.friendRequests = [
-                    .init(
-                        userID: "sdsdfsdfdsf987983467538",
-                          email: "test",
-                        displayName: "test"
-                    )
-                ]
-                
-                viewModel.friendInvites = [
-                    .init(
-                        userID: "wegriuweguqaegr83427652983",
-                          email: "test",
-                        displayName: "test"
-                    )
-                ]
+            .onFirstAppear {
+                // load friends on first appearance
+                if !usePreviewMocks {
+                    FriendsManager.shared.removeAllUserFriendsListener()
+                    
+                    if let profile = appController.loadedUserProfile {
+                        viewModel.currUserProfile = profile
+                        
+                        FriendsManager.shared.addListenerForUserFriendsWithStatus(
+                            userId: profile.userId,
+                            status: FriendStatus.friend,
+                            triggeredOn: [.added, .removed]
+                        ) { userFriend, changeType in
+                            
+                            if changeType == .added {
+                                viewModel.lazyLoadUserFriendData(userFriendStat: userFriend, status: .friend)
+                            }
+                            
+                        }
+                    }
+                }
+            }
+            .onChange(of: viewModel.selectedContent) { oldValue, newValue in
+                if !usePreviewMocks {
+                    FriendsManager.shared.removeAllUserFriendsListener()
+                    
+                    if let profile = appController.loadedUserProfile {
+                        FriendsManager.shared.addListenerForUserFriendsWithStatus(
+                            userId: profile.userId,
+                            status: newValue.status, triggeredOn: [.added, .removed, .modified]) { userFriendData, changeType in
+                                
+                                if changeType == .added {
+                                    viewModel.lazyLoadUserFriendData(userFriendStat: userFriendData, status: newValue.status)
+                                }
+                                
+                                else if changeType == .removed {
+                                    viewModel.removeDBUserByID(uid: userFriendData.friendUserId, status: .invited)
+                                    viewModel.removeDBUserByID(uid: userFriendData.friendUserId, status: .incomingRequest)
+                                }
+                                
+                                else if changeType == .modified {
+                                    viewModel.removeDBUserByID(uid: userFriendData.friendUserId, status: .invited)
+                                    viewModel.removeDBUserByID(uid: userFriendData.friendUserId, status: .incomingRequest)
+                                }
+                                
+                            }
+                    }
+                }
+            }
+            .onDisappear {
+                if !usePreviewMocks {
+                    FriendsManager.shared.removeAllUserFriendsListener()
+                }
             }
             
         }
@@ -101,6 +165,6 @@ struct FriendsView: View {
 
 #Preview {
     AppTabMockContainerView(previewTab: .Friends) {
-        FriendsView()
+        FriendsView(appController: AppViewController())
     }
 }

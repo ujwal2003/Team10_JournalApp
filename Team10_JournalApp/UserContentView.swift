@@ -26,11 +26,11 @@ struct UserContentView: View {
                 }
                 
                 Tab("Journal", systemImage: "book", value: .Journal) {
-                    JournalEntryView()
+                    JournalEntryView(appController: appController)
                 }
                 
                 Tab("Friends", systemImage: "person.3", value: .Friends) {
-                    FriendsView()
+                    FriendsView(appController: appController)
                 }
                 
                 Tab("Settings", systemImage: "gear", value: .Settings) {
@@ -43,6 +43,13 @@ struct UserContentView: View {
                     }
                 }
             }
+            .onChange(of: selectedTab) { oldValue, newValue in
+                if appController.isJournalInEditMode {
+                    appController.isShowingJournalInEditModeAlert = true
+                    selectedTab = .Journal
+                }
+            }
+            
         }
         
     }

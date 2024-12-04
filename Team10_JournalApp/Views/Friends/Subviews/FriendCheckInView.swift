@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct FriendCheckInView: View {
+    @State var usePreviewMocks: Bool = false
+    
     @StateObject var viewModel = FriendCheckInViewModel()
     @State var friendDBInfo: DBUserInfo
     
@@ -31,7 +33,17 @@ struct FriendCheckInView: View {
                 buildings: viewModel.friendCityBlockBuildings
             )
             .sheet(isPresented: $viewModel.isGrowthReportShowing) {
-                viewModel.getBuildingJournalView()
+                if !usePreviewMocks {
+                    JournalEntryBuildingsView(
+                        selectedMenuView: .Journal,
+                        building: viewModel.friendCityBlockBuildings[viewModel.selectedBuildingIndex].style,
+                        date: viewModel.selectedBuildingDate,
+                        journalID: viewModel.selectedJournalID
+                    )
+                    
+                } else {
+                    
+                }
             }
             
             VStack {
@@ -59,13 +71,20 @@ struct FriendCheckInView: View {
             
         }
         .task {
-            // FIXME: Use stuff from db
-            MockDataManager.mock.loadMockFriendJournalsMap(checkInViewModel: viewModel)
+            if self.usePreviewMocks {
+                MockDataManager.mock.loadMockFriendJournalsMap(checkInViewModel: viewModel)
+                
+            } else {
+                let todayOverallFriendSentiment = await CommonUtilities.util.getComputedSentimentForToday(userId: friendDBInfo.userID)
+                
+                viewModel.friendSentimentWeather = todayOverallFriendSentiment.mappedWeather
+                await viewModel.loadFriendCurrentWeekMap(friendUserId: friendDBInfo.userID)
+            }
         }
         
     }
 }
 
 #Preview {
-    FriendCheckInView(friendDBInfo: .init(userID: "iuyeiqwyiq8276388", email: "test", displayName: "Friend1"))
+    FriendCheckInView(usePreviewMocks: true, friendDBInfo: .init(userID: "iuyeiqwyiq8276388", email: "test", displayName: "Friend1"))
 }

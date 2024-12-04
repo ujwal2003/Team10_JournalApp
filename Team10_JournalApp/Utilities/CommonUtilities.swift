@@ -7,12 +7,18 @@
 
 import Foundation
 import SwiftUI
+import CoreLocation
+import MapKit
 
 final class CommonUtilities {
     static let util = CommonUtilities()
     private init() { }
     
     let isIphone16ProMaxPortrait: Bool = UIScreen.main.bounds.height == 956.0
+    
+    func getSavedUserUseLocationSettingKey(userId: String) -> String {
+        return "CatchUp_useCurrLocation_\(userId)"
+    }
     
     /// Returns the start and end date of the week in format: "mm/dd/yy - mm/dd/yy"
     /// (offset of 0 is current week, negative numbers are previous week from the current and positive numbers are future weeks from current)
@@ -85,4 +91,59 @@ final class CommonUtilities {
                 return weekJournals.saturdayID
         }
     }
+    
+    /// Returns ``CLPlacemark`` from latitude and longitude coordinates
+    func decodePlaceFromCoordinates(latitude: Double, longitude: Double) async throws -> CLPlacemark? {
+        let placemarks = try await CLGeocoder().reverseGeocodeLocation(CLLocation(latitude: latitude, longitude: longitude))
+        
+        guard let place = placemarks.first else {
+            return nil
+        }
+        
+        return place
+    }
+    
+    func searchForPlace(query: String, completion: @escaping (_ coordinate: CLLocationCoordinate2D) -> Void) {
+        let searchRequest = MKLocalSearch.Request()
+        searchRequest.naturalLanguageQuery = query
+        
+        let search = MKLocalSearch(request: searchRequest)
+        search.start { response, error in
+            guard let response = response, error == nil else {
+                print("[MAP ERROR]: Search failed ; \(error?.localizedDescription ?? "Unknown Error")")
+                return
+            }
+            
+            if let firstMapItem = response.mapItems.first {
+                let coordinate = firstMapItem.placemark.coordinate
+                
+                completion(coordinate)
+            }
+        }
+    }
+    
+    /// Get overall sentiment based on the SEAN equation by fetching todays journlal entry
+    func getComputedSentimentForToday(userId: String) async -> Sentiment {
+        let fetchedEntry = try? await JournalManager.shared.getJournalEntryFromDateQuery(userId: userId, date: Date())
+        
+        if let entry = fetchedEntry {
+            let gratitudeScore = SentimentAnalyzer.shared.analyzeSentiment(text: entry.gratitudeEntry)
+            let learningScore = SentimentAnalyzer.shared.analyzeSentiment(text: entry.learningEntry)
+            let thougthDumpScore = SentimentAnalyzer.shared.analyzeSentiment(text: entry.thoughtEntry)
+            
+            let overallScore = SentimentAnalyzer.shared.calculateOverallSentimentScore(
+                gratitudeScore: gratitudeScore,
+                thoughtDumpScore: thougthDumpScore,
+                learningScore: learningScore
+            )
+            
+            let overallSentiment = SentimentAnalyzer.shared.getMappedSentimentLabelFromScore(sentimentScore: overallScore)
+            
+            return overallSentiment
+            
+        } else {
+            return .Loading
+        }
+    }
+    
 }

@@ -11,6 +11,7 @@ enum FirestoreDataError: Error {
     case journalEntryNotFound(userID: String, date: Date)
     case cityBlockMapNotFound(userID: String, startDate: Date, endDate: Date)
     case userFriendNotFound(userID: String, friendID: String)
+    case emailNotFound(email: String)
 }
 
 extension FirestoreDataError: LocalizedError {
@@ -24,6 +25,9 @@ extension FirestoreDataError: LocalizedError {
             
             case .userFriendNotFound(let userID, let friendID):
                 return "Could not find friend \(friendID) for user \(userID)"
+            
+            case .emailNotFound(let email):
+                return "Could not find user for the email \(email)"
         }
     }
 }

@@ -56,6 +56,23 @@ struct JournalEntry: Codable {
         self.thoughtSentiment = thoughtSentiment
     }
     
+    init(
+        journalId: String? = nil,
+        userId: String,
+        dateCreated: Date,
+        journalContent: JournalContent
+    ) {
+        self.journalId = journalId
+        self.userId = userId
+        self.dateCreated = dateCreated
+        self.gratitudeEntry = journalContent.gratitudeEntry
+        self.gratitudeSentiment = journalContent.gratitudeSentiment
+        self.learningEntry = journalContent.learningEntry
+        self.learningSentiment = journalContent.learningSentiment
+        self.thoughtEntry = journalContent.thoughtEntry
+        self.thoughtSentiment = journalContent.thoughtSentiment
+    }
+    
     enum CodingKeys: String, CodingKey {
         case journalId = "journal_id"
         case userId = "user_id"

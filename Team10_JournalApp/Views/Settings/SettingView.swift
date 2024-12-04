@@ -16,6 +16,7 @@ struct SettingView: View {
     @State private var isShowingSignOutAlert: Bool = false
     @State private var isShowingDeleteAccountAlert: Bool = false
     @State private var isLocationShared: Bool = false
+    
     @Environment(\.dismiss) var dismiss
 
     var body: some View {
@@ -46,7 +47,10 @@ struct SettingView: View {
                                     isShowingDeleteAccountAlert: $isShowingDeleteAccountAlert
                                 )
                                 
-                                LocationSectionView(isLocationShared: $isLocationShared)
+                                LocationSectionView(
+                                    appController: appController,
+                                    isLocationShared: $isLocationShared
+                                )
                                 
                             }
                             .listStyle(PlainListStyle())
@@ -54,6 +58,12 @@ struct SettingView: View {
                             .listRowSpacing(0)
                         }
                     }
+                }
+                .onFirstAppear {
+                    let uid = appController.loadedUserProfile?.userId ?? "NIL"
+                    let settingKey = CommonUtilities.util.getSavedUserUseLocationSettingKey(userId: uid)
+                    
+                    self.isLocationShared = UserDefaults.standard.bool(forKey: settingKey)
                 }
                 
                 if viewModel.isResettingJournal || viewModel.isDeletingAccount {

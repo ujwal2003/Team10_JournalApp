@@ -57,7 +57,7 @@ struct SentimentAnalysisTestView: View {
             } label: {
                 Text("Analyze Sentiment").font(.headline)
             }
-            .buttonStyle(TestButtonStyle(backgroundColor: Color.blue, textColor: Color.white))
+            .buttonStyle(BubbleButtonStyle(backgroundColor: Color.blue, textColor: Color.white))
             .padding()
             
             let getLabel = SentimentAnalyzer.shared.getMappedSentimentLabelFromScore

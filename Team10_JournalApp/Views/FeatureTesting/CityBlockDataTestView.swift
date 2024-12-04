@@ -80,7 +80,7 @@ struct CityBlockDataTestView: View {
                 } label: {
                     Text("+").font(.headline)
                 }
-                .buttonStyle(TestButtonStyle(backgroundColor: Color.green, textColor: Color.white))
+                .buttonStyle(BubbleButtonStyle(backgroundColor: Color.green, textColor: Color.white))
                 
                 VStack {
                     Toggle("Modify Week Offset", isOn: $modifyWeekOffset)
@@ -104,7 +104,7 @@ struct CityBlockDataTestView: View {
                 } label: {
                     Text("-").font(.headline)
                 }
-                .buttonStyle(TestButtonStyle(backgroundColor: Color.red, textColor: Color.white))
+                .buttonStyle(BubbleButtonStyle(backgroundColor: Color.red, textColor: Color.white))
             }
             .padding([.leading, .trailing])
             
@@ -137,7 +137,7 @@ struct CityBlockDataTestView: View {
                     .font(.headline)
                     .multilineTextAlignment(.center)
             }
-            .buttonStyle(TestButtonStyle(backgroundColor: Color.cyan, textColor: Color.white))
+            .buttonStyle(BubbleButtonStyle(backgroundColor: Color.cyan, textColor: Color.white))
             .padding([.top, .leading, .trailing])
             
             // MARK: - Get City Block Data by week offset
@@ -166,7 +166,7 @@ struct CityBlockDataTestView: View {
                     .font(.headline)
                     .multilineTextAlignment(.center)
             }
-            .buttonStyle(TestButtonStyle(backgroundColor: Color.indigo, textColor: Color.white))
+            .buttonStyle(BubbleButtonStyle(backgroundColor: Color.indigo, textColor: Color.white))
             .padding([.top, .leading, .trailing])
 
             
@@ -204,7 +204,7 @@ struct CityBlockDataTestView: View {
                     .font(.headline)
                     .multilineTextAlignment(.center)
             }
-            .buttonStyle(TestButtonStyle(backgroundColor: Color.mint, textColor: Color.white))
+            .buttonStyle(BubbleButtonStyle(backgroundColor: Color.mint, textColor: Color.white))
             .padding()
             
             // MARK: - Result Display

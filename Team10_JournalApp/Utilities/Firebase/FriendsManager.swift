@@ -94,7 +94,7 @@ final class FriendsManager {
         userId: String,
         status: FriendStatus,
         triggeredOn allowedValues: [DocumentChangeType],
-        completion: @escaping (UserFriendStatus) -> Void
+        completion: @escaping (UserFriendStatus, DocumentChangeType) -> Void
     ) {
         let query = userFriendsCollection(userId: userId)
             .whereField("user_friend_status", isEqualTo: status.rawValue)
@@ -120,7 +120,7 @@ final class FriendsManager {
                     let userFriendStatusData = try? diff.document.data(as: UserFriendStatus.self)
                     
                     if let friendStatusData = userFriendStatusData {
-                        completion(friendStatusData)
+                        completion(friendStatusData, diff.type)
                     } else {
                         print("[LISTENER]: failed to convert the following data to UserFriendStatus data model during \(modificationTypeStr[diff.type.rawValue] ?? "unknown") trigger: \(diff.document.data())")
                     }
