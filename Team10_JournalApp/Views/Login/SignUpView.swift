@@ -55,6 +55,11 @@ struct SignUpView: View {
                 .onTapGesture {
                     focusedField = nil // Dismiss keyboard when tapping outside
                 }
+                
+                ProgressBufferView(backgroundColor: Color(.systemGray4).opacity(0.90)) {
+                    Text("Loading...")
+                }
+                
             }
         }
         .onSubmit {

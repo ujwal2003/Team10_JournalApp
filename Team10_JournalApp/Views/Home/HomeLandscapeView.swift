@@ -73,7 +73,8 @@ struct HomeLandscapeView: View {
                         .sheet(isPresented: $viewModel.isRecommendedActionsShowing) {
                             ReccomendedActionsView(
                                 overallSentiment: Sentiment.getSentimentFromJournalWeather(mappedWeather: viewModel.currSentimentWeather),
-                                actions: viewModel.recommendedActions
+                                actions: viewModel.recommendedActions,
+                                appController: appController
                             )
                         }
                         

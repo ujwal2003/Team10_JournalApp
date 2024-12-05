@@ -12,7 +12,9 @@ struct CustomLocationButtonView: View {
     
     @Binding var isLocationShared: Bool // Toggle state for sharing location
     @State var defaultLocation: String = "[City], [State]" // Default location
-    @State var currentLocation: String = "Houston, TX, USA" // FIXME: Current location when sharing is on
+    @State var currentLocation: String = "[City], [State], [ISO]" // User Location
+    
+    @StateObject var locationManager = LocationManager()
 
     var body: some View {
         ZStack {
@@ -53,10 +55,24 @@ struct CustomLocationButtonView: View {
         .frame(maxWidth: .infinity, maxHeight: 50)
         .task {
             if let profile = appController.loadedUserProfile {
-                let decodedPlace = try? await CommonUtilities.util.decodePlaceFromCoordinates(latitude: profile.locLati, longitude: profile.locLongi)
-                
-                if let place = decodedPlace {
-                    self.defaultLocation = "\(place.locality ?? "City"), \(place.administrativeArea ?? "State")"
+                if isLocationShared {
+                    if let userLocation = locationManager.userLocation {
+                        let decodedPlace = try? await CommonUtilities.util.decodePlaceFromCoordinates(latitude: userLocation.latitude, longitude: userLocation.longitude)
+                        
+                        if let place = decodedPlace {
+                            self.currentLocation = "\(place.locality ?? "City"), \(place.administrativeArea ?? "State"), \(place.isoCountryCode ?? "ISO")"
+                        }
+                        
+                    } else {
+                        self.currentLocation = "[Permission Denied]"
+                    }
+                    
+                } else {
+                    let decodedPlace = try? await CommonUtilities.util.decodePlaceFromCoordinates(latitude: profile.locLati, longitude: profile.locLongi)
+                    
+                    if let place = decodedPlace {
+                        self.defaultLocation = "\(place.locality ?? "City"), \(place.administrativeArea ?? "State")"
+                    }
                 }
             }
         }

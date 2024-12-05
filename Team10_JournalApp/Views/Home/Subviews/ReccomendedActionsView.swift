@@ -62,10 +62,13 @@ struct ActionsMapView: View {
 struct ReccomendedActionsView: View {
     @State var overallSentiment: Sentiment
     @State var actions: [RecommendedAction]
+    @ObservedObject var appController: AppViewController
     
     @Environment(\.dismiss) var dismiss
     @StateObject var viewModel = ActionsViewModel()
     @State var isLoading: Bool = true
+    
+    @StateObject var locationManager = LocationManager()
     
     var body: some View {
         GeometryReader { geometry in
@@ -138,8 +141,17 @@ struct ReccomendedActionsView: View {
             }
         }
         .onAppear {
-            for action in actions {
-                viewModel.searchNearbyLocations(query: action.searchQuery, title: action.title)
+            if let profile = appController.loadedUserProfile {
+                let settingKey = CommonUtilities.util.getSavedUserUseLocationSettingKey(userId: profile.userId)
+                let isLocationSharePermissionOn = UserDefaults.standard.bool(forKey: settingKey)
+                
+                if isLocationSharePermissionOn {
+                    CommonUtilities.util.requestLocationAccessIfNecessary(locationManager: locationManager)
+                }
+                
+                for action in actions {
+                    viewModel.searchNearbyLocations(query: action.searchQuery, title: action.title, profile: profile, locationManager: locationManager)
+                }
             }
         }
     }
@@ -150,7 +162,7 @@ struct ReccomendedActionsView: View {
     @Previewable @State var viewEmptyStatePreview = false
     
     if viewEmptyStatePreview {
-        ReccomendedActionsView(overallSentiment: .Negative, actions: [])
+        ReccomendedActionsView(overallSentiment: .Negative, actions: [], appController: AppViewController())
         
     } else {
         ReccomendedActionsView(
@@ -163,7 +175,8 @@ struct ReccomendedActionsView: View {
                     .init(searchQuery: "coffee shops",
                           title: "Chill & Chat",
                           description: "Reach out to a friend or loved one for a chat at a coffee shop")
-            ]
+            ],
+            appController: AppViewController()
         )
     }
     
