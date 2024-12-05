@@ -62,6 +62,7 @@ struct ActionsMapView: View {
 struct ReccomendedActionsView: View {
     @State var overallSentiment: Sentiment
     @State var actions: [RecommendedAction]
+    @ObservedObject var appController: AppViewController
     
     @Environment(\.dismiss) var dismiss
     @StateObject var viewModel = ActionsViewModel()
@@ -138,8 +139,10 @@ struct ReccomendedActionsView: View {
             }
         }
         .onAppear {
-            for action in actions {
-                viewModel.searchNearbyLocations(query: action.searchQuery, title: action.title)
+            if let profile = appController.loadedUserProfile {
+                for action in actions {
+                    viewModel.searchNearbyLocations(query: action.searchQuery, title: action.title, profile: profile)
+                }
             }
         }
     }
@@ -150,7 +153,7 @@ struct ReccomendedActionsView: View {
     @Previewable @State var viewEmptyStatePreview = false
     
     if viewEmptyStatePreview {
-        ReccomendedActionsView(overallSentiment: .Negative, actions: [])
+        ReccomendedActionsView(overallSentiment: .Negative, actions: [], appController: AppViewController())
         
     } else {
         ReccomendedActionsView(
@@ -163,7 +166,8 @@ struct ReccomendedActionsView: View {
                     .init(searchQuery: "coffee shops",
                           title: "Chill & Chat",
                           description: "Reach out to a friend or loved one for a chat at a coffee shop")
-            ]
+            ],
+            appController: AppViewController()
         )
     }
     
