@@ -14,6 +14,8 @@ struct ActionsMapView: View {
     var description: String
     var openMapFunction: () -> Void
     
+    @Binding var isLoading: Bool
+    
     var body: some View {
         VStack(spacing: 5.0) {
             HStack {
@@ -41,6 +43,9 @@ struct ActionsMapView: View {
                 
                 MapView(region: .constant(data.region), annotations: .constant(data.annotations))
                     .frame(height: 200)
+                    .onAppear {
+                        isLoading = false
+                    }
             }
             .background(Color(red: 0.87, green: 0.95, blue: 0.99))
             .clipShape(RoundedCorner(radius: 10))
@@ -60,6 +65,7 @@ struct ReccomendedActionsView: View {
     
     @Environment(\.dismiss) var dismiss
     @StateObject var viewModel = ActionsViewModel()
+    @State var isLoading: Bool = true
     
     var body: some View {
         GeometryReader { geometry in
@@ -104,18 +110,28 @@ struct ReccomendedActionsView: View {
                         .lineSpacing(6)
                         .padding()
                         .padding(.horizontal, 5.0)
-                        
+                            
                         VStack {
+                            if isLoading {
+                                ProgressView {
+                                    Text("Loading...")
+                                }
+                            }
+                            
                             ForEach(Array(viewModel.mapsData.enumerated()), id: \.offset) { index, data in
-                                ActionsMapView(actionTitle: "Action \(index+1)",
-                                               data: data,
-                                               description: actions[index].description,
-                                               openMapFunction: {
-                                    viewModel.openAllInMaps(annotations: data.annotations)
-                                })
+                                ActionsMapView(
+                                    actionTitle: actions[index].title,
+                                    data: data,
+                                    description: actions[index].description,
+                                    openMapFunction: {
+                                        viewModel.openAllInMaps(annotations: data.annotations)
+                                    },
+                                    isLoading: $isLoading
+                                )
                             }
                         }
                         .padding(25)
+                    
                     }
                     
                 }

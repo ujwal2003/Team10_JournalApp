@@ -11,9 +11,10 @@ import MapKit
 struct CustomLocationView: View {
     @State var usePreviewMocks: Bool = false
     @ObservedObject var appController: AppViewController
+    @Environment(\.verticalSizeClass) var heightSizeClass: UserInterfaceSizeClass?
+    @Environment(\.horizontalSizeClass) var widthSizeClass: UserInterfaceSizeClass?
     
     @State private var location: String = "" // Current user location
-    
     @State private var region: MKCoordinateRegion
     @State private var annotations: [Annotation] = []
     
@@ -30,6 +31,39 @@ struct CustomLocationView: View {
     }
 
     var body: some View {
+        Group {
+            // Conditional ScrollView for landscape mode
+            if DeviceOrientation(widthSizeClass: widthSizeClass, heightSizeClass: heightSizeClass).isLandscape(device: .iPhone) {
+                ScrollView {
+                    content
+                }
+                .scrollIndicators(.never)
+            } else {
+                content
+            }
+        }
+        .task {
+            if self.usePreviewMocks {
+                appController.loadedUserProfile = .init(
+                    userId: "",
+                    email: "",
+                    displayName: "",
+                    dateCreated: Date(),
+                    photoURL: nil
+                )
+            }
+            
+            if let profile = appController.loadedUserProfile {
+                self.region = MKCoordinateRegion(
+                    center: CLLocationCoordinate2D(latitude: profile.locLati, longitude: profile.locLongi),
+                    span: MKCoordinateSpan(latitudeDelta: 2, longitudeDelta: 2)
+                )
+            }
+        }
+    }
+    
+    // Main content of the CustomLocationView
+    private var content: some View {
         VStack {
             // Page title
             Text("Set Custom Location")
@@ -63,7 +97,6 @@ struct CustomLocationView: View {
                         region.center = coordinate
                         region.span = MKCoordinateSpan(latitudeDelta: 2, longitudeDelta: 2)
                     }
-                    
                 } label: {
                     Image(systemName: "magnifyingglass")
                 }
@@ -77,12 +110,10 @@ struct CustomLocationView: View {
                 )
                 .disabled(location.isEmpty)
                 .opacity(location.isEmpty ? 0.5 : 1.0)
-
             }
             .padding()
             
-            // Display selected location
-//            Rectangle()
+            // Map view for displaying the selected location
             MapView(region: $region, annotations: $annotations)
                 .frame(width: 366, height: 486)
                 .foregroundColor(Color(red: 0.87, green: 0.95, blue: 0.99).opacity(0.5))
@@ -92,6 +123,7 @@ struct CustomLocationView: View {
                         .stroke(Color(red: 0.09, green: 0.28, blue: 0.39).opacity(0.5), lineWidth: 1)
                 )
             
+            // Display selected location
             Text("Selected Location:")
                 .font(.system(size: 24))
             
@@ -101,25 +133,6 @@ struct CustomLocationView: View {
             
             Spacer()
         }
-        .task {
-            if self.usePreviewMocks {
-                appController.loadedUserProfile = .init(
-                    userId: "",
-                    email: "",
-                    displayName: "",
-                    dateCreated: Date(),
-                    photoURL: nil
-                )
-            }
-            
-            if let profile = appController.loadedUserProfile {
-                self.region = MKCoordinateRegion(
-                    center: CLLocationCoordinate2D(latitude: profile.locLati, longitude: profile.locLongi),
-                    span: MKCoordinateSpan(latitudeDelta: 2, longitudeDelta: 2)
-                )
-            }
-        }
-        
     }
 }
 

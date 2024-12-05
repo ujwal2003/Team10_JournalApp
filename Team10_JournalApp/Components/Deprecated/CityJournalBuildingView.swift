@@ -134,17 +134,17 @@ struct CityJournalBuildingView: View {
     }
 }
 
-#Preview {
-    CityJournalBuildingView(
-        headlineTitle: "Ruins of Monday",
-        building: .RedTower,
-        growthReport: .init(
-            gratitudeSentiment: .Positive,
-            gratitudeEntry: "Lorem ipsum dolor",
-            learningSentiment: .Neutral,
-            learningEntry: "Lorem ipsum dolor",
-            thoughtSentiment: .Negative,
-            thoughtEntry: "Lorem ipsum dolor"
-        )
-    )
-}
+//#Preview {
+//    CityJournalBuildingView(
+//        headlineTitle: "Ruins of Monday",
+//        building: .RedTower,
+//        growthReport: .init(
+//            gratitudeSentiment: .Positive,
+//            gratitudeEntry: "Lorem ipsum dolor",
+//            learningSentiment: .Neutral,
+//            learningEntry: "Lorem ipsum dolor",
+//            thoughtSentiment: .Negative,
+//            thoughtEntry: "Lorem ipsum dolor"
+//        )
+//    )
+//}

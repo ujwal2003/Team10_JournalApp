@@ -16,6 +16,21 @@ final class CommonUtilities {
     
     let isIphone16ProMaxPortrait: Bool = UIScreen.main.bounds.height == 956.0
     
+    let constructions: [Building] = [
+        .RedConstruction, .BlueConstruction, .BrownConstruction, .GreenConstruction,
+        .PurpleConstruction, .YellowConstruction, .DarkRedConstruction
+    ]
+    
+    let ruins: [Building] = [
+        .BlueRuin, .BrownRuin, .DarkRedRuin, .GreenRuin,
+        .PurpleRuin, .RedRuin, .YellowRuin
+    ]
+    
+    let towers: [Building] = [
+        .GreenTower, .RedTower, .BlueTower, .LightGreenTower,
+        .BrownTower, .LightBlueTower, .BrownTower
+    ]
+    
     func getSavedUserUseLocationSettingKey(userId: String) -> String {
         return "CatchUp_useCurrLocation_\(userId)"
     }
@@ -143,6 +158,61 @@ final class CommonUtilities {
             
         } else {
             return .Loading
+        }
+    }
+    
+    /// Returns a specified number of cases from a specified enum randomly
+    func getRandomEnumValues<T: CaseIterable>(from enumType: T.Type, count: Int) -> [T] where T: Hashable {
+        guard count <= T.allCases.count else {
+            fatalError("Requested count exceeds the number of cases in the enum.")
+        }
+        
+        let allCases = Array(enumType.allCases).shuffled()
+        return Array(allCases.prefix(count))
+    }
+    
+    func countEmptyStringsInStruct<T>(in instance: T) -> Int {
+        let mirror = Mirror(reflecting: instance)
+        
+        var count = 0
+        for child in mirror.children {
+            if let value = child.value as? String, value.isEmpty {
+                count += 1
+            }
+        }
+        
+        return count
+    }
+    
+    func getMapStyle() -> Map {
+        let calendar = Calendar.current
+        let month = calendar.component(.month, from: Date())
+        
+        if month % 2 == 0 {
+            let maps: [Map] = [.Map2, .Map4]
+            let idx = Int.random(in: 0 ..< maps.count)
+            
+            return maps[idx]
+        } else {
+            let maps: [Map] = [.Map1, .Map3]
+            let idx = Int.random(in: 0 ..< maps.count)
+            
+            return maps[idx]
+        }
+    }
+    
+    func getBuildingStyle(_ category: BuildingCategory, date: Date = Date()) -> Building {
+        let dayIdx = Calendar.current.component(.weekday, from: date) - 1
+        
+        switch category {
+            case .Building:
+                return towers[dayIdx]
+            
+            case .Construction:
+                return constructions[dayIdx]
+            
+            case .Ruin:
+                return ruins[dayIdx]
         }
     }
     

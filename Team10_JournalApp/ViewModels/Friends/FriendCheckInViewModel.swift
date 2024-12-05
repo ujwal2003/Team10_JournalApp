@@ -43,6 +43,7 @@ class FriendCheckInViewModel: ObservableObject {
     
     func loadFriendCurrentWeekMap(friendUserId: String) async {
         let currWeek = CommonUtilities.util.getWeekStartEndDates()
+        let util = CommonUtilities.util
         
         self.resetToLoadingState()
         
@@ -52,7 +53,7 @@ class FriendCheckInViewModel: ObservableObject {
             weekEndDate: currWeek.endDate
         )
         
-        let todayDate = CommonUtilities.util.getDateByOffset(offset: 0)
+        let todayDate = util.getDateByOffset(offset: 0)
         let todayIndex = Calendar.current.component(.weekday, from: todayDate) - 1
         
         if let cityData = fetchCityData {
@@ -60,25 +61,25 @@ class FriendCheckInViewModel: ObservableObject {
             self.journalDataLoader = cityData.journalIDs
             
             self.friendCityBlockBuildings = [
-                .init(style: .LightBlueTower, onClick: {
+                .init(style: util.towers[0], onClick: {
                     self.lazyLoadJournalEntry(buidlingDayIndex: 0)
                 }),
-                .init(style: .RedTower, onClick: {
+                .init(style: util.towers[2], onClick: {
                     self.lazyLoadJournalEntry(buidlingDayIndex: 1)
                 }),
-                .init(style: .GreenTower, onClick: {
+                .init(style: util.towers[1], onClick: {
                     self.lazyLoadJournalEntry(buidlingDayIndex: 2)
                 }),
-                .init(style: .LightBrownTower, onClick: {
+                .init(style: util.towers[4], onClick: {
                     self.lazyLoadJournalEntry(buidlingDayIndex: 3)
                 }),
-                .init(style: .BrownTower, onClick: {
+                .init(style: util.towers[3], onClick: {
                     self.lazyLoadJournalEntry(buidlingDayIndex: 4)
                 }),
-                .init(style: .LightGreenTower, onClick: {
+                .init(style: util.towers[6], onClick: {
                     self.lazyLoadJournalEntry(buidlingDayIndex: 5)
                 }),
-                .init(style: .GreenTower, onClick: {
+                .init(style: util.towers[5], onClick: {
                     self.lazyLoadJournalEntry(buidlingDayIndex: 6)
                 })
             ]
@@ -92,10 +93,10 @@ class FriendCheckInViewModel: ObservableObject {
             for (index, dayId) in dayIDs.enumerated() {
                 if dayId == "" {
                     if index == todayIndex {
-                        self.friendCityBlockBuildings[index].style = .DarkRedConstruction
+                        self.friendCityBlockBuildings[index].style = util.constructions[(dayIDs.count - 1) - index]
                         
                     } else if index < todayIndex {
-                        self.friendCityBlockBuildings[index].style = .YellowRuin
+                        self.friendCityBlockBuildings[index].style = util.ruins[index]
                         
                     } else {
                         self.friendCityBlockBuildings[index].style = .Scaffolding

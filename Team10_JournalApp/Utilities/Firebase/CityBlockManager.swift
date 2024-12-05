@@ -58,6 +58,52 @@ final class CityBlockManager {
         return query
     }
     
+    func getCountOfCitiesForDateRange(userId: String, searchStartDate: Date, searchEndDate: Date) async throws -> Int {
+        let aggregateQuery = cityCollection
+            .whereField("user_id", isEqualTo: userId)
+            .whereField("week_start_date", isGreaterThanOrEqualTo: searchStartDate)
+            .whereField("week_end_date", isLessThanOrEqualTo: searchEndDate)
+            .count
+        
+        let querySnapshot = try await aggregateQuery.getAggregation(source: .server)
+        return querySnapshot.count.intValue
+    }
+    
+    func getCountOfSkippedEntriesFromCitiesOnDateRange(userId: String, searchStartDate: Date, searchEndDate: Date) async throws -> Int {
+        let query = cityCollection
+            .whereField("user_id", isEqualTo: userId)
+            .whereField("week_start_date", isGreaterThanOrEqualTo: searchStartDate)
+            .whereField("week_end_date", isLessThanOrEqualTo: searchEndDate)
+        
+        let querySnapshot = try await query.getDocuments()
+        
+        var totalSkippedJournalsCount = 0
+        for document in querySnapshot.documents {
+            let data = try document.data(as: CityBlockData.self)
+            
+            let skippedJournalsCount = CommonUtilities.util.countEmptyStringsInStruct(in: data.journalIDs)
+            totalSkippedJournalsCount += skippedJournalsCount
+        }
+        
+        return totalSkippedJournalsCount
+    }
+    
+    func getEarliestStartDate(userId: String) async throws -> Date {
+        let query = cityCollection
+            .whereField("user_id", isEqualTo: userId)
+            .order(by: "week_start_date")
+            .limit(to: 1)
+        
+        let querySnapshot = try await query.getDocuments()
+        
+        guard let document = querySnapshot.documents.first else {
+            throw FirestoreDataError.earliestStartDateNotFound(userID: userId)
+        }
+        
+        let data = try document.data(as: CityBlockData.self)
+        return data.weekStartDate
+    }
+    
     func bulkDeleteAllUserCityBlockData(userId: String) async throws {
         let querySnapshot = try await getAllUserCityBlockDataQuery(userId: userId).getDocuments()
         
