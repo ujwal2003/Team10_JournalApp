@@ -148,9 +148,18 @@ struct CustomLocationView: View {
             Text("Selected Location:")
                 .font(.system(size: 24))
             
-            Text("Result Location") // Current location display
-                .font(.system(size: 26))
-                .fontWeight(.heavy)
+            // Current location display
+            if let resultLoc = annotations.first {
+                Text(resultLoc.title)
+                    .font(.system(size: 26))
+                    .fontWeight(.heavy)
+                
+            } else {
+                Text("Result Location")
+                    .font(.system(size: 26))
+                    .fontWeight(.heavy)
+            }
+            
             
             Spacer()
         }
