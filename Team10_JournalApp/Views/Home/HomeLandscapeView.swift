@@ -106,7 +106,34 @@ struct HomeLandscapeView: View {
                             MockDataManager.mock.loadMockUserJournalsMap(homeViewModel: viewModel)
                             
                         } else {
+                            viewModel.areNavigationButtonsDisabled = true
                             
+                            if appController.loadedUserProfile == nil {
+                                let authUserData = appController.certifyAuthStatus()
+                                
+                                if let userData = authUserData {
+                                    let userProfile = try? await UserManager.shared.getUser(userId: userData.uid)
+                                    appController.loadedUserProfile = userProfile
+                                }
+                            }
+                            
+                            viewModel.currWeek = CommonUtilities.util.getWeekRange(offset: viewModel.weekOffset)
+                            
+                            if let profile = appController.loadedUserProfile {
+                                let todayOverallSentiment = await CommonUtilities.util.getComputedSentimentForToday(userId: profile.userId)
+                                
+                                viewModel.currSentimentWeather = todayOverallSentiment.mappedWeather
+                                viewModel.recommendedActions = viewModel.getActionsBasedOnSentiment(sentiment: todayOverallSentiment)
+                                
+                                await viewModel.computeCityHealth(userId: profile.userId)
+                                
+                                await viewModel.loadOrCreateCurrentWeekMap(userId: profile.userId)
+                                
+                                let userNumFriends = try? await FriendsManager.shared.getNumberOfFriends(userId: profile.userId)
+                                viewModel.numFriends = userNumFriends ?? 0
+                            }
+                            
+                            viewModel.areNavigationButtonsDisabled = false
                         }
                     }
                     
