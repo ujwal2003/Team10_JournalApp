@@ -142,6 +142,7 @@ struct FriendsView: View {
                                 else if changeType == .removed {
                                     viewModel.removeDBUserByID(uid: userFriendData.friendUserId, status: .invited)
                                     viewModel.removeDBUserByID(uid: userFriendData.friendUserId, status: .incomingRequest)
+                                    viewModel.removeDBUserByID(uid: userFriendData.friendUserId, status: .friend)
                                 }
                                 
                                 else if changeType == .modified {
