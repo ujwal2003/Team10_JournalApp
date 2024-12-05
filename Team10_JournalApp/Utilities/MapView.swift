@@ -38,13 +38,13 @@ struct MapView: UIViewRepresentable {
         let mapView = MKMapView()
         mapView.delegate = context.coordinator
         
-        let longPress = UILongPressGestureRecognizer(
-            target: context.coordinator,
-            action: #selector(context.coordinator.longPressGesture(recognizer:))
-        )
-        
-        longPress.minimumPressDuration = 1.5
-        mapView.addGestureRecognizer(longPress)
+//        let longPress = UILongPressGestureRecognizer(
+//            target: context.coordinator,
+//            action: #selector(context.coordinator.longPressGesture(recognizer:))
+//        )
+//        
+//        longPress.minimumPressDuration = 1.5
+//        mapView.addGestureRecognizer(longPress)
         
         return mapView
     }

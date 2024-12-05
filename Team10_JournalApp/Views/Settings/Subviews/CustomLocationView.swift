@@ -18,6 +18,8 @@ struct CustomLocationView: View {
     @State private var region: MKCoordinateRegion
     @State private var annotations: [Annotation] = []
     
+    let util = CommonUtilities.util
+    
     init(usePreviewMocks: Bool = false, appController: AppViewController) {
         self.usePreviewMocks = usePreviewMocks
         self.appController = appController
@@ -54,10 +56,25 @@ struct CustomLocationView: View {
             }
             
             if let profile = appController.loadedUserProfile {
+                let coord = CLLocationCoordinate2D(latitude: profile.locLati, longitude: profile.locLongi)
+                
                 self.region = MKCoordinateRegion(
-                    center: CLLocationCoordinate2D(latitude: profile.locLati, longitude: profile.locLongi),
+                    center: coord,
                     span: MKCoordinateSpan(latitudeDelta: 2, longitudeDelta: 2)
                 )
+                
+                let decodedPlace = try? await util.decodePlaceFromCoordinates(latitude: profile.locLati, longitude: profile.locLongi)
+                
+                if let place = decodedPlace {
+                    self.annotations.removeAll()
+                    self.annotations.append(
+                        Annotation(
+                            title: "\(place.locality ?? ""), \(place.administrativeArea ?? ""), \(place.isoCountryCode ?? "")",
+                            subtitle: "Selected Location",
+                            coordinate: coord
+                        )
+                    )
+                }
             }
         }
     }
@@ -93,9 +110,13 @@ struct CustomLocationView: View {
                 }
                 
                 Button {
-                    CommonUtilities.util.searchForPlace(query: location) { coordinate in
+                    util.searchForPlace(query: location) { coordinate in
                         region.center = coordinate
                         region.span = MKCoordinateSpan(latitudeDelta: 2, longitudeDelta: 2)
+                        
+                        if let profile = appController.loadedUserProfile {
+                            selectLocationAndSave(coordinate: coordinate, profile: profile)
+                        }
                     }
                 } label: {
                     Image(systemName: "magnifyingglass")
@@ -134,6 +155,31 @@ struct CustomLocationView: View {
             Spacer()
         }
     }
+    
+    func selectLocationAndSave(coordinate: CLLocationCoordinate2D, profile: UserProfile) {
+        Task {
+            let decodedPlace = try? await util.decodePlaceFromCoordinates(
+                latitude: coordinate.latitude,
+                longitude: coordinate.longitude
+            )
+            
+            if let place = decodedPlace {
+                annotations.removeAll()
+                annotations.append(
+                    Annotation(
+                        title: "\(place.locality ?? ""), \(place.administrativeArea ?? ""), \(place.isoCountryCode ?? "")",
+                        subtitle: "Selected Location",
+                        coordinate: coordinate
+                    )
+                )
+                
+                if !usePreviewMocks {
+                    //TODO: save location to db
+                }
+            }
+        }
+    }
+    
 }
 
 #Preview {
