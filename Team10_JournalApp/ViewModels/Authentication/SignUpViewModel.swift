@@ -14,6 +14,7 @@ class SignUpViewModel: ObservableObject {
     @Published var retypedPassword: String = ""
     
     @Published var isSignUpFailedAlertShowing: Bool = false
+    @Published var isLoading: Bool = false
     
     func signUp(onSignUp: @escaping (UserProfile) -> Void) {
         guard !email.isEmpty, !password.isEmpty, !retypedPassword.isEmpty else {
@@ -27,6 +28,8 @@ class SignUpViewModel: ObservableObject {
         }
         
         Task {
+            self.isLoading = true
+            
             do {
                 let userData = try await AuthenticationManager.shared.createUser(email: email, password: password)
                 print("Succesfully created user: \(email)")
@@ -36,10 +39,14 @@ class SignUpViewModel: ObservableObject {
                 
                 UserDefaults.standard.set(false, forKey: CommonUtilities.util.getSavedUserUseLocationSettingKey(userId: newUser.userId))
                 
+                self.isLoading = false
+                
                 print(newUser)
                 onSignUp(newUser)
                 
             } catch {
+                self.isLoading = false
+                
                 print("Failed to sign up with error: \(error)")
                 self.isSignUpFailedAlertShowing.toggle()
             }

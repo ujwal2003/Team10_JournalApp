@@ -13,6 +13,8 @@ struct HomeView: View {
     @ObservedObject var appController: AppViewController
     @StateObject var viewModel = HomeViewModel()
     
+    @StateObject var locationManager = LocationManager()
+    
     var body: some View {
         AppLayoutContainer(height: 10.0) {
             VStack(spacing: 0.0) {
@@ -51,7 +53,8 @@ struct HomeView: View {
                 .sheet(isPresented: $viewModel.isRecommendedActionsShowing) {
                     ReccomendedActionsView(
                         overallSentiment: Sentiment.getSentimentFromJournalWeather(mappedWeather: viewModel.currSentimentWeather),
-                        actions: viewModel.recommendedActions
+                        actions: viewModel.recommendedActions,
+                        appController: appController
                     )
                 }
                 
@@ -116,6 +119,15 @@ struct HomeView: View {
                 viewModel.currWeek = CommonUtilities.util.getWeekRange(offset: viewModel.weekOffset)
                 
                 if let profile = appController.loadedUserProfile {
+                    let settingKey = CommonUtilities.util.getSavedUserUseLocationSettingKey(userId: profile.userId)
+                    let isLocationSharePermissionOn = UserDefaults.standard.bool(forKey: settingKey)
+                    
+                    print("location permission: \(isLocationSharePermissionOn)")
+                    
+                    if isLocationSharePermissionOn {
+                        CommonUtilities.util.requestLocationAccessIfNecessary(locationManager: locationManager)
+                    }
+                    
                     let todayOverallSentiment = await CommonUtilities.util.getComputedSentimentForToday(userId: profile.userId)
                     
                     viewModel.currSentimentWeather = todayOverallSentiment.mappedWeather
