@@ -40,7 +40,7 @@ struct HomeLandscapeView: View {
                 }
                 
             } containerContent: {
-                VStack {
+                HStack {
                     
                     LandscapeJournalMapView(
                         map: .Map1,
@@ -54,8 +54,33 @@ struct HomeLandscapeView: View {
                             .init(style: .BlueConstruction, onClick: {})
                         ]
                     )
+                    .padding()
+                    // TODO: add sheet here
+                    
+                    VStack {
+                        CityStatsView(
+                            percentage: 1.0,
+                            weather: .NoData
+                        )
+                        
+                        ActionButtonView(
+                            isDisabled: false,
+                            onClick: {}
+                        )
+                        //TODO: add sheet here
+                        
+                        BottomNavigationView(
+                            isDisabled: false,
+                            onLeftArrowClick: {},
+                            onRightArrowClick: {},
+                            currWeek: "12/01/24 - 12/07/24",
+                            numFriends: 5
+                        )
+                    }
+                    .padding(.bottom)
                     
                 }
+                
             }
             
         }
@@ -64,6 +89,9 @@ struct HomeLandscapeView: View {
 
 #Preview {
     AppTabMockContainerView(previewTab: .Home) {
-        HomeLandscapeView(usePreviewMocks: true, appController: AppViewController())
+        HomeLandscapeView(
+            usePreviewMocks: true,
+            appController: AppViewController()
+        )
     }
 }
