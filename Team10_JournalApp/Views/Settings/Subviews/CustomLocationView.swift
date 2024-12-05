@@ -183,7 +183,19 @@ struct CustomLocationView: View {
                 )
                 
                 if !usePreviewMocks {
-                    //TODO: save location to db
+                    try? await UserManager.shared.updateUserLocation(userId: profile.userId, newLati: coordinate.latitude, newLongi: coordinate.longitude)
+                    
+                    let newLocProfile = UserProfile(
+                        userId: profile.userId,
+                        email: profile.email,
+                        displayName: profile.displayName,
+                        dateCreated: profile.dateCreated,
+                        photoURL: profile.photoURL,
+                        locLati: coordinate.latitude,
+                        locLongi: coordinate.longitude
+                    )
+                    
+                    appController.loadedUserProfile = newLocProfile
                 }
             }
         }
