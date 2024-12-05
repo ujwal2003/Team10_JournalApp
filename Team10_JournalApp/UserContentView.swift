@@ -16,13 +16,23 @@ struct UserContentView: View {
     @ObservedObject var appController: AppViewController
     @State var selectedTab: AppTab = .Home
     
-    @State var testingMode: Bool = true
+    @State var testingMode: Bool = false
+    
+    @Environment(\.verticalSizeClass) var heightSizeClass: UserInterfaceSizeClass?
+    @Environment(\.horizontalSizeClass) var widthSizeClass: UserInterfaceSizeClass?
     
     var body: some View {
+        let deviceOrientation = DeviceOrientation(widthSizeClass: widthSizeClass, heightSizeClass: heightSizeClass)
+        
         VStack {
             TabView(selection: $selectedTab) {
                 Tab("Home", systemImage: "house", value: .Home) {
-                    HomeView(appController: appController)
+                    if deviceOrientation.isPortrait(device: .iPhone) || deviceOrientation.isPortrait(device: .iPhonePlusOrMax) {
+                        HomeView(appController: appController)
+                        
+                    } else if deviceOrientation.isLandscape(device: .iPhone) || deviceOrientation.isLandscape(device: .iPhonePlusOrMax) {
+                        HomeLandscapeView(appController: appController)
+                    }
                 }
                 
                 Tab("Journal", systemImage: "book", value: .Journal) {
