@@ -13,6 +13,8 @@ struct HomeLandscapeView: View {
     @ObservedObject var appController: AppViewController
     @StateObject var viewModel = HomeViewModel()
     
+    @StateObject var locationManager = LocationManager()
+    
     var body: some View {
         NavigationStack {
             
@@ -121,6 +123,15 @@ struct HomeLandscapeView: View {
                             viewModel.currWeek = CommonUtilities.util.getWeekRange(offset: viewModel.weekOffset)
                             
                             if let profile = appController.loadedUserProfile {
+                                let settingKey = CommonUtilities.util.getSavedUserUseLocationSettingKey(userId: profile.userId)
+                                let isLocationSharePermissionOn = UserDefaults.standard.bool(forKey: settingKey)
+                                
+                                print("location permission: \(isLocationSharePermissionOn)")
+                                
+                                if isLocationSharePermissionOn {
+                                    CommonUtilities.util.requestLocationAccessIfNecessary(locationManager: locationManager)
+                                }
+                                
                                 let todayOverallSentiment = await CommonUtilities.util.getComputedSentimentForToday(userId: profile.userId)
                                 
                                 viewModel.currSentimentWeather = todayOverallSentiment.mappedWeather

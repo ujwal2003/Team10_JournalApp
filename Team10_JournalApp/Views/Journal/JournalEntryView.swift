@@ -66,11 +66,11 @@ struct JournalEntryView: View {
                                         thoughtDump: self.thoughtEntry
                                     ) {
                                         
-                                        if self.appController.savedIdToCityBlock == false {
+//                                        if self.appController.savedIdToCityBlock == false {
                                             viewModel.saveJournalIDToCityBlock(userId: profile.userId) {
                                                 self.appController.savedIdToCityBlock = true
                                             }
-                                        }
+//                                        }
                                         
                                     }
                                 }
