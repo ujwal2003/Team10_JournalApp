@@ -16,6 +16,8 @@ class ActionsViewModel: ObservableObject {
         var latitude: Double = 0.0
         var longitude: Double = 0.0
         
+        print("[USER LOCATION]: \(String(describing: locationManager.userLocation))")
+        
         if let userLocation = locationManager.userLocation {
             latitude = userLocation.latitude
             longitude = userLocation.longitude

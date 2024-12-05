@@ -222,11 +222,13 @@ final class CommonUtilities {
         
         switch manager.authorizationStatus {
             case .restricted, .denied:
+                print("Opening Settings...")
                 if let appSettings = URL(string: UIApplication.openSettingsURLString) {
                     UIApplication.shared.open(appSettings)
                 }
                 
             default:
+                print("Requesting Access...")
                 locationManager.requestLocationAccess()
         }
     }

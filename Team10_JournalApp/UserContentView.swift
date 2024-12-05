@@ -18,8 +18,6 @@ struct UserContentView: View {
     
     @State var testingMode: Bool = false
     
-    @StateObject var locationManager = LocationManager()
-    
     @Environment(\.verticalSizeClass) var heightSizeClass: UserInterfaceSizeClass?
     @Environment(\.horizontalSizeClass) var widthSizeClass: UserInterfaceSizeClass?
     
@@ -59,16 +57,6 @@ struct UserContentView: View {
                 if appController.isJournalInEditMode {
                     appController.isShowingJournalInEditModeAlert = true
                     selectedTab = .Journal
-                }
-            }
-            .onAppear {
-                if let profile = appController.loadedUserProfile {
-                    let settingKey = CommonUtilities.util.getSavedUserUseLocationSettingKey(userId: profile.userId)
-                    let isLocationSharePermissionOn = UserDefaults.standard.bool(forKey: settingKey)
-                    
-                    if isLocationSharePermissionOn {
-                        CommonUtilities.util.requestLocationAccessIfNecessary(locationManager: locationManager)
-                    }
                 }
             }
             

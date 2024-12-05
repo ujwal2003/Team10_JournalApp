@@ -142,6 +142,13 @@ struct ReccomendedActionsView: View {
         }
         .onAppear {
             if let profile = appController.loadedUserProfile {
+                let settingKey = CommonUtilities.util.getSavedUserUseLocationSettingKey(userId: profile.userId)
+                let isLocationSharePermissionOn = UserDefaults.standard.bool(forKey: settingKey)
+                
+                if isLocationSharePermissionOn {
+                    CommonUtilities.util.requestLocationAccessIfNecessary(locationManager: locationManager)
+                }
+                
                 for action in actions {
                     viewModel.searchNearbyLocations(query: action.searchQuery, title: action.title, profile: profile, locationManager: locationManager)
                 }
