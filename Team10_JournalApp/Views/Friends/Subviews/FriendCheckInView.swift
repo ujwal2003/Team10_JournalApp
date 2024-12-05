@@ -12,8 +12,33 @@ struct FriendCheckInView: View {
     
     @StateObject var viewModel = FriendCheckInViewModel()
     @State var friendDBInfo: DBUserInfo
+    @Environment(\.verticalSizeClass) var heightSizeClass: UserInterfaceSizeClass?
+    @Environment(\.horizontalSizeClass) var widthSizeClass: UserInterfaceSizeClass?
     
     var body: some View {
+        Group {
+            // Conditional ScrollView for landscape mode
+            if DeviceOrientation(widthSizeClass: widthSizeClass, heightSizeClass: heightSizeClass).isLandscape(device: .iPhone) {
+                ScrollView {
+                    content
+                }
+            } else {
+                content
+            }
+        }
+        .task {
+            if self.usePreviewMocks {
+                MockDataManager.mock.loadMockFriendJournalsMap(checkInViewModel: viewModel)
+            } else {
+                let todayOverallFriendSentiment = await CommonUtilities.util.getComputedSentimentForToday(userId: friendDBInfo.userID)
+                viewModel.friendSentimentWeather = todayOverallFriendSentiment.mappedWeather
+                await viewModel.loadFriendCurrentWeekMap(friendUserId: friendDBInfo.userID)
+            }
+        }
+    }
+    
+    // Main content of the FriendCheckInView
+    private var content: some View {
         VStack {
             VStack(spacing: 15.0) {
                 Text("\(friendDBInfo.displayName)'s City")
@@ -40,9 +65,6 @@ struct FriendCheckInView: View {
                         date: viewModel.selectedBuildingDate,
                         journalID: viewModel.selectedJournalID
                     )
-                    
-                } else {
-                    
                 }
             }
             
@@ -68,23 +90,13 @@ struct FriendCheckInView: View {
             .padding()
             
             Spacer()
-            
         }
-        .task {
-            if self.usePreviewMocks {
-                MockDataManager.mock.loadMockFriendJournalsMap(checkInViewModel: viewModel)
-                
-            } else {
-                let todayOverallFriendSentiment = await CommonUtilities.util.getComputedSentimentForToday(userId: friendDBInfo.userID)
-                
-                viewModel.friendSentimentWeather = todayOverallFriendSentiment.mappedWeather
-                await viewModel.loadFriendCurrentWeekMap(friendUserId: friendDBInfo.userID)
-            }
-        }
-        
     }
 }
 
 #Preview {
-    FriendCheckInView(usePreviewMocks: true, friendDBInfo: .init(userID: "iuyeiqwyiq8276388", email: "test", displayName: "Friend1"))
+    FriendCheckInView(
+        usePreviewMocks: true,
+        friendDBInfo: .init(userID: "iuyeiqwyiq8276388", email: "test", displayName: "Friend1")
+    )
 }
