@@ -216,4 +216,19 @@ final class CommonUtilities {
         }
     }
     
+    /// Request's user's permission to set their location access
+    func requestLocationAccessIfNecessary(locationManager: LocationManager, completion: (() -> Void)? = nil) {
+        let manager = CLLocationManager()
+        
+        switch manager.authorizationStatus {
+            case .restricted, .denied:
+                if let appSettings = URL(string: UIApplication.openSettingsURLString) {
+                    UIApplication.shared.open(appSettings)
+                }
+                
+            default:
+                locationManager.requestLocationAccess()
+        }
+    }
+    
 }

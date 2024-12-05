@@ -11,6 +11,8 @@ struct LocationSectionView: View {
     @ObservedObject var appController: AppViewController
     @Binding var isLocationShared: Bool
     
+    @StateObject var locationManager = LocationManager()
+    
     var body: some View {
         Section(header:
                     Text("Location")
@@ -52,6 +54,11 @@ struct LocationSectionView: View {
                 let settingKey = CommonUtilities.util.getSavedUserUseLocationSettingKey(userId: uid)
                 
                 UserDefaults.standard.set(newValue, forKey: settingKey)
+                
+                // if the user toggles on use my location
+                if newValue == true {
+                    CommonUtilities.util.requestLocationAccessIfNecessary(locationManager: locationManager)
+                }
             }
             
         }

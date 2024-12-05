@@ -12,11 +12,23 @@ import MapKit
 class ActionsViewModel: ObservableObject {
     @Published var mapsData: [MapData] = []
     
-    func searchNearbyLocations(query: String, title: String, profile: UserProfile) {
+    func searchNearbyLocations(query: String, title: String, profile: UserProfile, locationManager: LocationManager) {
+        var latitude: Double = 0.0
+        var longitude: Double = 0.0
+        
+        if let userLocation = locationManager.userLocation {
+            latitude = userLocation.latitude
+            longitude = userLocation.longitude
+            
+        } else {
+            latitude = profile.locLati
+            longitude = profile.locLongi
+        }
+        
         let searchRequest = MKLocalSearch.Request()
         searchRequest.naturalLanguageQuery = query
         searchRequest.region = MKCoordinateRegion(
-            center: CLLocationCoordinate2D(latitude: profile.locLati, longitude: profile.locLongi),
+            center: CLLocationCoordinate2D(latitude: latitude, longitude: longitude),
             span: MKCoordinateSpan(latitudeDelta: 0.2, longitudeDelta: 0.2)
         )
         

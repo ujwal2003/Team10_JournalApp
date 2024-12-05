@@ -68,6 +68,8 @@ struct ReccomendedActionsView: View {
     @StateObject var viewModel = ActionsViewModel()
     @State var isLoading: Bool = true
     
+    @StateObject var locationManager = LocationManager()
+    
     var body: some View {
         GeometryReader { geometry in
             ScrollView {
@@ -141,7 +143,7 @@ struct ReccomendedActionsView: View {
         .onAppear {
             if let profile = appController.loadedUserProfile {
                 for action in actions {
-                    viewModel.searchNearbyLocations(query: action.searchQuery, title: action.title, profile: profile)
+                    viewModel.searchNearbyLocations(query: action.searchQuery, title: action.title, profile: profile, locationManager: locationManager)
                 }
             }
         }
