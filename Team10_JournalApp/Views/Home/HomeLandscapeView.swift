@@ -43,41 +43,72 @@ struct HomeLandscapeView: View {
                 HStack {
                     
                     LandscapeJournalMapView(
-                        map: .Map1,
-                        buildings: [
-                            .init(style: .BlueConstruction, onClick: {}),
-                            .init(style: .BlueConstruction, onClick: {}),
-                            .init(style: .BlueConstruction, onClick: {}),
-                            .init(style: .BlueConstruction, onClick: {}),
-                            .init(style: .BlueConstruction, onClick: {}),
-                            .init(style: .BlueConstruction, onClick: {}),
-                            .init(style: .BlueConstruction, onClick: {})
-                        ]
+                        map: viewModel.currMap,
+                        buildings: viewModel.currCityBlockBuildings
                     )
                     .padding()
-                    // TODO: add sheet here
+                    .sheet(isPresented: $viewModel.isGrowthReportShowing) {
+                        if usePreviewMocks {
+                            MockDataManager.mock.loadMockJournalBuildingView(homeViewModel: viewModel)
+                            
+                        } else {
+                            JournalEntryBuildingsView(
+                                building: viewModel.currCityBlockBuildings[viewModel.selectedBuildingIndex].style,
+                                date: viewModel.selectedBuildingDate,
+                                journalID: viewModel.selectedJournalID
+                            )
+                        }
+                    }
                     
                     VStack {
                         CityStatsView(
-                            percentage: 1.0,
-                            weather: .NoData
+                            percentage: viewModel.cityHealthPercentage,
+                            weather: viewModel.currSentimentWeather
                         )
                         
                         ActionButtonView(
                             isDisabled: false,
-                            onClick: {}
+                            onClick: { viewModel.isRecommendedActionsShowing.toggle() }
                         )
-                        //TODO: add sheet here
+                        .sheet(isPresented: $viewModel.isRecommendedActionsShowing) {
+                            ReccomendedActionsView(
+                                overallSentiment: Sentiment.getSentimentFromJournalWeather(mappedWeather: viewModel.currSentimentWeather),
+                                actions: viewModel.recommendedActions
+                            )
+                        }
+                        
+                        let loadedUserProfile = appController.loadedUserProfile
                         
                         BottomNavigationView(
-                            isDisabled: false,
-                            onLeftArrowClick: {},
-                            onRightArrowClick: {},
-                            currWeek: "12/01/24 - 12/07/24",
-                            numFriends: 5
+                            isDisabled: viewModel.areNavigationButtonsDisabled,
+                            onLeftArrowClick: {
+                                if !self.usePreviewMocks {
+                                    if let profile = loadedUserProfile {
+                                        viewModel.navigateToPastWeek(userId: profile.userId)
+                                    }
+                                }
+                            },
+                            onRightArrowClick: {
+                                if !self.usePreviewMocks {
+                                    if let profile = loadedUserProfile {
+                                        viewModel.navigateToFutureWeek(userId: profile.userId)
+                                    }
+                                }
+                            },
+                            currWeek: viewModel.currWeek,
+                            numFriends: viewModel.numFriends
                         )
                     }
                     .padding(.bottom)
+                    .task {
+                        if self.usePreviewMocks {
+                            MockDataManager.mock.loadMockUserProfile(appController: appController)
+                            MockDataManager.mock.loadMockUserJournalsMap(homeViewModel: viewModel)
+                            
+                        } else {
+                            
+                        }
+                    }
                     
                 }
                 

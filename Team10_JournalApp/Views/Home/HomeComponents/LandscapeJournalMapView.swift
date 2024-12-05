@@ -59,18 +59,20 @@ struct LandscapeJournalMapView: View {
                 }
                 
             } label: {
-                VStack {
-                    Image(systemName: "7.circle.fill")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 50)
-                        .foregroundStyle(Color.yellow)
-                        .shadow(radius: 5)
-                    
-                    HStack(spacing: 0) {
-                        Image(Building.PurpleConstruction.rawValue)
-                        Image(Building.LightBrownTower.rawValue)
-                        Image(Building.GreenRuin.rawValue)
+                if map != .LoadingMap && map != .NotFoundMap {
+                    VStack {
+                        Image(systemName: "7.circle.fill")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 50)
+                            .foregroundStyle(Color.yellow)
+                            .shadow(radius: 5)
+                        
+                        HStack(spacing: 0) {
+                            Image(Building.PurpleConstruction.rawValue)
+                            Image(Building.LightBrownTower.rawValue)
+                            Image(Building.GreenRuin.rawValue)
+                        }
                     }
                 }
             }
